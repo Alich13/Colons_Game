@@ -184,5 +184,5 @@ void Dessin::ReafficheDessin()
 
 void Dessin::affiche_rendred_cord()
 {
-	cout << "x = " << cord_x << " , " << " y = " << cord_y << endl;
+	cout << " " << cord_x << " , " << " " << cord_y << endl;
 }

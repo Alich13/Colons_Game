@@ -12,7 +12,7 @@ CC=g++
 
 ######################
 # All the object files      
-OBJFILES = $(OBJDIR)/my_window.o $(OBJDIR)/dessin.o  $(OBJDIR)/main.o 
+OBJFILES = $(OBJDIR)/my_window.o $(OBJDIR)/dessin.o  $(OBJDIR)/board.o $(OBJDIR)/main.o 
 
 ###############
 # All the flagss
