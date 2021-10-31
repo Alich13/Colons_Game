@@ -20,11 +20,11 @@ DEBUGFLAGS = -O5 -g -DDEBUG -m64 -L /lib64 `pkg-config gtkmm-3.0 --cflags`
 STFLAGS    = -DLCB -DLENGTHTYPE=Uint -pthread `pkg-config gtkmm-3.0 --libs`
 
 out: $(OBJFILES)
-	$(CC) $^ $(STFLAGS) -o $(OBJDIR)/$@
+	$(CC)  $^ $(STFLAGS) -o $(OBJDIR)/$@
 
 # How to make the object files:
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(DEBUGFLAGS) -c $? -o $@
+	$(CC)  $(DEBUGFLAGS) -c $? -o $@
 
 # Cleaning target (only works with fileutils):
 clean:

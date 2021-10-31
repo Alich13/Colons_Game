@@ -51,7 +51,7 @@ my_window::my_window()
     /*---------board box---------------*/
         board_Frame.set_label("Game Board");
         board_Frame.add(dessin);    
-        board_box.set_size_request(1000, 900); // (width,hight)
+        board_box.set_size_request(1000, 900); // (width,hight) (1000,900)
         board_box.add(board_Frame);
     /*---------board box---------------*/
 

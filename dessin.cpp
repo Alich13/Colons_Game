@@ -17,7 +17,7 @@ Dessin::Dessin()
 	//  Load images
 	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
 	pic2 = Gdk::Pixbuf::create_from_file("data/scarabine.png");
-	pic_board = pic_board->scale_simple((pic_board->get_height()) * 0.2, (pic_board->get_width()) * 0.2, Gdk::INTERP_BILINEAR); // scale image
+	pic_board = pic_board->scale_simple((pic_board->get_height()) * 0.20, (pic_board->get_width()) * 0.20, Gdk::INTERP_BILINEAR); // scale image
 	pic2 = pic2->scale_simple((pic2->get_height()) * 0.25, (pic2->get_width()) * 0.35, Gdk::INTERP_BILINEAR);					// scale image
 	// Set masks for mouse events
 	add_events(Gdk::BUTTON_PRESS_MASK);
@@ -29,7 +29,6 @@ Dessin::Dessin()
 	board_y = 50;  // top right y cordonate inside the box
 	board_width = 1000;
 	board_height = 900; // same as the size of the box
-
 	
 }
 
@@ -45,6 +44,8 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Gtk::Allocation allocation = get_allocation();
 	// add board image //
 	drawBoard(cr);
+	// add vignettes
+	drawVingnette(cr);
 	// add elements scarabines //
 	drawHouse(cr);
 	// draw lines using mouse//
@@ -154,6 +155,38 @@ void Dessin::drawHouse(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->restore();
 	}
 }
+
+
+void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
+{
+	string vingnette_path,thief_vignette_path;
+	string tuile_de_num;
+	for (int i = 0; i < tuiles_map.get_size(); i++)
+	{
+		tuile_de_num= to_string(tuiles_map.get_tuile_de_num(i));
+		vingnette_path ="data/vigniettes/"+tuile_de_num+".png";
+		vigniette = Gdk::Pixbuf::create_from_file(vingnette_path);
+		vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
+		cr->save();
+		Gdk::Cairo::set_source_pixbuf(cr, vigniette, tuiles_map.get_tuile_x(i) - 20, tuiles_map.get_tuile_y(i) - 20);
+		cr->rectangle(0, 0, board_width, board_height);
+		cr->fill();
+		cr->restore();
+		
+	}	
+
+	thief_vignette_path ="data/vigniettes/thief.png";
+	vigniette = Gdk::Pixbuf::create_from_file(thief_vignette_path);
+	vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
+	tuile thief =tuiles_map.get_thief();
+	cr->save();
+	Gdk::Cairo::set_source_pixbuf(cr, vigniette, thief.get_x() - 20, thief.get_y() - 20);
+	cr->rectangle(0, 0, board_width, board_height);
+	cr->fill();
+	cr->restore();
+
+}
+
 
 void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 {

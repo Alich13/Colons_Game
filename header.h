@@ -4,12 +4,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/alignment.h>
-#include <string>			 // for string class
 #include "data_structures.h" //import data structure we will use in Board class
-using namespace std;
-
-enum class Ressouces {ble,bois,moutons,argile,desert,mouton,pierre};
-enum class States {empty,p1,p2,p3,p4,p5,p6};
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Dessin   &&&&&&&&&&&&&&&&&&&*/
@@ -38,10 +33,11 @@ public:
 	void updateHouse(GdkEventButton *event);
 
 	// Draw Functions //
+	void drawBoard(const Cairo::RefPtr<Cairo::Context> &cr);
+	void drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawRoute(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawHouse(const Cairo::RefPtr<Cairo::Context> &cr);
-	void drawBoard(const Cairo::RefPtr<Cairo::Context> &cr);
-
+	
 	void ReafficheDessin();
 
 protected:
@@ -49,16 +45,21 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &); // make the drawings
 
 private:
+
+	T_map tuiles_map; //the tuile map is an object from T_map class from datastructures.h 
+	
 	int x1, x2, y1, y2; // cordonates of points
 	int cord_x = 0;
 	int cord_y = 0;		  // cord to be rendred in label
 	int board_x, board_y; // top right x y cordonate inside the box
 	int board_width, board_height;
+	
 	bool firstclick, secondclick;
 	bool add_route_pressed = false;
 	bool add_house_pressed = false; // bool var telling if the button build route is pressed or not
+
 	std::vector<int> X, Y, vx1, vy1, vx2, vy2;
-	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2, display;
+	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2,vigniette;
 };
 
 /*====================================================================*/
@@ -102,66 +103,30 @@ public:
 protected:
 private:
 };
-//--------------------------------------------------------------//
 
-class tuile
-{
 
-public:
-	tuile();
-	tuile(int tuile_id ,int x , int y ,Ressouces ressource) 
-	{
-		this->tuile_id=tuile_id;
-		this->x=x; this->y=y;
-		this->ressource=ressource;	
-		/*this->num_dé_random */
-	}
-	void set_num_de();
-protected:
-private:
-	int tuile_id;
-	int x, y; // cordonates
-	Ressouces ressource ;
-	int num_de;
-};
+// -----------------------------to delete maybe-------------------------- 
+// // // class Board
+// // // {
 
-//--------------------------------------------------------------//
+// // // public:
+// // // 	Board(); 
+// // // 	bool check_route_exist();
+// // // 	bool check_construction_exist();
+// // // 	bool check_possible_route();
+// // // 	bool check_possible_construction();
+// // // 	void update_board();
 
-class intersection
-{
+// // // private:
 
-public:
-	intersection();
+// // // 	I_map board_map;
+// // // 	T_map tuile_map;
 
-protected:
-private:
-	int x, y;
-	States state ;	// state of the intersection (empty or  player id)
-	std::array<tuile, 3> adj_ressource; // list of maximum 3 tuiles
-};
-
-//--------------------------------------------------------------//
-
-class Board
-{
-
-public:
-	Board(); //!!!! where we acctually set the board (ie) set board_map and tuiles_map  // 
-
-	bool check_route_exist(int x ,int y);
-	bool check_construction_exist(int x ,int y);
-	bool check_possible_route(int x , int y);
-	bool check_possible_construction(int x , int y);
-
-	void update_board();
-
-private:	
-	I_map board_map;
-
-	//---------functions used by the constructor-------//
-	void fill_intersection_map();
-	//------------------------------------------------//
-};
+// // // 	//---------functions used by the constructor-------//
+// // // 	void fill_tuile_map();
+// // // 	void fill_intersection_map();
+// // // 	//------------------------------------------------//
+// // // };
 
 //--------------------------------------------------------------//
 
