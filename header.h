@@ -9,6 +9,25 @@
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Dessin   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
+
+class Board
+{
+
+public:
+	Board();
+	// I_map board_map;
+	T_map tuile_map;
+	// I_map intersection_map;
+	/*
+	bool check_route_exist();
+	bool check_construction_exist();
+	bool check_possible_route();
+	bool check_possible_construction();
+	void update_board();
+	*/
+private:
+};
+
 class Dessin : public Gtk::DrawingArea
 {
 public:
@@ -37,7 +56,7 @@ public:
 	void drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawRoute(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawHouse(const Cairo::RefPtr<Cairo::Context> &cr);
-	
+
 	void ReafficheDessin();
 
 protected:
@@ -45,21 +64,20 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &); // make the drawings
 
 private:
+	Board board;
 
-	T_map tuiles_map; //the tuile map is an object from T_map class from datastructures.h 
-	
 	int x1, x2, y1, y2; // cordonates of points
 	int cord_x = 0;
 	int cord_y = 0;		  // cord to be rendred in label
 	int board_x, board_y; // top right x y cordonate inside the box
 	int board_width, board_height;
-	
+
 	bool firstclick, secondclick;
 	bool add_route_pressed = false;
 	bool add_house_pressed = false; // bool var telling if the button build route is pressed or not
 
 	std::vector<int> X, Y, vx1, vy1, vx2, vy2;
-	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2,vigniette;
+	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2, vigniette;
 };
 
 /*====================================================================*/
@@ -94,40 +112,8 @@ private:
 	void set_my_menu();
 };
 
-//--------------------------------------------------------------//
-class De
-{
-public:
-	De();
-
-protected:
-private:
-};
-
-
-// -----------------------------to delete maybe-------------------------- 
-// // // class Board
-// // // {
-
-// // // public:
-// // // 	Board(); 
-// // // 	bool check_route_exist();
-// // // 	bool check_construction_exist();
-// // // 	bool check_possible_route();
-// // // 	bool check_possible_construction();
-// // // 	void update_board();
-
-// // // private:
-
-// // // 	I_map board_map;
-// // // 	T_map tuile_map;
-
-// // // 	//---------functions used by the constructor-------//
-// // // 	void fill_tuile_map();
-// // // 	void fill_intersection_map();
-// // // 	//------------------------------------------------//
-// // // };
-
-//--------------------------------------------------------------//
+/*====================================================================*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&&  Board  &&&&&&&&&&&&&&&&&&&*/
+/*====================================================================*/
 
 #endif // GTKMM_EXAMPLE_MYAREA_H

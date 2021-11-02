@@ -13,6 +13,9 @@ using namespace std;
 
 Dessin::Dessin()
 {
+	// set sub maps (tuiles map  et intersection map)
+	T_map tuiles_map = board.tuile_map;
+
 
 	//  Load images
 	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
@@ -161,7 +164,8 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	string vingnette_path,thief_vignette_path;
 	string tuile_de_num;
-	for (int i = 0; i < tuiles_map.get_size(); i++)
+	T_map tuiles_map = board.tuile_map;
+	for (int i = 2; i < tuiles_map.size; i++)
 	{
 		tuile_de_num= to_string(tuiles_map.get_tuile_de_num(i));
 		vingnette_path ="data/vigniettes/"+tuile_de_num+".png";
