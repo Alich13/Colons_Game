@@ -17,7 +17,7 @@ public:
 	Board();
 	// I_map board_map;
 	T_map tuile_map;
-	// I_map intersection_map;
+	I_map intersection_map;
 	/*
 	bool check_route_exist();
 	bool check_construction_exist();
@@ -27,6 +27,7 @@ public:
 	*/
 private:
 };
+
 
 class Dessin : public Gtk::DrawingArea
 {

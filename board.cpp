@@ -78,18 +78,31 @@ Board::Board()
 
 
     //set intersections 
-    node I1 = node(332,472,{T2,T5,T6});
-    node I2 = node(364,409,{T6,T2,T7});
+        node I1 = node(1,332,472,   {T2,T5,T6});
+        node I2 = node(2,364,409,   {T6,T2,T7});
+        node I3 = node(3,429 ,409,  {T3,T2,T7});
+        node I4 = node(4,463 ,471,{T2,T3,T4});
+        node I5 = node(5,429 ,536,{T4,T2,T13});
+        node I6 = node(6,363 ,537,{T5,T2,T13});
     
-    
+       
+ 
+ 
     // set routes
     route R1 = route(I1,I2); 
-        
+    route R2 = route(I2,I3);
+    route R3 = route(I3,I4);
+    route R4 = route(I4,I5);
+    route R5 = route(I5,I6);
+    route R6 = route(I6,I1);
 
     //insert routes in I_map
-
-    //intersection_map.insert(R1);
-
-
+    
+    intersection_map.insert(R1);
+    intersection_map.insert(R2);
+    intersection_map.insert(R3);
+    intersection_map.insert(R4);
+    intersection_map.insert(R5);
+    intersection_map.insert(R6);
 
 }
