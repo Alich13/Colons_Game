@@ -14,14 +14,13 @@ using namespace std;
 Dessin::Dessin()
 {
 	// set sub maps (tuiles map  et intersection map)
-	T_map tuiles_map = board.tuile_map;
-
+	
 
 	//  Load images
 	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
 	pic2 = Gdk::Pixbuf::create_from_file("data/scarabine.png");
 	pic_board = pic_board->scale_simple((pic_board->get_height()) * 0.20, (pic_board->get_width()) * 0.20, Gdk::INTERP_BILINEAR); // scale image
-	pic2 = pic2->scale_simple((pic2->get_height()) * 0.25, (pic2->get_width()) * 0.35, Gdk::INTERP_BILINEAR);					// scale image
+	pic2 = pic2->scale_simple((pic2->get_height()) * 0.10, (pic2->get_width()) * 0.25, Gdk::INTERP_BILINEAR);					// scale image
 	// Set masks for mouse events
 	add_events(Gdk::BUTTON_PRESS_MASK);
 
@@ -53,7 +52,8 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	drawHouse(cr);
 	// draw lines using mouse//
 	drawRoute(cr);
-
+	// draw intersections with active state
+	draw_intersection_map(cr);
 	return true;
 }
 
@@ -164,15 +164,15 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	string vingnette_path,thief_vignette_path;
 	string tuile_de_num;
-	T_map tuiles_map = board.tuile_map;
-	for (int i = 2; i < tuiles_map.size; i++)
+	// T_map tuile_map = board.tuile_map;
+	for (int i = 2; i < tuile_map.size; i++)
 	{
-		tuile_de_num= to_string(tuiles_map.get_tuile_de_num(i));
+		tuile_de_num= to_string(tuile_map.get_tuile_de_num(i));
 		vingnette_path ="data/vigniettes/"+tuile_de_num+".png";
 		vigniette = Gdk::Pixbuf::create_from_file(vingnette_path);
 		vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
 		cr->save();
-		Gdk::Cairo::set_source_pixbuf(cr, vigniette, tuiles_map.get_tuile_x(i) - 20, tuiles_map.get_tuile_y(i) - 20);
+		Gdk::Cairo::set_source_pixbuf(cr, vigniette, tuile_map.get_tuile_x(i) - 20, tuile_map.get_tuile_y(i) - 20);
 		cr->rectangle(0, 0, board_width, board_height);
 		cr->fill();
 		cr->restore();
@@ -182,13 +182,34 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 	thief_vignette_path ="data/vigniettes/thief.png";
 	vigniette = Gdk::Pixbuf::create_from_file(thief_vignette_path);
 	vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
-	tuile thief =tuiles_map.get_thief();
+	tuile thief =tuile_map.get_thief();
 	cr->save();
 	Gdk::Cairo::set_source_pixbuf(cr, vigniette, thief.get_x() - 20, thief.get_y() - 20);
 	cr->rectangle(0, 0, board_width, board_height);
 	cr->fill();
 	cr->restore();
 
+}
+
+void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
+{
+	vector<node> all_nodes =intersection_map.get_all_nodes();
+	int X,Y;  // cordonates
+
+	for (int i = 0; i < all_nodes.size() ;  i++)
+	{
+
+		if (all_nodes[i].get_state() != States::empty)    
+		{                      ////********** must change later with player
+			X=all_nodes[i].get_x();
+			Y=all_nodes[i].get_y();
+			cr->save();
+			Gdk::Cairo::set_source_pixbuf(cr, pic2, X- 25, Y- 35);
+			cr->rectangle(0, 0, board_width, board_height);
+			cr->fill();
+			cr->restore();
+		}
+	}
 }
 
 

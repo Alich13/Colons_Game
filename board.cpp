@@ -19,26 +19,26 @@ Board::Board()
         tuile T7 =tuile(7, 399, 346, Ressouces::ble);
         tuile T8 =tuile(8, 496, 282, Ressouces::ble);
         tuile T9 =tuile(9, 598, 341, Ressouces::pierre);
-        tuile T10 =tuile(10, 695, 405, Ressouces::argile);
+        tuile T10 =tuile(10,695,405, Ressouces::argile);
         tuile T11 =tuile(11,699, 538, Ressouces::ble);
         tuile T12 =tuile(12,592, 602, Ressouces::mouton);
         tuile T13 =tuile(13,393, 601, Ressouces::pierre);
-        tuile T14 =tuile(14,297 , 665 ,Ressouces::mouton);
-        tuile T15 =tuile(15,199 , 602 ,Ressouces::pierre);
-        tuile T16 =tuile(16,198 , 472 ,Ressouces::ble);
-        tuile T17 =tuile(17,200 , 346 ,Ressouces::argile);
-        tuile T18 =tuile(18,296 , 277,Ressouces::mouton);
-        tuile T19 =tuile(19,399 , 214,Ressouces::pierre);
-        tuile T20 =tuile(20,498 , 148,Ressouces::argile);
-        tuile T21 =tuile(21,596 , 208,Ressouces::mouton);
-        tuile T22 =tuile(22,698 , 272,Ressouces::bois);
-        tuile T23 =tuile(23,794 , 346,Ressouces::ble);
-        tuile T24 =tuile(24,801 , 471,Ressouces::bois);
-        tuile T25 =tuile(25,795 , 601,Ressouces::mouton);
-        tuile T26 =tuile(26,703 , 667,Ressouces::pierre);
-        tuile T27 =tuile(27,595 , 732,Ressouces::ble);
-        tuile T28 =tuile(28,498 , 793,Ressouces::bois);
-        tuile T29 =tuile(29,400 , 729,Ressouces::bois);
+        tuile T14 =tuile(14,297 ,665 ,Ressouces::mouton);
+        tuile T15 =tuile(15,199 ,602 ,Ressouces::pierre);
+        tuile T16 =tuile(16,198 ,472 ,Ressouces::ble);
+        tuile T17 =tuile(17,200 ,346 ,Ressouces::argile);
+        tuile T18 =tuile(18,296 ,277,Ressouces::mouton);
+        tuile T19 =tuile(19,399 ,214,Ressouces::pierre);
+        tuile T20 =tuile(20,498 ,148,Ressouces::argile);
+        tuile T21 =tuile(21,596 ,208,Ressouces::mouton);
+        tuile T22 =tuile(22,698 ,272,Ressouces::bois);
+        tuile T23 =tuile(23,794 ,346,Ressouces::ble);
+        tuile T24 =tuile(24,801 ,471,Ressouces::bois);
+        tuile T25 =tuile(25,795 ,601,Ressouces::mouton);
+        tuile T26 =tuile(26,703 ,667,Ressouces::pierre);
+        tuile T27 =tuile(27,595 ,732,Ressouces::ble);
+        tuile T28 =tuile(28,498 ,793,Ressouces::bois);
+        tuile T29 =tuile(29,400 ,729,Ressouces::bois);
     
     
     // Insert tuiles into tuiles map
@@ -78,16 +78,16 @@ Board::Board()
 
 
     //set intersections 
-        node I1 = node(1,332,472,   {T2,T5,T6});
-        node I2 = node(2,364,409,   {T6,T2,T7});
-        node I3 = node(3,429 ,409,  {T3,T2,T7});
-        node I4 = node(4,463 ,471,{T2,T3,T4});
-        node I5 = node(5,429 ,536,{T4,T2,T13});
-        node I6 = node(6,363 ,537,{T5,T2,T13});
+    node I1 = node(1,332,472,   {T2,T5,T6});
+    node I2 = node(2,364,409,   {T6,T2,T7});
+    node I3 = node(3,429 ,409,  {T3,T2,T7});
+    node I4 = node(4,463 ,471,{T2,T3,T4});
+    node I5 = node(5,429 ,536,{T4,T2,T13});
+    node I6 = node(6,363 ,537,{T5,T2,T13});
+    node I7 = node(7,263 , 471, {T5,T16,T6});
     
        
- 
- 
+
     // set routes
     route R1 = route(I1,I2); 
     route R2 = route(I2,I3);
@@ -95,6 +95,7 @@ Board::Board()
     route R4 = route(I4,I5);
     route R5 = route(I5,I6);
     route R6 = route(I6,I1);
+    route R7 = route(I7,I1);
 
     //insert routes in I_map
     
@@ -104,5 +105,12 @@ Board::Board()
     intersection_map.insert(R4);
     intersection_map.insert(R5);
     intersection_map.insert(R6);
+    intersection_map.insert(R7);
+
+    //for test 
+    
+    intersection_map.update_intersection_state(1, States::p1);
+    intersection_map.update_intersection_state(4, States::p1);
+    intersection_map.update_intersection_state(6, States::p1);
 
 }
