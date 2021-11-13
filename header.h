@@ -7,7 +7,7 @@
 #include "data_structures.h" //import data structure we will use in Board class
 
 /*====================================================================*/
-/*&&&&&&&&&&&&&&&&&&&&&&&&&&& Dessin   &&&&&&&&&&&&&&&&&&&*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&&  Board  &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
 
 class Board
@@ -18,16 +18,14 @@ public:
 	// I_map board_map;
 	T_map tuile_map;
 	I_map intersection_map;
-	/*
-	bool check_route_exist();
-	bool check_construction_exist();
-	bool check_possible_route();
-	bool check_possible_construction();
-	void update_board();
-	*/
+
 private:
 };
 
+
+/*====================================================================*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&& Dessin   &&&&&&&&&&&&&&&&&&&*/
+/*====================================================================*/
 
 class Dessin : public Gtk::DrawingArea
 {
@@ -57,6 +55,7 @@ public:
 	void draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawRoute(const Cairo::RefPtr<Cairo::Context> &cr);
+	void drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawHouse(const Cairo::RefPtr<Cairo::Context> &cr);
 	
 	void ReafficheDessin();
@@ -116,8 +115,6 @@ private:
 	void set_my_menu();
 };
 
-/*====================================================================*/
-/*&&&&&&&&&&&&&&&&&&&&&&&&&&&  Board  &&&&&&&&&&&&&&&&&&&*/
-/*====================================================================*/
+
 
 #endif // GTKMM_EXAMPLE_MYAREA_H

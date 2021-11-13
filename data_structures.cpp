@@ -1,4 +1,5 @@
 #include "data_structures.h"
+#include <cmath>
 
 //----------------------------------------------------------------------------------------------//
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& T_map methodes &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
@@ -82,6 +83,17 @@ node I_map::get_node(int id)
     }
 }
 
+route I_map::get_route(int id)
+{
+    for (unsigned int i = 0; i < map.size(); i++)
+    {
+        if (map[i].id == id) // iterate trough routes
+        {
+            return map[i];
+        }
+    }
+}
+
 void I_map::update_intersection_state(int id, States new_state)
 
 {
@@ -99,22 +111,31 @@ void I_map::update_intersection_state(int id, States new_state)
     }
 }
 
-void I_map::update_route_state(node updated_route_pos_1, node updated_route_pos_2, States new_state)
+/**
+ * @brief
+ * updates the state of route
+ * @param id  the id of the route we want to change
+ * @param new_state
+ */
+void I_map::update_route_state(int id, States new_state)
 {
     // we have to consider that order can change
-
     for (unsigned int i = 0; i < map.size(); i++)
     {
         route my_route = map[i];
         node pos_1 = my_route.get_pos1();
         node pos_2 = my_route.get_pos2();
-        if ((pos_1.id == updated_route_pos_1.id && pos_2.id == updated_route_pos_2.id) || (pos_1.id == updated_route_pos_2.id && pos_2.id == updated_route_pos_1.id))
+        if (my_route.id == id)
         {
             map[i].set_route_state(new_state);
         }
     }
 }
 
+/**
+ * @brief
+ * makes humain readable prints of the I_map
+ */
 void I_map::print_map()
 {
     // prints the map
@@ -133,46 +154,46 @@ void I_map::print_map()
             << "(state=" << static_cast<int>(pos_1_state) << ") "
             << "------> "
             << pos_2.id << " "
-            << " " 
+            << " "
             << "(state=" << static_cast<int>(pos_2_state) << ") "
-            << "Route_state=" << static_cast<int>(route_state) << endl;
+            << "Route_state=" << static_cast<int>(route_state) << "  "
+            << "(route ID " << my_route.id << " ) " << endl;
     }
 }
 /**
- * @brief 
+ * @brief
  * check if a node has an adjacent route (incident route)
- * 
- * @param click 
- * @param player 
+ *
+ * @param click
+ * @param player
  * @return true  yes
  * @return false  no
  */
-bool I_map::check_node_has_adj_route(node click, States player) 
+bool I_map::check_node_has_adj_route(node my_node, States player_id)
 {
     bool adjacent_route_or_house = false;
-        
+
     for (unsigned int i = 0; i < map.size(); i++)
     {
         route my_route = map[i];
         node pos_1 = my_route.get_pos1();
         node pos_2 = my_route.get_pos2();
 
-        if ( (pos_1.id == click.id || pos_2.id == click.id) )
+        if ((pos_1.id == my_node.id || pos_2.id == my_node.id))
         {
-            adjacent_route_or_house = (adjacent_route_or_house || (map[i].get_route_state()== player));
+            adjacent_route_or_house = (adjacent_route_or_house || (map[i].get_route_state() == player_id));
         }
     }
     return adjacent_route_or_house;
-    
-
 }
-
-
 
 /** ----------------------------------------------------------------------------------------
  * @brief
  * check whether a route construnction is possible or not ?
- * check if there's an adjacent construction or route
+ *
+ * 1/check if there's an adjacent construction or route
+ * 2/check if  the route the user chose isn't occupied
+ * 3/check if the two nodes selected are neighboor or form a route
  *
  * @param first_click  is the node selected  with the first click
  * @param second_click  is the node selected with the second click
@@ -180,9 +201,12 @@ bool I_map::check_node_has_adj_route(node click, States player)
  * @return true if route construction is possible
  * @return false if route construction is not possible
  */
-bool I_map::check_possible_route(node first_click, node second_click, States player)
+bool I_map::check_possible_route(int id, States player)
 {
-    
+    route route_to_check = get_route(id);
+    node first_click = route_to_check.get_pos1();
+    node second_click = route_to_check.get_pos2();
+
     bool route_exist;
     bool neighboor = false;
     bool adjacent_route_or_house = false; // to the first click
@@ -195,22 +219,19 @@ bool I_map::check_possible_route(node first_click, node second_click, States pla
         node pos_2 = my_route.get_pos2();
         if ((pos_1.id == first_click.id && pos_2.id == second_click.id) || (pos_1.id == second_click.id && pos_2.id == first_click.id))
             route_exist = (map[i].get_route_state() == player);
-    
     }
 
-
-    //check if the route the user chose has an adjacent house or route
-    if ((first_click.get_state() == player)||(second_click.get_state() == player))
+    // check if the route the user chose has an adjacent house or route
+    if ((first_click.get_state() == player) || (second_click.get_state() == player))
     {
         adjacent_route_or_house = true;
     }
     else
     {
-        adjacent_route_or_house=(check_node_has_adj_route(first_click ,player)||check_node_has_adj_route(second_click ,player)); 
+        adjacent_route_or_house = (check_node_has_adj_route(first_click, player) || check_node_has_adj_route(second_click, player));
     }
 
-
-    // check if the two nodes selected are nodes
+    // check if the two nodes selected are neighboor or form a route
     for (unsigned int i = 0; i < map.size(); i++)
     {
         route my_route = map[i];
@@ -223,29 +244,35 @@ bool I_map::check_possible_route(node first_click, node second_click, States pla
             neighboor = true;
         }
     }
-    cout << " neib = " << neighboor << endl;
-    cout << " adj = " << adjacent_route_or_house << endl;
-    cout << " results = " << (neighboor && adjacent_route_or_house) << endl;
+/*    
+    cout << " ------------route constuction debug-------------  " << neighboor << endl;
+    cout << " are neighboor = " << neighboor << endl;
+    cout << " adjacent construction exist (route/house) = " << adjacent_route_or_house << endl;
+    cout << " route already exists = " << route_exist << endl;
 
+    cout << " results = " << (neighboor && adjacent_route_or_house && !route_exist) << endl;
+*/
     return (neighboor && adjacent_route_or_house && !route_exist); //&& !route_exist
 }
+
 /**
- * @brief 
- * 
- * @return vector<node> containing all the intersection with theirs updated states 
+ * @brief
+ * return unique values of all intersections present in I_map
+ *
+ * @return vector<node> containing all the intersection with theirs updated states
  */
 vector<node> I_map::get_all_nodes()
 {
-    vector<node> all_nodes ={};
-    for (unsigned int i=0;i < map.size(); i++)
+    vector<node> all_nodes;
+    for (unsigned int i = 0; i < map.size(); i++)
     {
-        bool first_element_exists=false;
-        bool second_element_exists=false;
+        bool first_element_exists = false;
+        bool second_element_exists = false;
 
-        for  (unsigned int k=0;k < all_nodes.size(); k++)
+        for (unsigned int k = 0; k < all_nodes.size(); k++)
         {
-            first_element_exists  =first_element_exists || ((map[i].get_pos1().id)==(all_nodes[k].id));
-            second_element_exists = second_element_exists || ((map[i].get_pos2().id)==(all_nodes[k].id));
+            first_element_exists = first_element_exists || ((map[i].get_pos1().id) == (all_nodes[k].id));
+            second_element_exists = second_element_exists || ((map[i].get_pos2().id) == (all_nodes[k].id));
         }
 
         if (!first_element_exists)
@@ -255,34 +282,182 @@ vector<node> I_map::get_all_nodes()
         if (!second_element_exists)
         {
             all_nodes.push_back(map[i].get_pos2());
-        }    
+        }
     }
-    return all_nodes ;
+    return all_nodes;
+}
+
+/**
+ * @brief
+ * return all possible routes
+ * @return vector<route>  vector containing all possible routes
+ */
+vector<route> I_map::get_all_possible_routes(States player_id)
+{
+    vector<route> all_possible_routes;
+    for (unsigned int i = 0; i < map.size(); i++)
+    {
+        route my_route = map[i];
+        if (check_possible_route(my_route.id, player_id))
+        {
+            all_possible_routes.push_back(my_route);
+        }
+    }
+    return all_possible_routes;
+}
+
+/**
+ * @brief
+ * checks if there's 2 adjacent routes to our to_build_constuction
+ *
+ * @param to_build_constuction
+ * @param player_id
+ * @return true
+ * @return false
+ */
+bool I_map::check_2_routes_exist(node to_build_constuction, States player_id)
+{
+    bool two_adjacent_route_or_house = false;
+
+    for (unsigned int i = 0; i < map.size(); i++)
+    {
+        route my_route = map[i];
+        node pos_1 = my_route.get_pos1();
+        node pos_2 = my_route.get_pos2();
+
+        if ((pos_1.id == to_build_constuction.id || pos_2.id == to_build_constuction.id))
+        {
+            if ((my_route.get_route_state() == player_id)) // if first adjacent route exist
+            {
+                // gets the neighboor node of our to_build_const in the **adjacent route**
+                node NeighboorNode = my_route.get_neighboor_in_route(to_build_constuction);
+                // look for 2nd  adjacent route !!! must be diffrent of the first , if there's another adjacent route
+                // belonging to the same with player player_id
+                for (unsigned int k = 0; k < map.size(); k++)
+                {
+                    cout << k << endl;
+                    route my_sec_route = map[k];
+                    node sec_pos_1 = my_sec_route.get_pos1();
+                    node sec_pos_2 = my_sec_route.get_pos2();
+                    if ((sec_pos_1.id == NeighboorNode.id || sec_pos_2.id == NeighboorNode.id) && (my_route.id != my_sec_route.id))
+                    {
+                        two_adjacent_route_or_house = (two_adjacent_route_or_house || (my_sec_route.get_route_state() == player_id));
+                    }
+                }
+            }
+        }
+    }
+
+    return two_adjacent_route_or_house;
+}
+
+/**
+ * @brief
+ * checks if our house constuction is possible
+ *
+ * 1/check if check_2_routes_exist(...) methode return true
+ * 2/check if the node is not occupied .(must be empty)
+ *
+ * @param to_build_constuction  // will be returned by render_node()
+ * @param player_id
+ * @return true
+ * @return false
+ */
+bool I_map::check_house_construction_possible(node to_build_constuction, States player_id)
+{
+    bool two_route_exist = false;
+    bool not_occupied = false;
+
+    if (check_2_routes_exist(to_build_constuction, player_id))
+    {
+        two_route_exist = true;
+    }
+
+    if (to_build_constuction.get_state() == States::empty)
+    {
+        not_occupied = true;
+    }
+/*
+    cout << " ------------House constuction debug-------------  " << endl;
+    cout << " two route exists = " << two_route_exist << endl;
+    cout << " not_occupied = " << not_occupied << endl;
+    cout << " results = " << (two_route_exist && not_occupied) << endl;
+*/
+    return (not_occupied && two_route_exist);
+}
+
+/**
+ * @brief
+ * return an exact node object from I_map  the closest to the user choice
+ * @param click_x   x cordonate of the user click
+ * @param click_y   y cordonate of the user click
+ * @param sensibilty
+ * @return node object from the map corresponding to the user choice
+ */
+int I_map::render_node(int click_x, int click_y, int sensibility)
+{
+    int returned_id =-1;
+    vector<node> all_nodes = get_all_nodes();
+
+    for (unsigned i =0 ;i < all_nodes.size();i++)
+    {
+        if
+        ( 
+        ((click_x <all_nodes[i].get_x()+ sensibility) && (click_x > all_nodes[i].get_x()-sensibility)) &&
+        ((click_y <all_nodes[i].get_y()+ sensibility) && (click_y > all_nodes[i].get_y()-sensibility))
+        )
+        {
+            returned_id = all_nodes[i].id;
+            return returned_id;
+        }
+    }
 
 }
-/*
-    bool check_2_routes_exist(node to_build_constuction , States player_id)
+
+/**
+ * @brief
+ *
+ * @param click_x
+ * @param click_y
+ * @return int
+ */
+int I_map::render_route(int click_x, int click_y)
+{
+    int id_returned = -1 ;
+    for (unsigned int i = 0; i < map.size(); i++)
     {
-        // States are either empty or a player id
-        //we have to consider that order can change
+        route my_route = map[i];
+        node pos_1 = my_route.get_pos1();
+        node pos_2 = my_route.get_pos2();
+        int pos1_x = pos_1.get_x(),
+            pos1_y = pos_1.get_y(),
 
-        for (unsigned int i = 0; i < map.size(); i++)
+            pos2_x = pos_2.get_x(),
+            pos2_y = pos_2.get_y();
+
+        if (abs(pos1_y - pos2_y) < 10)
         {
-            if ( map[i].get_pos1().id == to_build_constuction.id)
+            
+            if (
+                (click_x < max(pos1_x, pos2_x)) && (click_x > min(pos1_x, pos2_x)) 
+            && 
+                (click_y < pos1_y+10) && (click_y > pos1_y -10)
+                )
             {
-                if (map[i].get_route_state() == player_id)  // player_id normalement
-
-
+                id_returned = my_route.id;
+                return id_returned;
             }
-
-            if ( map[i].get_pos2().id == to_build_constuction.id)
-            {
-
-            }
-
         }
-
-        return false
-
+        else if 
+                (
+                ((click_x < max(pos1_x, pos2_x)) && (click_x > min(pos1_x, pos2_x))) &&
+                ((click_y < max(pos1_y, pos2_y)) && (click_y > min(pos1_y, pos2_y)))    
+                )
+             
+            {
+                id_returned = my_route.id;
+                return id_returned;
+            }
+        
     }
-*/
+}

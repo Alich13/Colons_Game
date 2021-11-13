@@ -130,21 +130,26 @@ private:
 class route
 {
 public:
+    int id;
+
     route();
-    route(node N_p1, node N_p2) : pos1(N_p1), pos2(N_p2) {}
+    route(int N_id, node N_p1, node N_p2) :id(N_id), pos1(N_p1), pos2(N_p2) {}
     node get_pos1() { return pos1; }
     node get_pos2() { return pos2; }
+    node get_neighboor_in_route(node elementOne ){if (elementOne.id==pos1.id) {return pos2;} else {return pos1;} ;}
     States get_route_state() { return state; }
     void set_route_state(States state) { this->state = state; }
     void set_pos1_state(States state) { pos1.set_state(state); }
     void set_pos2_state(States state) { pos2.set_state(state); }
-    route reverse_route(){};
+    
 
 private:
+    
     node pos1;
     node pos2;
     States state = States::empty;
 };
+
 
 class I_map
 {
@@ -154,15 +159,26 @@ private:
 public:
     I_map() { ; }
     int size;
-    vector<node> get_all_nodes();
     void insert(route RX);
     void update_intersection_state(int id, States new_state);
-    void update_route_state(node updated_route_pos_1, node updated_route_pos_2, States new_state);
+    void update_route_state(int id, States new_state);
     void print_map();
-    node get_node(int id);
-    bool check_possible_route(node first_click, node second_click, States player); // faut lui passer un map[i].pos_1 ou map[i].pos[2] !!!!!!!!!!!!!
-    bool check_possible_house();
+    
+    bool check_possible_route(int id, States player); // faut lui passer un map[i].pos_1 ou map[i].pos[2] !!!!!!!!!!!!!
+                                                                                    // penser à changer le input en route !!!!!!!
+    bool check_2_routes_exist(node to_build_constuction , States player_id);
+    bool check_house_construction_possible (node to_build_constuction , States player_id );
     bool check_node_has_adj_route(node click ,States adj) ;
+    
+    route get_route(int id);
+    node get_node(int id);
+    int render_node (int click_x ,int click_y,int sensibility);
+    int render_route (int click_x ,int click_y);
+
+    vector<node> get_all_nodes();
+    vector<route> get_all_possible_routes(States player_id);
+ 
 };
+
 
 #endif // GTKMM_MYAREA_H

@@ -52,6 +52,8 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	drawHouse(cr);
 	// draw lines using mouse//
 	drawRoute(cr);
+	//draw possible line
+	drawPossibleRoute(cr);
 	// draw intersections with active state
 	draw_intersection_map(cr);
 	return true;
@@ -191,6 +193,32 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 
 }
 
+void Dessin::drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr)
+	
+	{
+		vector<route> all_routes =intersection_map.get_all_possible_routes(States::p1);
+		int X1,Y1,X2,Y2;
+		for (int i = 0; i < all_routes.size() ;  i++)
+		{
+			X1=all_routes[i].get_pos1().get_x();
+			Y1=all_routes[i].get_pos1().get_y();
+			X2=all_routes[i].get_pos2().get_x();
+			Y2=all_routes[i].get_pos2().get_y();
+
+			cr->set_line_width(5);
+			cr->set_source_rgba(183, 183, 175, 0.6);
+			//cr->set_source_rgba(1, 0.2, 0.2, 0.6);
+			cr->move_to(X1, Y1);
+			cr->line_to(X2, Y2);
+			cr->stroke();
+
+		}
+
+	}
+
+
+
+
 void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	vector<node> all_nodes =intersection_map.get_all_nodes();
@@ -242,5 +270,12 @@ void Dessin::ReafficheDessin()
 
 void Dessin::affiche_rendred_cord()
 {
-	cout << " " << cord_x << " , " << " " << cord_y << endl;
+	int selectedRoute_id = intersection_map.render_route(cord_x,cord_y);
+	int selectedHouse_id = intersection_map.render_node(cord_x,cord_y, 10);
+	//cout << " " << cord_x << " , " << " " << cord_y << endl;
+	cout << "selected route " << selectedRoute_id << endl;
+	cout << "selected house " << selectedHouse_id << endl;
+
+
+
 }
