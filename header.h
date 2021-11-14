@@ -66,8 +66,9 @@ protected:
 
 private:
 	Board board;
+	// set sub maps (tuiles map  et intersection map)
 	T_map tuile_map = board.tuile_map;
-	I_map intersection_map = board.intersection_map;
+	I_map route_map = board.intersection_map;
 
 	int x1, x2, y1, y2; // cordonates of points
 	int cord_x = 0;

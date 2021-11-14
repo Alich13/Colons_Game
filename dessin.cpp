@@ -13,14 +13,12 @@ using namespace std;
 
 Dessin::Dessin()
 {
-	// set sub maps (tuiles map  et intersection map)
-	
 
 	//  Load images
 	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
 	pic2 = Gdk::Pixbuf::create_from_file("data/scarabine.png");
 	pic_board = pic_board->scale_simple((pic_board->get_height()) * 0.20, (pic_board->get_width()) * 0.20, Gdk::INTERP_BILINEAR); // scale image
-	pic2 = pic2->scale_simple((pic2->get_height()) * 0.10, (pic2->get_width()) * 0.25, Gdk::INTERP_BILINEAR);					// scale image
+	pic2 = pic2->scale_simple((pic2->get_height()) * 0.10, (pic2->get_width()) * 0.25, Gdk::INTERP_BILINEAR);					  // scale image
 	// Set masks for mouse events
 	add_events(Gdk::BUTTON_PRESS_MASK);
 
@@ -31,16 +29,12 @@ Dessin::Dessin()
 	board_y = 50;  // top right y cordonate inside the box
 	board_width = 1000;
 	board_height = 900; // same as the size of the box
-	
 }
 
 //----------------------------------On draw----------------------------------//
 
 bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	/*---------------test to print mouse cordonates--------*/
-        affiche_rendred_cord();
-    /*---------------test to print mouse cordonates--------*/
 
 
 	Gtk::Allocation allocation = get_allocation();
@@ -48,14 +42,24 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	drawBoard(cr);
 	// add vignettes
 	drawVingnette(cr);
-	// add elements scarabines //
-	drawHouse(cr);
+
+	// draw possible line
+	if (add_route_pressed)
+	{
+		drawPossibleRoute(cr);
+	}
+	// if (add_house_pressed)
+	// {
+
+	// }
+	
 	// draw lines using mouse//
 	drawRoute(cr);
-	//draw possible line
-	drawPossibleRoute(cr);
-	// draw intersections with active state
+	// draw nodes (houses) with active state
 	draw_intersection_map(cr);
+	// add elements scarabines //
+	drawHouse(cr);
+
 	return true;
 }
 
@@ -89,40 +93,20 @@ void Dessin::updateRoute(GdkEventButton *event)
 	// Check if the event is a left(1) button click.
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
-		// check whether this is the first click
-		if (!firstclick && !secondclick)
+		int selectedRoute_id = route_map.render_route(cord_x, cord_y);
+		cout << "selected route " << selectedRoute_id << endl;
+		if (route_map.check_possible_route(selectedRoute_id, States::p1)) //  if route constuction is possible
 		{
-			// the first coordinate
-			x1 = event->x;
-			y1 = event->y;
-
-			firstclick = true;
-		}
-		// check whether this is the second click, and not on the same point as the previous
-		if (firstclick && !secondclick && (int)event->x != x1 && (int)event->y != y1)
-		{
-			// the second coordinate
-			x2 = event->x;
-			y2 = event->y;
-			secondclick = true;
-			// refresh the screen
-		}
-
-		// check whether it was clicked two times in order to save values
-		if (firstclick && secondclick)
-		{
-			
-			vx1.push_back(x1);
-			vy1.push_back(y1);
-			vx2.push_back(x2);
-			vy2.push_back(y2);
-			// reinitialize firstclick and secondclick to false and
-			firstclick = false;
-			secondclick = false;
+			route_map.update_route_state(selectedRoute_id, States::p1);
 			set_add_route_pressed(false);
 			ReafficheDessin();
 		}
-		// The event has been handled.
+		else
+		{
+			cout << "route construction not possible" << endl;
+			set_add_route_pressed(false);
+			ReafficheDessin();
+		}
 	}
 }
 
@@ -130,11 +114,24 @@ void Dessin::updateHouse(GdkEventButton *event)
 {
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
-
-		X.push_back(event->x);
-		Y.push_back(event->y);
-		set_add_house_pressed(false);
-		ReafficheDessin();
+		int selectedHouse_id = route_map.render_node(cord_x, cord_y, 10);
+		cout << "selected house " << selectedHouse_id << endl;
+		//cout << route_map.check_house_construction_possible(selectedHouse_id,States::p1) << endl;
+		cout << "selected house " << selectedHouse_id << endl;
+		if (route_map.check_house_construction_possible(selectedHouse_id,States::p1))
+		{
+			route_map.update_intersection_state(selectedHouse_id,States::p1);
+			set_add_house_pressed(false);
+			ReafficheDessin();
+		}	
+		else
+		{
+			cout << " House construction not possible " << endl;
+			set_add_house_pressed(false);
+			ReafficheDessin();
+		}
+	
+		
 	}
 }
 
@@ -161,16 +158,15 @@ void Dessin::drawHouse(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 }
 
-
 void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	string vingnette_path,thief_vignette_path;
+	string vingnette_path, thief_vignette_path;
 	string tuile_de_num;
 	// T_map tuile_map = board.tuile_map;
 	for (int i = 2; i < tuile_map.size; i++)
 	{
-		tuile_de_num= to_string(tuile_map.get_tuile_de_num(i));
-		vingnette_path ="data/vigniettes/"+tuile_de_num+".png";
+		tuile_de_num = to_string(tuile_map.get_tuile_de_num(i));
+		vingnette_path = "data/vigniettes/" + tuile_de_num + ".png";
 		vigniette = Gdk::Pixbuf::create_from_file(vingnette_path);
 		vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
 		cr->save();
@@ -178,61 +174,54 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->rectangle(0, 0, board_width, board_height);
 		cr->fill();
 		cr->restore();
-		
-	}	
+	}
 
-	thief_vignette_path ="data/vigniettes/thief.png";
+	thief_vignette_path = "data/vigniettes/thief.png";
 	vigniette = Gdk::Pixbuf::create_from_file(thief_vignette_path);
 	vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
-	tuile thief =tuile_map.get_thief();
+	tuile thief = tuile_map.get_thief();
 	cr->save();
 	Gdk::Cairo::set_source_pixbuf(cr, vigniette, thief.get_x() - 20, thief.get_y() - 20);
 	cr->rectangle(0, 0, board_width, board_height);
 	cr->fill();
 	cr->restore();
-
 }
 
 void Dessin::drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr)
-	
+
+{
+	vector<route> all_routes = route_map.get_all_possible_routes(States::p1);
+	int X1, Y1, X2, Y2;
+	for (int i = 0; i < all_routes.size(); i++)
 	{
-		vector<route> all_routes =intersection_map.get_all_possible_routes(States::p1);
-		int X1,Y1,X2,Y2;
-		for (int i = 0; i < all_routes.size() ;  i++)
-		{
-			X1=all_routes[i].get_pos1().get_x();
-			Y1=all_routes[i].get_pos1().get_y();
-			X2=all_routes[i].get_pos2().get_x();
-			Y2=all_routes[i].get_pos2().get_y();
+		X1 = all_routes[i].get_pos1().get_x();
+		Y1 = all_routes[i].get_pos1().get_y();
+		X2 = all_routes[i].get_pos2().get_x();
+		Y2 = all_routes[i].get_pos2().get_y();
 
-			cr->set_line_width(5);
-			cr->set_source_rgba(183, 183, 175, 0.6);
-			//cr->set_source_rgba(1, 0.2, 0.2, 0.6);
-			cr->move_to(X1, Y1);
-			cr->line_to(X2, Y2);
-			cr->stroke();
-
-		}
-
+		cr->set_line_width(5);
+		cr->set_source_rgba(183, 183, 175, 0.6);
+		// cr->set_source_rgba(1, 0.2, 0.2, 0.6);
+		cr->move_to(X1, Y1);
+		cr->line_to(X2, Y2);
+		cr->stroke();
 	}
-
-
-
+}
 
 void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	vector<node> all_nodes =intersection_map.get_all_nodes();
-	int X,Y;  // cordonates
+	vector<node> all_nodes = route_map.get_all_nodes();
+	int X, Y; // cordonates
 
-	for (int i = 0; i < all_nodes.size() ;  i++)
+	for (int i = 0; i < all_nodes.size(); i++)
 	{
 
-		if (all_nodes[i].get_state() != States::empty)    
-		{                      ////********** must change later with player
-			X=all_nodes[i].get_x();
-			Y=all_nodes[i].get_y();
+		if (all_nodes[i].get_state() != States::empty)
+		{ ////********** must change later with player
+			X = all_nodes[i].get_x();
+			Y = all_nodes[i].get_y();
 			cr->save();
-			Gdk::Cairo::set_source_pixbuf(cr, pic2, X- 25, Y- 35);
+			Gdk::Cairo::set_source_pixbuf(cr, pic2, X - 25, Y - 35);
 			cr->rectangle(0, 0, board_width, board_height);
 			cr->fill();
 			cr->restore();
@@ -240,17 +229,23 @@ void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 }
 
-
 void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	for (int i = 0; i < vx1.size(); i++)
+	// we need to  do a for loop for all player after
+	vector<route> all_routes_occupied_by_player = route_map.get_all_occupied_routes(States::p1);
+
+	for (int i = 0; i < all_routes_occupied_by_player.size(); i++)
 	{
+		int pos1_x = all_routes_occupied_by_player[i].get_pos1().get_x();
+		int pos1_y = all_routes_occupied_by_player[i].get_pos1().get_y();
+		int pos2_x = all_routes_occupied_by_player[i].get_pos2().get_x();
+		int pos2_y = all_routes_occupied_by_player[i].get_pos2().get_y();
+
 		// don't put save here
-		// cr->rectangle(0, 0, board_width, board_height);
 		cr->set_line_width(6);
 		cr->set_source_rgb(0, 0, 0);
-		cr->move_to(vx1[i], vy1[i]);
-		cr->line_to(vx2[i], vy2[i]);
+		cr->move_to(pos1_x, pos1_y);
+		cr->line_to(pos2_x, pos2_y);
 		cr->stroke();
 	}
 }
@@ -268,14 +263,3 @@ void Dessin::ReafficheDessin()
 	}
 }
 
-void Dessin::affiche_rendred_cord()
-{
-	int selectedRoute_id = intersection_map.render_route(cord_x,cord_y);
-	int selectedHouse_id = intersection_map.render_node(cord_x,cord_y, 10);
-	//cout << " " << cord_x << " , " << " " << cord_y << endl;
-	cout << "selected route " << selectedRoute_id << endl;
-	cout << "selected house " << selectedHouse_id << endl;
-
-
-
-}

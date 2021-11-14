@@ -130,15 +130,11 @@ Board::Board()
     intersection_map.insert(R14);
     intersection_map.insert(R15);
 
-    //for test 
-    
+    //for testing purposes 
     intersection_map.update_intersection_state(1, States::p1);
-    //intersection_map.update_intersection_state(4, States::p1);
-    intersection_map.update_intersection_state(6, States::p1);
-    intersection_map.update_intersection_state(13, States::p1);
+    
 
-
-    intersection_map.update_route_state(5, States::p1);
+    
 
 
 }

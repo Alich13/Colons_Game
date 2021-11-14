@@ -155,7 +155,7 @@ class I_map
 {
 private:
     vector<route> map;
-
+    vector<node> all_nodes;
 public:
     I_map() { ; }
     int size;
@@ -164,18 +164,19 @@ public:
     void update_route_state(int id, States new_state);
     void print_map();
     
-    bool check_possible_route(int id, States player); // faut lui passer un map[i].pos_1 ou map[i].pos[2] !!!!!!!!!!!!!
-                                                                                    // penser à changer le input en route !!!!!!!
+    bool check_possible_route(int id, States player);
     bool check_2_routes_exist(node to_build_constuction , States player_id);
-    bool check_house_construction_possible (node to_build_constuction , States player_id );
-    bool check_node_has_adj_route(node click ,States adj) ;
+    bool check_house_construction_possible (int id , States player_id );
+    bool check_node_has_adj_route(node click ,States player_id) ;
+    bool check_node_has_adj_node(node my_node);
     
-    route get_route(int id);
-    node get_node(int id);
+    route* get_route(int id);
+    node* get_node(int id);
     int render_node (int click_x ,int click_y,int sensibility);
     int render_route (int click_x ,int click_y);
 
     vector<node> get_all_nodes();
+    vector<route> get_all_occupied_routes(States player_id);
     vector<route> get_all_possible_routes(States player_id);
  
 };

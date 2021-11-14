@@ -85,7 +85,6 @@ void my_window::button_add_route()
     d.run();
     dessin.set_add_route_pressed(true);
     
-    
 }
 //--------------------------------------------------------------//
 
