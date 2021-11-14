@@ -121,6 +121,10 @@ Board::Board()
     route R13 = route(13, I13, I12);
     route R14 = route(14, I12, I11);
     route R15 = route(15, I11, I3);
+    
+
+
+
 
     // insert routes in I_map
 
@@ -151,28 +155,28 @@ int main()
     intersection_map.update_intersection_state(1, States::p1);
     intersection_map.update_intersection_state(2, States::p1);
 
-    node I1 = intersection_map.get_node(1);
-    node I2 = intersection_map.get_node(2);
-    node I3 = intersection_map.get_node(3);
-    node I4 = intersection_map.get_node(4);
-    node I5 = intersection_map.get_node(5);
-    node I6 = intersection_map.get_node(6);
-    node I7 = intersection_map.get_node(7);
-    node I8 = intersection_map.get_node(8);
-    node I9 = intersection_map.get_node(9);
-    node I10 = intersection_map.get_node(10);
-    node I11 = intersection_map.get_node(11);
-    node I12 = intersection_map.get_node(12);
-    node I13 = intersection_map.get_node(13);
+    node* I1 = intersection_map.get_node(1);
+    node* I2 = intersection_map.get_node(2);
+    node* I3 = intersection_map.get_node(3);
+    node* I4 = intersection_map.get_node(4);
+    node* I5 = intersection_map.get_node(5);
+    node* I6 = intersection_map.get_node(6);
+    // node I7 = intersection_map.get_node(7);
+    // node I8 = intersection_map.get_node(8);
+    // node I9 = intersection_map.get_node(9);
+    // node I10 = intersection_map.get_node(10);
+    // node I11 = intersection_map.get_node(11);
+    // node I12 = intersection_map.get_node(12);
+    // node I13 = intersection_map.get_node(13);
 
     // intersection_map.update_route_state(I8, I13, States::p1);
     // intersection_map.update_route_state(I13, I12, States::p1);
 
     /*----------------------- test -------------------------------------------*/
-    node first_click = I6;
-    node second_click = I1;
-    node click = I12;
-    int id = 6;
+    // node first_click = I6;
+    // node second_click = I1;
+    // node click = I12;
+    // int id = 6;
     /*checks*/
 
     // //check houses
@@ -187,18 +191,18 @@ int main()
 
     // check routes
 
-    if (intersection_map.check_possible_route(id, States::p1))
-    {
-        intersection_map.update_route_state(id, States::p1);
-        cout << "----------updated----------" << endl;
-    }
-    else
-    {
-        cout << "---------route construction not possible-------" << endl;
-    }
+    // if (intersection_map.check_possible_route(id, States::p1))
+    // {
+    //     intersection_map.update_route_state(id, States::p1);
+    //     cout << "----------updated----------" << endl;
+    // }
+    // else
+    // {
+    //     cout << "---------route construction not possible-------" << endl;
+    // }
 
     /* set  only route state */
-    intersection_map.print_map();
+    // intersection_map.print_map();
 
     // /*prints all nodes */
     // vector<node> all_nodes = intersection_map.get_all_nodes();
@@ -209,10 +213,18 @@ int main()
     // }
 
     /*prints all possible routes */
-    vector<route> all_routes = intersection_map.get_all_possible_routes(States::p1);
+    // vector<route> all_routes = intersection_map.get_all_possible_routes(States::p1);
 
-    for (unsigned i = 0; i < all_routes.size(); i++)
-    {
-        cout << " id = " << all_routes[i].id << endl;
-    }
+    // for (unsigned i = 0; i < all_routes.size(); i++)
+    // {
+    //     cout << " id = " << all_routes[i].id << endl;
+    // }
+
+    for (unsigned i = 35; i < 100; i++)
+     {
+         cout << "route R"<<i<<" = route("<<i<<",);" << endl;
+     }
+
+
+
 }

@@ -36,6 +36,10 @@ Dessin::Dessin()
 bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 
+	/*---------------test to print mouse cordonates--------*/
+        affiche_rendred_cord();
+    /*---------------test to print mouse cordonates--------*/
+
 
 	Gtk::Allocation allocation = get_allocation();
 	// add board image //
@@ -263,3 +267,8 @@ void Dessin::ReafficheDessin()
 	}
 }
 
+void Dessin::affiche_rendred_cord()
+{
+	cout <<  cord_x << " , " << cord_y  << endl;
+
+}
