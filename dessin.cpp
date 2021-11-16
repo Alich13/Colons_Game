@@ -9,11 +9,10 @@ using namespace std;
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Dessin   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
 
-//---------------------------------- constructeur----------------------------------//
+//---------------------------------- constructor----------------------------------//
 
 Dessin::Dessin()
 {
-
 	//  Load images
 	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
 	pic2 = Gdk::Pixbuf::create_from_file("data/scarabine.png");
@@ -23,23 +22,29 @@ Dessin::Dessin()
 	add_events(Gdk::BUTTON_PRESS_MASK);
 
 	// setting attributes value
-	firstclick = false;
-	secondclick = false;
-	board_x = 100; // top right x cordonate inside the box
-	board_y = 50;  // top right y cordonate inside the box
-	board_width = 1000;
-	board_height = 900; // same as the size of the box
+
+	board_x = 100;		// top right x cordonate inside the box
+	board_y = 50;		// top right y cordonate inside the box
+	board_width = 1000; // same as the size of the box !!!!!!!!!!!
+	board_height = 900; // same as the size of the box !!!!!!!!!!!!!
 }
 
 //----------------------------------On draw----------------------------------//
-
+/**
+ * @brief
+ * this fuction makes  all the drawing  in our board box
+ * overloading (surcharge ) this fuction is continually making the drawing and
+ * changes when a modification is made
+ * @param cr cursor variable
+ * @return true
+ * @return false
+ */
 bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 
 	/*---------------test to print mouse cordonates--------*/
-        affiche_rendred_cord();
-    /*---------------test to print mouse cordonates--------*/
-
+	affiche_rendred_cord();
+	/*---------------test to print mouse cordonates--------*/
 
 	Gtk::Allocation allocation = get_allocation();
 	// add board image //
@@ -52,11 +57,12 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	{
 		drawPossibleRoute(cr);
 	}
+
 	// if (add_house_pressed)
 	// {
-
+	//		to add possible houses
 	// }
-	
+
 	// draw lines using mouse//
 	drawRoute(cr);
 	// draw nodes (houses) with active state
@@ -68,7 +74,13 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 }
 
 //---------------------------------- Mouse button press handling ----------------------------------//
-
+/**
+ * @brief set a permanent event box with the same dimension as the board box
+ * and then every event is controlled by a condition inside this function
+ * @param event  the event  (a pointer to an event  with atributes x and y event->x , event->y)
+ * @return true
+ * @return false
+ */
 bool Dessin::on_button_press_event(GdkEventButton *event)
 {
 	// save selected pressed
@@ -94,20 +106,25 @@ bool Dessin::on_button_press_event(GdkEventButton *event)
 
 void Dessin::updateRoute(GdkEventButton *event)
 {
+	my_window f2;
 	// Check if the event is a left(1) button click.
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
 		int selectedRoute_id = route_map.render_route(cord_x, cord_y);
 		cout << "selected route " << selectedRoute_id << endl;
-		if (route_map.check_possible_route(selectedRoute_id, States::p1)) //  if route constuction is possible
+		if (route_map.check_possible_route(selectedRoute_id, active_player->get_player_STATE_id())) //  if route construction is possible
 		{
-			route_map.update_route_state(selectedRoute_id, States::p1);
+			route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
 			set_add_route_pressed(false);
 			ReafficheDessin();
 		}
 		else
 		{
-			cout << "route construction not possible" << endl;
+			// alerte widjet
+			Gtk::MessageDialog d(f2, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
+			d.set_secondary_text("And this is the secondary text that explains things.");
+			// Gtk::MessageDialog()
+			d.run();
 			set_add_route_pressed(false);
 			ReafficheDessin();
 		}
@@ -116,26 +133,29 @@ void Dessin::updateRoute(GdkEventButton *event)
 
 void Dessin::updateHouse(GdkEventButton *event)
 {
+	my_window f1;
+
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
 		int selectedHouse_id = route_map.render_node(cord_x, cord_y, 10);
 		cout << "selected house " << selectedHouse_id << endl;
-		//cout << route_map.check_house_construction_possible(selectedHouse_id,States::p1) << endl;
+		// cout << route_map.check_house_construction_possible(selectedHouse_id,States::p1) << endl;
 		cout << "selected house " << selectedHouse_id << endl;
-		if (route_map.check_house_construction_possible(selectedHouse_id,States::p1))
+		if (route_map.check_house_construction_possible(selectedHouse_id, active_player->get_player_STATE_id()))
 		{
-			route_map.update_intersection_state(selectedHouse_id,States::p1);
-			set_add_house_pressed(false);
-			ReafficheDessin();
-		}	
-		else
-		{
-			cout << " House construction not possible " << endl;
+			route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
 			set_add_house_pressed(false);
 			ReafficheDessin();
 		}
-	
-		
+		else
+		{
+			Gtk::MessageDialog d(f1, "House construction not possible", true, Gtk::MESSAGE_ERROR);
+			d.set_secondary_text("And this is the secondary text that explains things.");
+			set_add_house_pressed(false);
+			// Gtk::MessageDialog()
+			d.run();
+			ReafficheDessin();
+		}
 	}
 }
 
@@ -143,7 +163,7 @@ void Dessin::updateHouse(GdkEventButton *event)
 
 void Dessin::drawBoard(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	Gdk::Cairo::set_source_pixbuf(cr, pic_board, board_x, board_y); //(wifth, hight)
+	Gdk::Cairo::set_source_pixbuf(cr, pic_board, board_x, board_y); //(width, hight)
 	cr->save();
 	cr->rectangle(0, 0, board_width, board_height); // on ne peut pas suprimer
 	cr->fill();
@@ -194,7 +214,7 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 void Dessin::drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 
 {
-	vector<route> all_routes = route_map.get_all_possible_routes(States::p1);
+	vector<route> all_routes = route_map.get_all_possible_routes(active_player->get_player_STATE_id());
 	int X1, Y1, X2, Y2;
 	for (int i = 0; i < all_routes.size(); i++)
 	{
@@ -216,16 +236,26 @@ void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	vector<node> all_nodes = route_map.get_all_nodes();
 	int X, Y; // cordonates
+	States construction_state;
+	string construction_path;
 
 	for (int i = 0; i < all_nodes.size(); i++)
 	{
-
 		if (all_nodes[i].get_state() != States::empty)
 		{ ////********** must change later with player
+
 			X = all_nodes[i].get_x();
 			Y = all_nodes[i].get_y();
 			cr->save();
-			Gdk::Cairo::set_source_pixbuf(cr, pic2, X - 25, Y - 35);
+
+			string player_foalder=to_string (static_cast<int> (all_nodes[i].get_state()) );
+			// cout <<  player_foalder <<endl;
+			// snprintf(construction_path, "data/players/%d/Maison.png", player_foalder );
+			construction_path = "data/players/"+player_foalder+"/Maison.png";
+			construction = Gdk::Pixbuf::create_from_file(construction_path);
+			construction = construction->scale_simple((construction->get_height()) * 0.4, (construction->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
+			Gdk::Cairo::set_source_pixbuf(cr,construction, X - 15, Y - 15);
+
 			cr->rectangle(0, 0, board_width, board_height);
 			cr->fill();
 			cr->restore();
@@ -236,18 +266,33 @@ void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	// we need to  do a for loop for all player after
-	vector<route> all_routes_occupied_by_player = route_map.get_all_occupied_routes(States::p1);
+	vector<route> all_routes_occupied = route_map.get_all_occupied_routes();
 
-	for (int i = 0; i < all_routes_occupied_by_player.size(); i++)
+	for (int i = 0; i < all_routes_occupied.size(); i++)
 	{
-		int pos1_x = all_routes_occupied_by_player[i].get_pos1().get_x();
-		int pos1_y = all_routes_occupied_by_player[i].get_pos1().get_y();
-		int pos2_x = all_routes_occupied_by_player[i].get_pos2().get_x();
-		int pos2_y = all_routes_occupied_by_player[i].get_pos2().get_y();
-
+		int pos1_x = all_routes_occupied[i].get_pos1().get_x();
+		int pos1_y = all_routes_occupied[i].get_pos1().get_y();
+		int pos2_x = all_routes_occupied[i].get_pos2().get_x();
+		int pos2_y = all_routes_occupied[i].get_pos2().get_y();
+		States route_state = all_routes_occupied[i].get_route_state();
 		// don't put save here
 		cr->set_line_width(6);
-		cr->set_source_rgb(0, 0, 0);
+
+		switch (route_state)
+		{
+		case States::p1:
+			cr->set_source_rgb(0, 0, 100);
+
+			break;
+		case States::p2:
+			cr->set_source_rgb(100, 0, 0);
+
+			break;
+		case States::p3:
+			cr->set_source_rgb(0, 100, 0);
+
+			break;
+		}
 		cr->move_to(pos1_x, pos1_y);
 		cr->line_to(pos2_x, pos2_y);
 		cr->stroke();
@@ -267,8 +312,12 @@ void Dessin::ReafficheDessin()
 	}
 }
 
+void Dessin::setActivePlayer(Player *current_player)
+{
+	this->active_player = current_player;
+}
+
 void Dessin::affiche_rendred_cord()
 {
-	cout <<  cord_x << " , " << cord_y  << endl;
-
+	cout << cord_x << " , " << cord_y << endl;
 }

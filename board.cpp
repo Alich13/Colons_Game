@@ -331,4 +331,6 @@ Board::Board()
     
     // for testing purposes
     intersection_map.update_intersection_state(1, States::p1);
+    intersection_map.update_intersection_state(4, States::p2);
+    intersection_map.update_intersection_state(14, States::p3);
 }

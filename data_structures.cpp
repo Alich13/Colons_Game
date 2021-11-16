@@ -100,7 +100,7 @@ node* I_map::get_node(int id)
 
 /**
  * @brief
- * return a pointer refrencing the route object we are looking for
+ * return a pointer referencing the route object we are looking for
  *
  * @param id
  * @return route*
@@ -252,7 +252,7 @@ bool I_map::check_node_has_adj_node(node my_node)
  *
  * @param first_click  is the node selected  with the first click
  * @param second_click  is the node selected with the second click
- * @param player is the player doing the action (tryng to build the route )
+ * @param player is the player doing the action (trying to build the route )
  * @return true if route construction is possible
  * @return false if route construction is not possible
  */
@@ -362,12 +362,12 @@ vector<node> I_map::get_all_nodes()
  * @param player_id
  * @return vector<route>
  */
-vector<route> I_map::get_all_occupied_routes(States player_id)
+vector<route> I_map::get_all_occupied_routes()
 {
     vector<route> all_routes;
     for (unsigned int i = 0; i < map.size(); i++)
     {
-        if (map[i].get_route_state() == player_id)
+        if (map[i].get_route_state() != States::empty)
         {
             all_routes.push_back(map[i]);
         }

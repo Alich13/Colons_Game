@@ -176,7 +176,7 @@ public:
     int render_route (int click_x ,int click_y);
 
     vector<node> get_all_nodes();
-    vector<route> get_all_occupied_routes(States player_id);
+    vector<route> get_all_occupied_routes();
     vector<route> get_all_possible_routes(States player_id);
  
 };
