@@ -200,7 +200,7 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->restore();
 	}
 
-	thief_vignette_path = "data/vigniettes/thief.png";
+	thief_vignette_path = "data/vigniettes/7.png";
 	vigniette = Gdk::Pixbuf::create_from_file(thief_vignette_path);
 	vigniette = vigniette->scale_simple((vigniette->get_height()) * 0.4, (vigniette->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
 	tuile thief = tuile_map.get_thief();

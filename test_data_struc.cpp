@@ -1,5 +1,5 @@
 #include "data_structures.h"
-#include "header.h"
+
 #include <iostream>
 #include <list>
 #include <iterator>
@@ -229,24 +229,28 @@ int main()
     //  }
 
     
-    Player P1 = Player(States::p1,"ALi");
-	Player P2 = Player(States::p2,"Louai");
-	Player P3 = Player(States::p3,"jalil");
+    // Player P1 = Player(States::p1,"ALi");
+	// Player P2 = Player(States::p2,"Louai");
+	// Player P3 = Player(States::p3,"jalil");
     
-    //player management 
-    vector<Player> player_list ={P1,P2,P3};
-    vector<Player>::iterator current_player = player_list.begin();
-    current_player=next(current_player,2);
-    // //if (button pressed )
-     if (current_player == player_list.end())
-        {
-            cout <<"yes";
-        }
+    // //player management 
+    // vector<Player> player_list ={P1,P2,P3};
+    // vector<Player>::iterator current_player = player_list.begin();
+    // current_player=next(current_player,2);
+    // // //if (button pressed )
+    //  if (current_player == player_list.end())
+    //     {
+    //         cout <<"yes";
+    //     }
 
     
     // //i
     // std::cout << *it << ' ' << *nx << '\n';
 
+    int * ptr ;
+    ptr = new int;
+    *ptr = 5;
+    cout << *ptr <<endl; 
 
 
     

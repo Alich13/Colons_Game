@@ -4,8 +4,8 @@
 #include <gtkmm/window.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/alignment.h>
+#include <unistd.h>
 #include "data_structures.h" //import the costumized data structure we will use in Board class
-
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& player   &&&&&&&&&&&&&&&&&&&*/
@@ -15,7 +15,7 @@ class Player
 public:
 	States id;
 	//------------------methodes---------------------------------------//
-	Player(States N_id,string N_nickname);
+	Player(States N_id, string N_nickname);
 	int count_ressources(Ressouces ressource_we_looking_for); /////!!!!
 	int get_player_INT_id();
 	States get_player_STATE_id();
@@ -25,8 +25,6 @@ private:
 	string Nickname;
 	int total_points = 0;
 	vector<Ressouces> ressources = {};
-	
-	
 };
 
 /*====================================================================*/
@@ -89,7 +87,7 @@ public:
 	void drawRoute(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawHouse(const Cairo::RefPtr<Cairo::Context> &cr);
-	void setActivePlayer(Player* current_player);
+	void setActivePlayer(Player *current_player);
 	void ReafficheDessin();
 
 protected:
@@ -101,7 +99,7 @@ private:
 	// set sub maps (tuiles map  et intersection map)
 	T_map tuile_map = board.tuile_map;
 	I_map route_map = board.intersection_map;
-	Player* active_player; // a pointer to the active player  
+	Player *active_player; // a pointer to the active player
 
 	int x1, x2, y1, y2; // cordonates of points
 	int cord_x = 0;
@@ -114,9 +112,34 @@ private:
 	bool add_house_pressed = false; // bool var telling if the button build route is pressed or not
 
 	std::vector<int> X, Y, vx1, vy1, vx2, vy2;
-	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2, vigniette ,construction;
+	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2, vigniette, construction;
 };
 
+/*====================================================================*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&& Dice   &&&&&&&&&&&&&&&&&&&*/
+/*====================================================================*/
+/**
+ * @brief Dice class
+ * Dice_state is set to true when the player can play
+ */
+class Dice
+{
+public:
+	Dice() { ; };
+	int randomize_dice()
+	{
+		random_device rd;
+		unsigned long seed = rd();
+		mt19937 engine(seed);
+		discrete_distribution<int> distribution{0, 0, 2, 3, 3, 3, 3, 4, 3, 3, 3, 3, 2};
+		return distribution(engine);
+	}
+	bool get_dice_state() { return canPlayDice; };
+	void set_dice_state(bool new_state) { this->canPlayDice = new_state; };
+
+private:
+	bool canPlayDice = true;
+};
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Game  window   &&&&&&&&&&&&&&&&&&&*/
@@ -138,38 +161,78 @@ public:
 	void button_add_path();
 	void button_add_route();
 	void next_turn();
+	void play_dice();
+	void diplay_dice_visual_effect(int dice_num);
 
 	//-------------------
 	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game
 							// my_window.set_player_list()
 
 protected:
-	
 	Dessin dessin;
+	Dice my_dice;
 
 	// for test
-		Player P1 = Player(States::p1,"ALi");
-		Player P2 = Player(States::p2,"Louai");
-		Player P3 = Player(States::p3,"jalil");
+	Player P1 = Player(States::p1, "ALi");
+	Player P2 = Player(States::p2, "Louai");
+	Player P3 = Player(States::p3, "jalil");
 	//
-	
+
 	Gtk::VBox mainLayout, board_box, buttons_box;
-	Gtk::Label player_turn_label;
-	Gtk::Frame board_Frame, action_buttons_frame;
+	Gtk::Label player_turn_label,
+		Dice_output_label,
+		Ressources_label,
+		ble_count_label;
+	Gtk::Frame
+		board_Frame,
+		action_buttons_frame,
+		player_info_frame,
+		dice_output_frame;
 	Gtk::HButtonBox buttons_Hbox;
-	Gtk::Grid mainGrid, buttons_Grid;
-	Gtk::Button button_house, button_route ,button_next_turn;
+
+	Gtk::Grid
+		mainGrid,
+		infoGrid,
+		buttonsGrid,
+		DiceGrid,
+		RessourcesGrid;
+	Gtk::Button
+		button_house,
+		button_route,
+		button_next_turn,
+		button_play_dice;
+
 	Gtk::MenuBar menuBar;
 	Gtk::MenuItem menuFiles;
 	Gtk::Menu subMenuFiles;
 	Gtk::MenuItem open, close, quit;
 	Gtk::SeparatorMenuItem hline;
 	Gtk::MenuItem menuEdit;
+	Gtk::ScrolledWindow m_ScrolledWindow;
+	
+	Glib::RefPtr<Gdk::Pixbuf>
+		dice_image,
+		ble_image,
+		pierre_image,
+		argile_image,
+		mouton_image,
+		bois_image;
+		
+	Gtk::Image
+		Dice_Image,
+		Ble_Image,
+		Pierre_Image,
+		Argile_Image,
+		Mouton_Image,
+		Bois_Image;
+		
 
 private:
+	int dice_value = 0;
 	void set_my_menu();
-	vector<Player> player_list={P1,P2,P3} ;
-	vector<Player>::iterator current_player_itr = player_list.begin(); 
+	void set_side_box();
+	vector<Player> player_list = {P1, P2, P3};
+	vector<Player>::iterator current_player_itr = player_list.begin();
 };
 
 #endif // GTKMM_EXAMPLE_MYAREA_H
