@@ -10,7 +10,7 @@
 
 using namespace std;
 
-enum class Ressouces
+enum class Resources
 {
     ble,
     bois,
@@ -48,7 +48,7 @@ public:
     int tuile_id; // tuile_id public
 
     tuile();
-    tuile(int tuile_id, int x, int y, Ressouces ressource)
+    tuile(int tuile_id, int x, int y, Resources ressource)
     {
 
         this->tuile_id = tuile_id;
@@ -62,11 +62,12 @@ public:
     int get_id() { return tuile_id; }
     int get_x() { return x; }
     int get_y() { return y; }
-    Ressouces get_ressource() { return ressource; }
+    Resources get_ressource() { return ressource; }
+
 
 private:
     int x, y; // cordonates
-    Ressouces ressource;
+    Resources ressource;
     int num_de;
 };
 
@@ -76,7 +77,7 @@ class T_map
 {
 private:
     vector<tuile> map;
-    tuile thief = tuile(2, 598, 466, Ressouces::desert); // thief is initially in 2 desert
+    tuile thief = tuile(2, 598, 466, Resources::desert); // thief is initially in 2 desert
 public:
     int size;
     //---------------------constructor-----------------//
@@ -89,9 +90,9 @@ public:
     int get_tuile_y(int id);
     void randomize_tuiles_de();
     void insert(tuile tuile);
-
+    vector<tuile> get_tuiles_by_DiceNum(int Dice_value);
     tuile get_thief() { return thief; }
-    Ressouces get_tuile_ressource(int id);
+    Resources get_tuile_ressource(int id);
 };
 
 //-----------------------------------------------------------------------------------------------//
@@ -119,7 +120,9 @@ public:
     void set_state(States state) { this->state = state; }
     int  get_x(){return x;}
     int  get_y(){return y;} 
-    States get_state() { return state; }
+    States get_state() { return state; };
+    vector<tuile> get_ressources(){return adj_ressource;}; 
+
 
 private:
     int x, y;

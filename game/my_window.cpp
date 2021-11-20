@@ -75,7 +75,7 @@ void my_window::button_add_route()
  */
 void my_window::next_turn()
 {
-    /*----------------reset dice parameters-----------------------------*/
+    
     my_dice.set_dice_state(true);
     this->dice_value = 0;
     Dice_output_label.set_markup(" Throw Dice ? ? ?");
@@ -91,7 +91,7 @@ void my_window::next_turn()
         //-----current_player =*current_player_itr;
         dessin.setActivePlayer(&*current_player_itr); //*current_player_itr gives us the player and
                                                       //  &*current_player_itr gives us the address
-        // put dice in active state
+        
     }
     else
     {
@@ -99,8 +99,12 @@ void my_window::next_turn()
         cout << "player " << current_player_itr->get_player_INT_id() << "'s turn" << endl;
         player_turn_label.set_markup("<b>player :" + current_player_itr->get_name() + "</b>");
         dessin.setActivePlayer(&*current_player_itr);
-        // put dice in active state
+       
     }
+
+    update_resources_table();
+
+
 }
 
 void my_window::diplay_dice_visual_effect(int dice_num)
@@ -115,15 +119,74 @@ void my_window::diplay_dice_visual_effect(int dice_num)
     
 }
 
+/**
+ * @brief returns a pointer referencing the player with the given state 
+ * 
+ * @param state 
+ * @return Player 
+ */
+Player* my_window::get_player_by_state(States state)
+{
+    vector <Player>::iterator it ;
+    for ( it=player_list.begin();it!=player_list.end();++it)
+    {
+        if (it->get_player_STATE_id()== state)
+        {
+            return &(*it);
+        }
+        
+    }
+}
+
+
+/**
+ * @brief updates players resources based on dice value
+ * 
+ * @param dice_val 
+ */
+
+void my_window::update_ressources(int dice_val) 
+{
+    vector<tuile> activated_tuiles = dessin.tuile_map.get_tuiles_by_DiceNum(dice_value);
+    vector<node>  all_nodes = dessin.route_map.get_all_nodes();
+    for (unsigned i=0;i<activated_tuiles.size();i++)
+    {
+        cout <<"activated tuiles"<<activated_tuiles[i].get_id()<<endl;
+
+        for (unsigned k=0;k<all_nodes.size();k++)
+        {
+            States node_state=all_nodes[k].get_state();
+            vector<tuile> node_adj_tuiles = all_nodes[k].get_ressources();
+
+            bool element_exist =false;
+            
+            for (unsigned j=0;j<node_adj_tuiles.size();j++){
+                    if (node_adj_tuiles[j].get_id() == activated_tuiles[i].get_id() ) {element_exist =true;break; };
+                 }
+
+            if (element_exist && node_state!=States::empty)
+            {
+                cout << "node state"<< static_cast<int>(node_state)<<endl ;
+                Player* player_ptr = get_player_by_state(node_state);
+                player_ptr->append_to_ressources(activated_tuiles[i].get_ressource());
+            }
+            
+        }
+    }
+}
+
+
 void my_window::play_dice()
 {
     if (my_dice.get_dice_state() == true)
     {
-        //----------------------------------visual effect-----------------------------//
-
+     
         this->dice_value = my_dice.randomize_dice();
         my_dice.set_dice_state(false);
         Dice_output_label.set_markup("returned value = " + to_string(dice_value));
+        
+        update_ressources(dice_value);
+        
         dice_image = Gdk::Pixbuf::create_from_file("data/vigniettes/" + to_string(dice_value) + ".png");
         dice_image = dice_image->scale_simple((dice_image->get_height()) * 0.5, (dice_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
         Dice_Image.set(dice_image);
@@ -133,9 +196,28 @@ void my_window::play_dice()
         Gtk::MessageDialog d(*this, "Can not play more than one time in a turn !!  ", true, Gtk::MESSAGE_ERROR);
         d.run();
     }
+
+    update_resources_table();
+    
 }
 
-//--------------------------------------------------------------//
+/**
+ * @brief 
+ * 
+ */
+void my_window::update_resources_table()
+{
+    /*-----------------------update resources table ----------------*/
+    bois_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::bois)));
+    ble_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::ble)));
+    mouton_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::mouton)));
+    pierre_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::pierre)));
+    brick_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::argile)));
+    //--------------------------------------------------------------//
+
+}
+
+
 
 void my_window::set_my_menu()
 {
@@ -161,35 +243,85 @@ void my_window::set_my_menu()
 
 void my_window::set_side_box()
 {
-
+    /*----------------------------player box---------------------------*/
     /*---------- info frame---------------*/
     dessin.setActivePlayer(&*current_player_itr);
     player_turn_label.set_markup("<b> Player : " + current_player_itr->get_name() + "</b>");
-    Ressources_label.set_markup("<b> --Ressources-- </b>");
-    ble_count_label.set_markup("15");
+    score_label.set_markup("<b> Score = 0 </b>");
     
+    ble_title.set_markup("Blé");
     ble_image = Gdk::Pixbuf::create_from_file("data/ressources/Ble.png");
     ble_image = ble_image->scale_simple((ble_image->get_height()) * 0.10, (ble_image->get_width()) * 0.20, Gdk::INTERP_BILINEAR);
+    ble_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::ble)));
     Ble_Image.set(ble_image);
 
+    bois_title.set_markup("Bois");
     bois_image = Gdk::Pixbuf::create_from_file("data/ressources/Bois.png");
     bois_image = bois_image->scale_simple((bois_image->get_height()) * 0.10, (bois_image->get_width()) * 0.20, Gdk::INTERP_BILINEAR);
+    bois_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::bois)));
     Bois_Image.set(bois_image);
 
+    mouton_title.set_markup("Moutons");
     mouton_image = Gdk::Pixbuf::create_from_file("data/ressources/Mouton.png");
     mouton_image = mouton_image->scale_simple((mouton_image->get_height()) * 0.10, (mouton_image->get_width()) * 0.20, Gdk::INTERP_BILINEAR);
+    mouton_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::mouton)));
     Mouton_Image.set(mouton_image);
+
+    pierre_title.set_markup("Pierre");
+    pierre_image = Gdk::Pixbuf::create_from_file("data/ressources/Pierre.png");
+    pierre_image = pierre_image->scale_simple((pierre_image->get_height()) * 0.10, (pierre_image->get_width()) * 0.20, Gdk::INTERP_BILINEAR);
+    pierre_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::pierre)));
+    Pierre_Image.set(pierre_image);
+
+    brick_title.set_markup("Briques");
+    argile_image = Gdk::Pixbuf::create_from_file("data/ressources/Brique.png");
+    argile_image = argile_image->scale_simple((argile_image->get_height()) * 0.10, (argile_image->get_width()) * 0.20, Gdk::INTERP_BILINEAR);
+    brick_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::argile)));
+    Argile_Image.set(argile_image);
     
-    infoGrid.set_row_spacing(10);
-    infoGrid.set_column_spacing(5);
+    //---------------Attach element -------------------------//
+    infoGrid.set_row_spacing(30);
+    infoGrid.set_column_spacing(20);
+    infoGrid.set_margin_left(150);
+    infoGrid.set_margin_top(20);
     infoGrid.attach(player_turn_label, 0, 0, 1, 1);
-    infoGrid.attach(Ressources_label, 0, 1, 1, 1);
-    infoGrid.attach(Ble_Image,0, 2, 1, 1);
-    infoGrid.attach(ble_count_label,0, 3, 1, 1);
-    infoGrid.attach(Bois_Image,1, 2, 1, 1);
+    infoGrid.attach(score_label, 0, 1, 1, 1);
+ 
+    ressourcesGrid.set_margin_left(100);
+    ressourcesGrid.set_column_spacing(20);
+    ressourcesGrid.set_row_spacing(20);
+
+    ressourcesGrid.attach(ble_title,0,2,1,1);
+    ressourcesGrid.attach(Ble_Image,0, 3, 1, 1);
+    ressourcesGrid.attach(ble_count_label,0, 4, 1, 1);
+        
+    ressourcesGrid.attach(bois_title,1,2,1,1);
+    ressourcesGrid.attach(Bois_Image,1, 3, 1, 1);
+    ressourcesGrid.attach(bois_count_label,1, 4, 1, 1);
+
+    ressourcesGrid.attach(mouton_title,2,2,1,1);
+    ressourcesGrid.attach(Mouton_Image,2, 3, 1, 1);
+    ressourcesGrid.attach(mouton_count_label,2, 4, 1, 1);
+
+    ressourcesGrid.attach(pierre_title,3,2,1,1);
+    ressourcesGrid.attach(Pierre_Image,3, 3, 1, 1);
+    ressourcesGrid.attach(pierre_count_label,3, 4, 1, 1);
+
+    ressourcesGrid.attach(brick_title,4,2,1,1);
+    ressourcesGrid.attach(Argile_Image,4, 3, 1, 1);
+    ressourcesGrid.attach(brick_count_label,4, 4, 1, 1);
     
     player_info_frame.set_label("Player info");
-    player_info_frame.add(infoGrid);
+    ressouces_frame.set_label("Ressources");
+    player_info_box.set_spacing(20);
+    player_info_box.set_margin_bottom(20);
+    player_info_box.set_margin_left(20);
+    player_info_box.set_margin_bottom(20);
+    player_info_box.set_margin_right(20);
+    player_info_box.pack_start(infoGrid);
+    ressouces_frame.add(ressourcesGrid);
+    player_info_box.pack_start(ressouces_frame);
+    player_info_frame.add(player_info_box);
 
     /*---------buttons box--------------*/
     button_house.add_label("Build a House");

@@ -32,13 +32,29 @@ int T_map::get_tuile_y(int id)
     }
 }
 
-Ressouces T_map::get_tuile_ressource(int id)
+Resources T_map::get_tuile_ressource(int id)
 {
     for (unsigned int i = 0; i < map.size(); i++)
     {
         if (map[i].get_id() == id)
             return map[i].get_ressource();
     }
+}
+
+vector<tuile> T_map::get_tuiles_by_DiceNum(int Dice_value)
+{
+    
+    vector<tuile> output_vector = {};
+  
+    for (unsigned int i = 0; i < map.size(); i++)
+    {
+       if (map[i].get_de()== Dice_value)
+       {
+            output_vector.push_back(map[i]);
+       }
+    }
+    return output_vector;
+
 }
 
 void T_map::randomize_tuiles_de()
@@ -516,7 +532,7 @@ int I_map::render_node(int click_x, int click_y, int sensibility)
 
 /**
  * @brief
- *
+ *return an exact route object from I_map  the closest to the user choice
  * @param click_x
  * @param click_y
  * @return int
@@ -556,3 +572,4 @@ int I_map::render_route(int click_x, int click_y)
         }
     }
 }
+

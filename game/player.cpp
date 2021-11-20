@@ -32,3 +32,21 @@ string Player::get_name()
 {
     return Nickname;
 }
+
+void Player::append_to_ressources( Resources ressource)
+{
+    player_ressources.push_back(ressource);
+}
+
+int Player::count_X_ressources(Resources ressource)
+{
+    int count =0 ;
+    for (unsigned j=0;j<player_ressources.size();j++)
+    {
+        if (player_ressources[j]==ressource)
+        {
+            count+=1;
+        }
+    }
+     return count ;
+}

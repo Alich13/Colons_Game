@@ -4,6 +4,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/alignment.h>
+#include <algorithm>
 #include <unistd.h>
 #include "board_data_structures/data_structures.h" //import the costumized data structure we will use in Board class
 
@@ -16,15 +17,17 @@ public:
 	States id;
 	//------------------methodes---------------------------------------//
 	Player(States N_id, string N_nickname);
-	int count_ressources(Ressouces ressource_we_looking_for); /////!!!!
+	int count_ressources(Resources ressource_we_looking_for); /////!!!!
 	int get_player_INT_id();
 	States get_player_STATE_id();
 	string get_name();
+	void append_to_ressources( Resources ressource);
+	int count_X_ressources(Resources ressource);
 
 private:
 	string Nickname;
 	int total_points = 0;
-	vector<Ressouces> ressources = {};
+	vector<Resources> player_ressources = {};
 };
 
 /*====================================================================*/
@@ -61,6 +64,12 @@ private:
 class Dessin : public Gtk::DrawingArea
 {
 public:
+	Board board;
+	// set sub maps (tuiles map  et intersection map)
+	T_map tuile_map = board.tuile_map;
+	I_map route_map = board.intersection_map;
+
+
 	Dessin();
 	//~Dessin();
 
@@ -95,10 +104,7 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &); // make the drawings
 
 private:
-	Board board;
-	// set sub maps (tuiles map  et intersection map)
-	T_map tuile_map = board.tuile_map;
-	I_map route_map = board.intersection_map;
+	
 	Player *active_player; // a pointer to the active player
 	
 	int x1, x2, y1, y2; // cordonates of points
@@ -163,10 +169,12 @@ public:
 	void next_turn();
 	void play_dice();
 	void diplay_dice_visual_effect(int dice_num);
-
+	void update_ressources(int dice_value);
+	void update_resources_table();
 	//-------------------
 	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game
 							// my_window.set_player_list()
+	Player* get_player_by_state(States state);
 
 protected:
 	Dessin dessin;
@@ -179,16 +187,34 @@ protected:
 	Player P3 = Player(States::p3, "jalil");
 	//
 
-	Gtk::VBox mainLayout, board_box, buttons_box;
-	Gtk::Label player_turn_label,
+	Gtk::VBox 
+		mainLayout, 
+		board_box,
+		player_info_box, 
+		buttons_box;
+	Gtk::Label 
+		player_turn_label,
 		Dice_output_label,
-		Ressources_label,
-		ble_count_label;
+		score_label,
+
+		ble_title,
+		bois_title,
+		mouton_title,
+		brick_title,
+		pierre_title,
+
+		ble_count_label,
+		mouton_count_label,
+		bois_count_label,
+		pierre_count_label,
+		brick_count_label;
+
 	Gtk::Frame
 		board_Frame,
 		action_buttons_frame,
 		player_info_frame,
-		dice_output_frame;
+		dice_output_frame,
+		ressouces_frame;
 	Gtk::HButtonBox buttons_Hbox;
 
 	Gtk::Grid
@@ -196,7 +222,7 @@ protected:
 		infoGrid,
 		buttonsGrid,
 		DiceGrid,
-		RessourcesGrid;
+		ressourcesGrid;
 	Gtk::Button
 		button_house,
 		button_route,
