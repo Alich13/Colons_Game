@@ -147,6 +147,8 @@ private:
 	bool canPlayDice = true;
 };
 
+
+
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Game  window   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
@@ -175,6 +177,7 @@ public:
 	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game
 							// my_window.set_player_list()
 	Player* get_player_by_state(States state);
+
 
 protected:
 	Dessin dessin;
@@ -224,6 +227,7 @@ protected:
 		DiceGrid,
 		ressourcesGrid;
 	Gtk::Button
+		button_start_new_win,
 		button_house,
 		button_route,
 		button_next_turn,
@@ -262,5 +266,24 @@ private:
 	vector<Player>::iterator current_player_itr = player_list.begin();
 	
 };
+
+
+/*====================================================================*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&& welcome window   &&&&&&&&&&&&&&&&&&&*/
+/*====================================================================*/
+
+class AboutWindow : public Gtk::Window
+{
+public:
+    AboutWindow();
+    virtual ~AboutWindow(){};
+	void Open_New_Win_Clicked();
+protected:
+	my_window* main_window ;
+    Gtk::Label lbl_;
+	Gtk::Button button_start_new_win;
+	Gtk::Grid grid;
+};
+
 
 #endif // GTKMM_EXAMPLE_MYAREA_H

@@ -7,11 +7,15 @@
 int main(int argc, char* argv[])
 {
   auto app = Gtk::Application::create(argc, argv);
-  my_window f;
-  app->run(f);
+
+  AboutWindow A;
+
+  app->run(A);
 
   return 0 ;
 }
 
+/*
 
+*/
 

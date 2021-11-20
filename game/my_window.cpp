@@ -22,7 +22,6 @@ my_window::my_window()
     // fullscreen();	
     set_border_width(5);
     /*--------------setup window----------------*/
-    
     set_my_menu(); // method to set up the menu
     set_side_box();
 
@@ -109,14 +108,11 @@ void my_window::next_turn()
 
 void my_window::diplay_dice_visual_effect(int dice_num)
 {
-    cout << my_dice.randomize_dice() << endl;
-    dice_image = Gdk::Pixbuf::create_from_file("data/vigniettes/" + to_string(dice_num) + ".png");
-    dice_image = dice_image->scale_simple((dice_image->get_height()) * 0.5, (dice_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
-    Dice_Image.set(dice_image);
-    unsigned int seconds = 2;
-    sleep(seconds); // sleeps for  second
-    show_all_children();
-    
+    /*
+
+    add visual effect to the dice 
+
+    */
 }
 
 /**
@@ -140,7 +136,8 @@ Player* my_window::get_player_by_state(States state)
 
 
 /**
- * @brief updates players resources based on dice value
+ * @brief 
+ * updates players resources based on the dice value
  * 
  * @param dice_val 
  */
@@ -175,7 +172,11 @@ void my_window::update_ressources(int dice_val)
     }
 }
 
-
+/**
+ * @brief 
+ * simulate dice playing action 
+ * this function listen to play dice button 
+ */
 void my_window::play_dice()
 {
     if (my_dice.get_dice_state() == true)
@@ -203,7 +204,7 @@ void my_window::play_dice()
 
 /**
  * @brief 
- * 
+ * updates ressources table in the sidebox
  */
 void my_window::update_resources_table()
 {
@@ -324,6 +325,7 @@ void my_window::set_side_box()
     player_info_frame.add(player_info_box);
 
     /*---------buttons box--------------*/
+    
     button_house.add_label("Build a House");
     button_house.signal_clicked().connect(sigc::mem_fun(*this, &my_window::button_add_house));
     button_route.add_label("Build Route");
@@ -338,6 +340,7 @@ void my_window::set_side_box()
     buttonsGrid.attach(button_house, 0, 0, 1, 1);
     buttonsGrid.attach(button_route, 0, 1, 1, 1);
     buttonsGrid.attach(button_next_turn, 0, 2, 1, 1);
+    
     // | //
     // v //
     action_buttons_frame.set_label("Action Buttons");
@@ -369,3 +372,5 @@ void my_window::set_side_box()
     buttons_box.pack_start(dice_output_frame, 0, 0);
     /*---------buttons box--------------*/
 }
+
+
