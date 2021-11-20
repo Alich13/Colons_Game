@@ -5,7 +5,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/alignment.h>
 #include <unistd.h>
-#include "data_structures.h" //import the costumized data structure we will use in Board class
+#include "board_data_structures/data_structures.h" //import the costumized data structure we will use in Board class
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& player   &&&&&&&&&&&&&&&&&&&*/
@@ -100,7 +100,7 @@ private:
 	T_map tuile_map = board.tuile_map;
 	I_map route_map = board.intersection_map;
 	Player *active_player; // a pointer to the active player
-
+	
 	int x1, x2, y1, y2; // cordonates of points
 	int cord_x = 0;
 	int cord_y = 0;		  // cord to be rendred in label
@@ -170,6 +170,7 @@ public:
 
 protected:
 	Dessin dessin;
+	
 	Dice my_dice;
 
 	// for test
@@ -233,6 +234,7 @@ private:
 	void set_side_box();
 	vector<Player> player_list = {P1, P2, P3};
 	vector<Player>::iterator current_player_itr = player_list.begin();
+	
 };
 
 #endif // GTKMM_EXAMPLE_MYAREA_H
