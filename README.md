@@ -1,6 +1,9 @@
 # Colons_Game
 
+## requirement 
+
 ## Organisation du projet 
+
 Description de l'organisation du projet
 
     tree -L 2
@@ -21,3 +24,9 @@ Description de l'organisation du projet
     ├── makefile
     ├── README.md
 
+## Run app  
+
+make clean ;make; ./out;
+
+
+## Diagramme de class 

@@ -43,18 +43,17 @@ Resources T_map::get_tuile_ressource(int id)
 
 vector<tuile> T_map::get_tuiles_by_DiceNum(int Dice_value)
 {
-    
+
     vector<tuile> output_vector = {};
-  
+
     for (unsigned int i = 0; i < map.size(); i++)
     {
-       if (map[i].get_de()== Dice_value)
-       {
+        if (map[i].get_de() == Dice_value)
+        {
             output_vector.push_back(map[i]);
-       }
+        }
     }
     return output_vector;
-
 }
 
 void T_map::randomize_tuiles_de()
@@ -81,35 +80,32 @@ void T_map::insert(tuile tuile)
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& I_map methodes &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 //-----------------------------------------------------------------------------------------------//
 
-
-
 void I_map::insert(route RX)
 {
     map.push_back(RX);
     size = map.size();
 }
 /**
- * @brief 
- * this function allows us to read !! get all infos concerning a particular 
- * node  
- * @param id 
+ * @brief
+ * this function allows us to read !! get all infos concerning a particular
+ * node
+ * @param id
  * @return node*
  * returns a pointer referencing a node object that contains or object or node of intrest
- * which we want to visualize 
+ * which we want to visualize
  * // a pointer to a memory case where we will put the node we want to read
  */
-node* I_map::get_node(int id)
+node *I_map::get_node(int id)
 // return a node by its id
-{ 
-    all_nodes = get_all_nodes() ;
-    
+{
+    all_nodes = get_all_nodes();
+
     for (unsigned int i = 0; i < all_nodes.size(); i++)
     {
         if (all_nodes[i].id == id) // iterate trough routes
         {
             return &all_nodes[i];
         }
-
     }
     return nullptr;
 }
@@ -122,7 +118,7 @@ node* I_map::get_node(int id)
  * @return route*
  *  nullptr is returned if no route corresponding to the passed id is found
  */
-route* I_map::get_route(int id)
+route *I_map::get_route(int id)
 {
     for (unsigned int i = 0; i < map.size(); i++)
     {
@@ -228,8 +224,8 @@ bool I_map::check_node_has_adj_route(node my_node, States player_id)
 }
 /**
  * @brief checks if a given node has direct neighboor
- * 
- * @param my_node 
+ *
+ * @param my_node
  * @return true  if the given node has a neighboor (of any player )
  * @return false if the given node dont have a neighboor (of any player )
  */
@@ -246,17 +242,13 @@ bool I_map::check_node_has_adj_node(node my_node)
         if ((pos_1.id == my_node.id || pos_2.id == my_node.id))
         {
             node neighboor_to_check = my_route.get_neighboor_in_route(my_node);
-            cout << "neighboor" <<neighboor_to_check.id << endl;
+            cout << "neighboor" << neighboor_to_check.id << endl;
             adjacent_house = (adjacent_house || (neighboor_to_check.get_state() != States::empty));
-            cout << "adjacent_house" <<adjacent_house << endl;
+            cout << "adjacent_house" << adjacent_house << endl;
         }
     }
     return adjacent_house;
 }
-
-
-
-
 
 /** ----------------------------------------------------------------------------------------
  * @brief
@@ -274,30 +266,54 @@ bool I_map::check_node_has_adj_node(node my_node)
  */
 bool I_map::check_possible_route(int id, States player)
 {
-    bool result=false;
-    
-    route* route_to_check_ptn = get_route(id);
+    bool result = false;
+
+    route *route_to_check_ptn = get_route(id);
     // check if element exist in route vector
     // nullptr =  null pointeur referencing null object
-    
+
     if (route_to_check_ptn != nullptr)
     {
         route route_to_check = *route_to_check_ptn;
         node first_click = route_to_check.get_pos1();
         node second_click = route_to_check.get_pos2();
 
-        bool route_exist;
+        bool not_occupied = false;
         bool neighboor = false;
         bool adjacent_route_or_house = false; // to the first click
 
         // check if  the route the user chose isn't occupied
+        /**
+         * @brief checks whether the route is already occupied (by other or same player) or not
+         *
+         * !! checks wether other players constructions exist on the 2 extremities of the route
+         *  ?
+         *
+         *
+         */
         for (unsigned int i = 0; i < map.size(); i++)
         {
             route my_route = map[i];
             node pos_1 = my_route.get_pos1();
             node pos_2 = my_route.get_pos2();
-            if ((pos_1.id == first_click.id && pos_2.id == second_click.id) || (pos_1.id == second_click.id && pos_2.id == first_click.id))
-                route_exist = (map[i].get_route_state() == player);
+
+            if 
+            (
+                (pos_1.id == first_click.id && pos_2.id == second_click.id) || 
+                (pos_1.id == second_click.id && pos_2.id == first_click.id)
+            )
+            {
+
+                cout << " not occupied ?? " << (map[i].get_route_state() == States::empty) << endl;
+
+                if (
+                    (map[i].get_route_state() == States::empty) && // route must be empty
+                    (pos_1.get_state() == player || pos_1.get_state() == States::empty) && //route pos 1 must be empty or have the same state as the player 
+                    (pos_2.get_state() == player || pos_2.get_state() == States::empty)) //route pos 2 must be empty or have the same state as the player
+                {
+                    not_occupied = true;
+                }
+            }
         }
 
         // check if the route the user chose has an adjacent house or route
@@ -323,22 +339,19 @@ bool I_map::check_possible_route(int id, States player)
                 neighboor = true;
             }
         }
-            
-            cout << " player_id "<<  static_cast<int>(player) << endl;
-            cout << " ------------route constuction debug------------- "  << endl;
-            cout << " are neighboor = " << neighboor << endl;
-            cout << " adjacent construction exist (route/house) = " << adjacent_route_or_house << endl;
-            cout << " route already exists = " << route_exist << endl;
-            cout << " results = " << (neighboor && adjacent_route_or_house && !route_exist) << endl;
-            
-           
-        result = (neighboor && adjacent_route_or_house && !route_exist);
+
+        cout << " player_id " << static_cast<int>(player) << endl;
+        cout << " ------------route constuction debug------------- " << endl;
+        cout << " are neighboor = " << neighboor << endl;
+        cout << " adjacent construction exist (route/house) = " << adjacent_route_or_house << endl;
+        cout << " not occupied " << not_occupied << endl;
+        cout << " results = " << (neighboor && adjacent_route_or_house && not_occupied) << endl;
+
+        result = (neighboor && adjacent_route_or_house && not_occupied);
         return result;
     }
 
-    
     return result;
-
 }
 
 /**
@@ -474,9 +487,9 @@ bool I_map::check_house_construction_possible(int id, States player_id)
     bool has_neighboor;
     bool two_route_exist = false;
     bool not_occupied = false;
-    node* to_build_constuction_ptr= get_node(id);
-    
-    if (to_build_constuction_ptr != nullptr)  
+    node *to_build_constuction_ptr = get_node(id);
+
+    if (to_build_constuction_ptr != nullptr)
     {
         node to_build_constuction = *to_build_constuction_ptr;
         if (check_2_routes_exist(to_build_constuction, player_id))
@@ -489,8 +502,7 @@ bool I_map::check_house_construction_possible(int id, States player_id)
             not_occupied = true;
         }
 
-        has_neighboor=check_node_has_adj_node(to_build_constuction);
-        
+        has_neighboor = check_node_has_adj_node(to_build_constuction);
 
         cout << " ------------House constuction debug-------------  " << endl;
         cout << " two route exists = " << two_route_exist << endl;
@@ -499,9 +511,8 @@ bool I_map::check_house_construction_possible(int id, States player_id)
         cout << " results = " << (two_route_exist && not_occupied) << endl;
 
         return (not_occupied && two_route_exist && !has_neighboor);
-       
     }
-    
+
     return false;
 }
 
@@ -572,4 +583,3 @@ int I_map::render_route(int click_x, int click_y)
         }
     }
 }
-
