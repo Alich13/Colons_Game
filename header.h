@@ -94,7 +94,10 @@ public:
 	void draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawRoute(const Cairo::RefPtr<Cairo::Context> &cr);
-	void drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr);
+
+	void drawPossibleRoutes(const Cairo::RefPtr<Cairo::Context> &cr);
+	void drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr);
+	
 	void drawHouse(const Cairo::RefPtr<Cairo::Context> &cr);
 	void setActivePlayer(Player *current_player);
 	void ReafficheDessin();
@@ -225,6 +228,7 @@ protected:
 		infoGrid,
 		buttonsGrid,
 		DiceGrid,
+		Action_grid,
 		ressourcesGrid;
 	Gtk::Button
 		button_start_new_win,
@@ -247,7 +251,9 @@ protected:
 		pierre_image,
 		argile_image,
 		mouton_image,
-		bois_image;
+		bois_image,
+		logo_image,
+		card_image;
 		
 	Gtk::Image
 		Dice_Image,
@@ -255,7 +261,9 @@ protected:
 		Pierre_Image,
 		Argile_Image,
 		Mouton_Image,
-		Bois_Image;
+		Bois_Image,
+		Logo_Image,
+		Card_Image;
 		
 
 private:
@@ -282,7 +290,17 @@ protected:
 	my_window* main_window ;
     Gtk::Label lbl_;
 	Gtk::Button button_start_new_win;
-	Gtk::Grid grid;
+	Gtk::VBox
+		mainLayout;
+	Gtk::Grid 
+		grid;
+	Glib::RefPtr<Gdk::Pixbuf>
+		logo;
+		
+	Gtk::Image
+		Logo;
+	Gtk::ComboBoxText 
+		c;
 };
 
 

@@ -14,6 +14,16 @@ using namespace std;
  */
 my_window::my_window()
 {
+    //-----------------------------load css-----------------------------
+    Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
+    cssProvider->load_from_path("style.css");
+    Glib::RefPtr<Gtk::StyleContext> styleContext = Gtk::StyleContext::create();
+    //get default screen
+    Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
+    //add provider for screen in all application
+    styleContext->add_provider_for_screen(screen, cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    Glib::RefPtr<Gtk::StyleContext> context = this->get_style_context();
+    context->add_class("my_window"); 
 
     /*----------setup window-------------------------------*/
     set_title("Colons Game !");
@@ -21,10 +31,10 @@ my_window::my_window()
     set_default_size(1405, 905); //+5 size of all the window for the border
     // fullscreen();	
     set_border_width(5);
+    
     /*--------------setup window----------------*/
     set_my_menu(); // method to set up the menu
     set_side_box();
-
     /*---------board box---------------*/
     board_Frame.set_label("Game Board");
     board_Frame.add(dessin);
@@ -41,6 +51,9 @@ my_window::my_window()
     add(mainLayout);     // ajoute la grid à la fenetre
     show_all_children(); // afficher tous les grid inclus dans la fènete
     /*---------mainGrid-------------------------*/
+
+    
+
 }
 
 //--------------------------------------------------------------//
@@ -244,6 +257,11 @@ void my_window::set_my_menu()
 
 void my_window::set_side_box()
 {
+    /*--------------logo------------------------*/
+    logo_image = Gdk::Pixbuf::create_from_file("data/logo.png");
+    logo_image = logo_image->scale_simple((logo_image->get_width()) * 0.7,(logo_image->get_height()) * 0.4, Gdk::INTERP_BILINEAR);
+    Logo_Image.set(logo_image);
+
     /*----------------------------player box---------------------------*/
     /*---------- info frame---------------*/
     dessin.setActivePlayer(&*current_player_itr);
@@ -279,6 +297,14 @@ void my_window::set_side_box()
     argile_image = argile_image->scale_simple((argile_image->get_height()) * 0.10, (argile_image->get_width()) * 0.20, Gdk::INTERP_BILINEAR);
     brick_count_label.set_markup("x"+to_string(current_player_itr->count_X_ressources(Resources::argile)));
     Argile_Image.set(argile_image);
+
+    /*--------------------points card -------------------*/
+ 
+    card_image = Gdk::Pixbuf::create_from_file("data/Catanes/Cartes/Points.png");
+    card_image = card_image->scale_simple((card_image->get_width()) * 0.45,(card_image->get_height()) * 0.3, Gdk::INTERP_BILINEAR);
+    Card_Image.set(card_image);
+ 
+    /*--------------------------------------------*/
     
     //---------------Attach element -------------------------//
     infoGrid.set_row_spacing(30);
@@ -334,17 +360,24 @@ void my_window::set_side_box()
     button_next_turn.signal_clicked().connect(sigc::mem_fun(*this, &my_window::next_turn));
     // | //
     // v //
+    
     buttonsGrid.set_margin_left(20);
     buttonsGrid.set_row_spacing(10);
     buttonsGrid.set_column_spacing(10);
     buttonsGrid.attach(button_house, 0, 0, 1, 1);
     buttonsGrid.attach(button_route, 0, 1, 1, 1);
     buttonsGrid.attach(button_next_turn, 0, 2, 1, 1);
+
+    Action_grid.set_column_spacing(50);
+    Action_grid.set_margin_left(20);
+    Action_grid.attach(buttonsGrid,0,0,1,1);
+    Action_grid.attach(Card_Image,1,0,1,1);
     
     // | //
     // v //
     action_buttons_frame.set_label("Action Buttons");
-    action_buttons_frame.add(buttonsGrid);
+    action_buttons_frame.add(Action_grid);
+    
     /*---------- Dice output frame---------------*/
 
     Dice_output_label.set_markup(" Throw Dice ? ? ?");
@@ -362,14 +395,21 @@ void my_window::set_side_box()
     // Dice_grid.attach(button_play_dice,1,1,1,1);
     dice_output_frame.add(DiceGrid);
     dice_output_frame.set_label("Dice");
+
+
+    
+
+
     /*--------------------------------------------*/
     // | //
     // v //
     buttons_box.set_spacing(10);
     buttons_box.set_size_request(600, 900);
+     buttons_box.pack_start(Logo_Image,0,0);
     buttons_box.pack_start(player_info_frame, 0, 0);
     buttons_box.pack_start(action_buttons_frame, 0, 0);
     buttons_box.pack_start(dice_output_frame, 0, 0);
+    
     /*---------buttons box--------------*/
 }
 

@@ -181,6 +181,8 @@ public:
     vector<node> get_all_nodes();
     vector<route> get_all_occupied_routes();
     vector<route> get_all_possible_routes(States player_id);
+    vector<node>  get_all_possible_houses(States player_id);
+
  
 };
 

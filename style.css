@@ -1,0 +1,20 @@
+MyLabel {
+	border-radius: 30px;
+	border-color: shade(#CCCCCC, 0.95);
+}
+
+button_route {
+	color: #C71EFF;
+}
+.my_window {
+    background-color: rgb(31, 56, 90);
+    color:            rgb(255, 255, 255);
+    padding:          10px 15px 20px 10px; /* top right bottom left */
+  }
+
+
+.myButton{
+	color: red;
+	background: blue;
+	border-color: red;
+}

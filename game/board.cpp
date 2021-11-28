@@ -8,7 +8,7 @@ Board::Board()
 {
     // Défine tuiles
     tuile T0 = tuile(0, 598, 466, Resources::desert);
-    //T0.set_de(7);
+    // T0.set_de(7);
     tuile T1 = tuile(1, 496, 664, Resources::desert);
     tuile T2 = tuile(2, 392, 471, Resources::mouton);
     tuile T3 = tuile(3, 500, 404, Resources::bois);
@@ -73,7 +73,6 @@ Board::Board()
 
     // Randomize and set up tuiles
     tuile_map.randomize_tuiles_de();
-    
 
     // set intersections
     node I1 = node(1, 332, 472, {T2, T5, T6});
@@ -103,66 +102,70 @@ Board::Board()
     node I25 = node(25, 330, 602, {T14, T5, T13});
     node I26 = node(26, 264, 599, {T15, T5, T14});
     node I27 = node(27, 229, 537, {T15, T16, T5});
-    node I28 = node(28, 630 , 279, {T21 ,T9  ,T22 });
-    node I29 = node(29,662 , 343 , {T9 ,T10 ,T22 });
-    node I30 = node(30,728 , 341, { T22,T23 ,T10 });
-    node I31 = node(31,762 , 406, { T10,T23 ,T24 });
-    node I32 = node(32,732 , 469 , { T10,T11 ,T24 });
-    node I33 = node(33,763 , 535 , { T11,T24  ,T25 });
-    node I34 = node(34,729 , 597 , { T11,T25  ,T26 });
-    node I35 = node(35,662 , 600 , { T11, T26 ,T12 });
-    node I36 = node(36,630 , 665 , { T12,T26  ,T27 });
-    node I37 = node(37,563 , 664 , { T1,T12  ,T27 });
-    node I38 = node(38,531 , 727 , { T1,T27  ,T28 });
-    node I39 = node(39,463 , 729 , {T1 , T28 ,T29 });
-    node I40 = node(40,630 , 534 , { T0,T11  ,T12 });
-    node I41 = node(41,662 , 471 , { T0,T10  ,T11 });
-    node I42 = node(42,629 , 408 , { T9,T10  ,T0 });
-
-    /*
-
-    node I43 = node(43, , { ,  , });
-    node I44 = node(44, , { ,  , });
-    node I45 = node(45, , { ,  , });
-    node I46 = node(46, , { ,  , });
-    node I47 = node(47, , { ,  , });
-    node I48 = node(48, , { ,  , });
-    node I49 = node(49, , { ,  , });
-    node I50 = node(50, , { ,  , });
-    node I51 = node(51, , { ,  , });
-    node I52 = node(52, , { ,  , });
-    node I53 = node(53, , { ,  , });
-    node I54 = node(54, , { ,  , });
-    node I55 = node(55, , { ,  , });
-    node I56 = node(56, , { ,  , });
-    node I57 = node(57, , { ,  , });
-    node I58 = node(58, , { ,  , });
-    node I59 = node(59, , { ,  , });
-    node I60 = node(60, , { ,  , });
-    node I61 = node(61, , { ,  , });
-    node I62 = node(62, , { ,  , });
-    node I63 = node(63, , { ,  , });
-    node I64 = node(64, , { ,  , });
-    node I65 = node(65, , { ,  , });
-    node I66 = node(66, , { ,  , });
-    node I67 = node(67, , { ,  , });
-    node I68 = node(68, , { ,  , });
-    node I69 = node(69, , { ,  , });
-    node I70 = node(70, , { ,  , });
-    node I71 = node(71, , { ,  , });
-    node I72 = node(72, , { ,  , });
-    node I73 = node(73, , { ,  , });
-    node I74 = node(74, , { ,  , });
-    node I75 = node(75, , { ,  , });
-    node I76 = node(76, , { ,  , });
-    node I77 = node(77, , { ,  , });
-    node I78 = node(78, , { ,  , });
-    node I79 = node(79, , { ,  , });
-    node I80 = node(80, , { ,  , })
+    node I28 = node(28, 630, 279, {T21, T9, T22});
+    node I29 = node(29, 662, 343, {T9, T10, T22});
+    node I30 = node(30, 728, 341, {T22, T23, T10});
+    node I31 = node(31, 762, 406, {T10, T23, T24});
+    node I32 = node(32, 732, 469, {T10, T11, T24});
+    node I33 = node(33, 763, 535, {T11, T24, T25});
+    node I34 = node(34, 729, 597, {T11, T25, T26});
+    node I35 = node(35, 662, 600, {T11, T26, T12});
+    node I36 = node(36, 630, 665, {T12, T26, T27});
+    node I37 = node(37, 563, 664, {T1, T12, T27});
+    node I38 = node(38, 531, 727, {T1, T27, T28});
+    node I39 = node(39, 463, 729, {T1, T28, T29});
+    node I40 = node(40, 630, 534, {T0, T11, T12});
+    node I41 = node(41, 662, 471, {T0, T10, T11});
+    node I42 = node(42, 629, 408, {T9, T10, T0});
+    node I43 = node(43, 464, 859, {T28});
+    node I44 = node(44, 531, 858, {T28});
+    node I45 = node(45, 563, 791, {T28, T27});
+    node I46 = node(46, 629, 793, {T27});
+    node I47 = node(47, 661, 727, {T27, T26});
+    node I48 = node(48, 730, 728, {T26});
+    node I49 = node(49, 763, 663, {T26, T25});
+    node I50 = node(50, 828, 661, {T25});
+    node I51 = node(51, 861, 599, {T25});
+    node I52 = node(52, 829, 535, {T25, T24});
+    node I53 = node(53, 863, 468, {T24});
+    node I54 = node(54, 829, 407, {T23, T24});
+    node I55 = node(55, 860, 341, {T23});
+    node I56 = node(56, 828, 279, {T23});
+    node I57 = node(57, 761, 277, {T22, T23});
+    node I58 = node(58, 727, 216, {T22});
+    node I59 = node(59, 663, 213, {T22, T21});
+    node I60 = node(60, 630, 149, {T21});
+    node I61 = node(61, 562, 148, {T21, T20});
+    node I62 = node(62, 529, 87, {T20});
+    node I63 = node(63, 464, 85, {T20});
+    node I64 = node(64,431 , 147 , { T20,T19 });
+    node I65 = node(65,363 , 150 , { T19 });
+    node I66 = node(66,329 , 213 , { T18,T19 });
+    node I67 = node(67,266 , 215 , { T18 });
+    node I68 = node(68, 232 , 275, { T18,T17 });
+    node I69 = node(69,163 , 278 , { T17 });
+    node I70 = node(70,134 , 344 , { T17 });
+    node I71 = node(71,163 , 408 , { T17,T16 });
+    node I72 = node(72,134 , 467 , { T16  });
+    node I73 = node(73,163 , 532 , { T16,T15 });
+    node I74 = node(74,128 , 601 , { T15 });
+    node I75 = node(75,165 , 664 , { T15 });
+    node I76 = node(76,228 , 665 , { T15,T14 });
+    node I77 = node(77,263 , 727 , { T14 });
+    node I78 = node(78,331 , 731 , { T14,T29 });
+    node I79 = node(79,363 , 791 , { T29 });
+    node I80 = node(80,430 , 794 , { T29,T28 });
     
-    */
-   
-    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
     // set routes
     route R1 = route(1, I1, I2);
@@ -180,47 +183,47 @@ Board::Board()
     route R13 = route(13, I13, I12);
     route R14 = route(14, I12, I11);
     route R15 = route(15, I11, I3);
-    route R16 = route(16,I12,I14 );
-    route R17 = route(17,I14,I15 );
-    route R18 = route(18,I15,I16 );
-    route R19 = route(19,I16,I17 );
-    route R20 = route(20,I17,I11 );
-    route R21 = route(21,I17,I18 );
-    route R22 = route(22,I18,I19 );
-    route R23 = route(23,I19,I4 );
-    route R24 = route(24,I19,I20 );
-    route R25 = route(25,I20,I21 );
-    route R26 = route(26,I21,I22);
-    route R27 = route(27,I22,I5);
-    route R28 = route(28,I23,I22);
-    route R29 = route(29,I23,I24);
-    route R30 = route(30,I24,I25);
-    route R31 = route(31,I25,I6);
-    route R32 = route(32,I25,I26);
-    route R33 = route(33,I26,I27);
-    route R34 = route(34,I27,I7);
-    route R35 = route(35,I16,I28);
-    route R36 = route(36,I28,I29);
-    route R37 = route(37,I29,I30);
-    route R38 = route(38,I30,I31);
-    route R39 = route(39,I31,I32);
-    route R40 = route(40,I32,I33);
-    route R41 = route(41,I33,I34);
-    route R42 = route(42,I34,I35);
-    route R43 = route(43,I35,I36);
-    route R44 = route(44,I36,I37);
-    route R45 = route(45,I37,I38);
-    route R46 = route(46,I38,I39);
-    route R47 = route(47,I39,I23);
-    route R48 = route(48,I21,I37);
-    route R49 = route(49,I40,I35);
-    route R50 = route(50,I41,I32);
-    route R51 = route(51,I42,I29);
-    route R52 = route(52,I18,I42);
-    route R53 = route(53,I42,I41);
-    route R54 = route(54,I40,I41);
-    route R55 = route(55,I20,I40);
-    
+    route R16 = route(16, I12, I14);
+    route R17 = route(17, I14, I15);
+    route R18 = route(18, I15, I16);
+    route R19 = route(19, I16, I17);
+    route R20 = route(20, I17, I11);
+    route R21 = route(21, I17, I18);
+    route R22 = route(22, I18, I19);
+    route R23 = route(23, I19, I4);
+    route R24 = route(24, I19, I20);
+    route R25 = route(25, I20, I21);
+    route R26 = route(26, I21, I22);
+    route R27 = route(27, I22, I5);
+    route R28 = route(28, I23, I22);
+    route R29 = route(29, I23, I24);
+    route R30 = route(30, I24, I25);
+    route R31 = route(31, I25, I6);
+    route R32 = route(32, I25, I26);
+    route R33 = route(33, I26, I27);
+    route R34 = route(34, I27, I7);
+    route R35 = route(35, I16, I28);
+    route R36 = route(36, I28, I29);
+    route R37 = route(37, I29, I30);
+    route R38 = route(38, I30, I31);
+    route R39 = route(39, I31, I32);
+    route R40 = route(40, I32, I33);
+    route R41 = route(41, I33, I34);
+    route R42 = route(42, I34, I35);
+    route R43 = route(43, I35, I36);
+    route R44 = route(44, I36, I37);
+    route R45 = route(45, I37, I38);
+    route R46 = route(46, I38, I39);
+    route R47 = route(47, I39, I23);
+    route R48 = route(48, I21, I37);
+    route R49 = route(49, I40, I35);
+    route R50 = route(50, I41, I32);
+    route R51 = route(51, I42, I29);
+    route R52 = route(52, I18, I42);
+    route R53 = route(53, I42, I41);
+    route R54 = route(54, I40, I41);
+    route R55 = route(55, I20, I40);
+
     /*
     route R56 = route(56,);
     route R57 = route(57,);
@@ -267,7 +270,7 @@ Board::Board()
     route R98 = route(98,);
     route R99 = route(99,);
     */
-    
+
     // insert routes in I_map
 
     intersection_map.insert(R1);
@@ -305,8 +308,6 @@ Board::Board()
     intersection_map.insert(R33);
     intersection_map.insert(R34);
 
-
-    
     intersection_map.insert(R35);
     intersection_map.insert(R36);
     intersection_map.insert(R37);
@@ -394,7 +395,7 @@ Board::Board()
     intersection_map.insert(R118);
     intersection_map.insert(R119);
     */
-    
+
     // for testing purposes
     intersection_map.update_intersection_state(1, States::p1);
     intersection_map.update_intersection_state(4, States::p2);

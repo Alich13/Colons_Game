@@ -50,24 +50,26 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	drawBoard(cr);
 	// add vignettes
 	drawVingnette(cr);
-
-	// draw possible line
-	if (add_route_pressed)
-	{
-		drawPossibleRoute(cr);
-	}
-
-	// if (add_house_pressed)
-	// {
-	//		to add possible houses
-	// }
-
 	// draw lines using mouse//
 	drawRoute(cr);
 	// draw nodes (houses) with active state
 	draw_intersection_map(cr);
 	// add elements scarabines //
 	drawHouse(cr);
+
+
+	// draw possible house constructions
+	if (add_route_pressed)
+	{
+		drawPossibleRoutes(cr);
+	}
+	// draw possible route constructions
+	if (add_house_pressed)
+	{
+			drawPossibleHouses(cr);
+	}
+
+
 
 	return true;
 }
@@ -121,7 +123,7 @@ void Dessin::updateRoute(GdkEventButton *event)
 		{
 			// alerte widjet
 			Gtk::MessageDialog d(f2, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
-			d.set_secondary_text("And this is the secondary text that explains things.");
+			d.set_secondary_text("Can not Choose this position , please check the rules ");
 			// Gtk::MessageDialog()
 			d.run();
 			set_add_route_pressed(false);
@@ -149,7 +151,7 @@ void Dessin::updateHouse(GdkEventButton *event)
 		else
 		{
 			Gtk::MessageDialog d(f1, "House construction not possible", true, Gtk::MESSAGE_ERROR);
-			d.set_secondary_text("And this is the secondary text that explains things.");
+			d.set_secondary_text("Can not Choose this position , please check the rules ");
 			set_add_house_pressed(false);
 			// Gtk::MessageDialog()
 			d.run();
@@ -210,7 +212,7 @@ void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 }
 
-void Dessin::drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr)
+void Dessin::drawPossibleRoutes(const Cairo::RefPtr<Cairo::Context> &cr)
 
 {
 	vector<route> all_routes = route_map.get_all_possible_routes(active_player->get_player_STATE_id());
@@ -230,6 +232,49 @@ void Dessin::drawPossibleRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->stroke();
 	}
 }
+
+
+void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
+
+{
+	vector<node> all_possible_house = route_map.get_all_possible_houses(active_player->get_player_STATE_id());
+	int X, Y;
+	my_window f;
+	string path_to_gray_arrow;
+
+	if (all_possible_house.size() == 0 ) // no house construction is possible
+	{
+		Gtk::MessageDialog d(f, " No possible construction found ", true, Gtk::MESSAGE_ERROR);
+			d.set_secondary_text(" Please check the rules ");
+			set_add_house_pressed(false);
+			// Gtk::MessageDialog()
+			d.run();
+			ReafficheDessin();
+	}
+
+	for (int i = 0; i < all_possible_house.size(); i++)
+	{
+		X = all_possible_house[i].get_x();
+		Y = all_possible_house[i].get_y();
+		cr->save();
+
+		path_to_gray_arrow = "data/arrow.jpg";
+		construction = Gdk::Pixbuf::create_from_file(path_to_gray_arrow);
+		construction = construction->scale_simple((construction->get_height()) * 0.10, (construction->get_width()) * 0.10, Gdk::INTERP_BILINEAR);
+		Gdk::Cairo::set_source_pixbuf(cr,construction, X - 10, Y - 15);
+
+		cr->rectangle(0, 0, board_width, board_height);
+		cr->fill();
+		cr->restore();
+	
+	}
+}
+
+
+
+
+
+
 
 void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 {

@@ -426,6 +426,30 @@ vector<route> I_map::get_all_possible_routes(States player_id)
 
 /**
  * @brief
+ * return all possible houses in the map
+ * @return vector<route>  vector containing all possible routes
+ */
+vector<node> I_map::get_all_possible_houses(States player_id)
+{
+    vector<node> all_possible_nodes;
+    vector<node> all_nodes = get_all_nodes();
+    for (unsigned int i = 0; i < all_nodes.size(); i++)
+    {
+        node to_check_node = all_nodes[i];
+        if (check_house_construction_possible(to_check_node.id, player_id))
+        {
+            all_possible_nodes.push_back(to_check_node);
+        }
+    }
+    return all_possible_nodes;
+}
+
+
+
+
+
+/**
+ * @brief
  * checks if there's 2 adjacent routes to our to_build_constuction
  *
  * @param to_build_constuction
