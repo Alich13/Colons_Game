@@ -225,7 +225,7 @@ void Dessin::drawPossibleRoutes(const Cairo::RefPtr<Cairo::Context> &cr)
 		Y2 = all_routes[i].get_pos2().get_y();
 
 		cr->set_line_width(5);
-		cr->set_source_rgba(183, 183, 175, 0.6);
+		cr->set_source_rgba(0.18, 0.16, 0.23, 0.5);
 		// cr->set_source_rgba(1, 0.2, 0.2, 0.6);
 		cr->move_to(X1, Y1);
 		cr->line_to(X2, Y2);

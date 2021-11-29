@@ -156,16 +156,7 @@ Board::Board()
     node I79 = node(79,363 , 791 , { T29 });
     node I80 = node(80,430 , 794 , { T29,T28 });
     
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
 
     // set routes
     route R1 = route(1, I1, I2);
@@ -223,53 +214,62 @@ Board::Board()
     route R53 = route(53, I42, I41);
     route R54 = route(54, I40, I41);
     route R55 = route(55, I20, I40);
-
-    /*
-    route R56 = route(56,);
-    route R57 = route(57,);
-    route R58 = route(58,);
-    route R59 = route(59,);
-    route R60 = route(60,);
-    route R61 = route(61,);
-    route R62 = route(62,);
-    route R63 = route(63,);
-    route R64 = route(64,);
-    route R65 = route(65,);
-    route R66 = route(66,);
-    route R67 = route(67,);
-    route R68 = route(68,);
-    route R69 = route(69,);
-    route R70 = route(70,);
-    route R71 = route(71,);
-    route R72 = route(72,);
-    route R73 = route(73,);
-    route R74 = route(74,);
-    route R75 = route(75,);
-    route R76 = route(76,);
-    route R77 = route(77,);
-    route R78 = route(78,);
-    route R79 = route(79,);
-    route R80 = route(80,);
-    route R81 = route(81,);
-    route R82 = route(82,);
-    route R83 = route(83,);
-    route R84 = route(84,);
-    route R85 = route(85,);
-    route R86 = route(86,);
-    route R87 = route(87,);
-    route R88 = route(88,);
-    route R89 = route(89,);
-    route R90 = route(90,);
-    route R91 = route(91,);
-    route R92 = route(92,);
-    route R93 = route(93,);
-    route R94 = route(94,);
-    route R95 = route(95,);
-    route R96 = route(96,);
-    route R97 = route(97,);
-    route R98 = route(98,);
-    route R99 = route(99,);
-    */
+    route R56 = route(56,I43,I44);
+    route R57 = route(57,I44,I45);
+    route R58 = route(58,I45,I46);
+    route R59 = route(59,I46,I47);
+    route R60 = route(60,I47,I48);
+    route R61 = route(61,I48,I49);
+    route R62 = route(62,I49,I50);
+    route R63 = route(63,I50,I51);
+    route R64 = route(64,I51,I52);
+    route R65 = route(65,I52,I53);
+    route R66 = route(66,I53,I54);
+    route R67 = route(67,I54,I55);
+    route R68 = route(68,I55,I56);
+    route R69 = route(69,I56,I57);
+    route R70 = route(70,I57,I58);
+    route R71 = route(71,I58,I59);
+    route R72 = route(72,I59,I60);
+    route R73 = route(73,I60,I61);
+    route R74 = route(74,I61,I62);
+    route R75 = route(75,I62,I63);
+    route R76 = route(76,I63,I64);
+    route R77 = route(77,I64,I65);
+    route R78 = route(78,I65,I66);
+    route R79 = route(79,I66,I67);
+    route R80 = route(80,I67,I68);
+    route R81 = route(81,I68,I69);
+    route R82 = route(82,I69,I70);
+    route R83 = route(83,I70,I71);
+    route R84 = route(84,I71,I72);
+    route R85 = route(85,I72,I73);
+    route R86 = route(86,I73,I74);
+    route R87 = route(87,I74,I75);
+    route R88 = route(88,I75,I76);
+    route R89 = route(89,I76,I77);
+    route R90 = route(90,I77,I78);
+    route R91 = route(91,I78,I79);
+    route R92 = route(92,I79,I80);
+    route R93 = route(93,I80,I43);
+    route R94 = route(94,I80,I39);
+    route R95 = route(95,I45,I38);
+    route R96 = route(96,I47,I36);
+    route R97 = route(97,I49,I34);
+    route R98 = route(98,I33,I52);
+    route R99 = route(99,I54,I31);
+    route R100 = route(100,I57,I30);
+    route R101 = route(101,I28,I59);
+    route R102 = route(102,I15,I61);
+    route R103= route(103,I14,I64);
+    route R104 = route(104,I66,I13);
+    route R105= route(105,I68,I9);
+    route R106 = route(106,I71,I10);
+    route R107= route(107,I27,I73);
+    route R108= route(108,I76,I26);
+    route R109= route(109,I78,I24);
+   
+    
 
     // insert routes in I_map
 
@@ -307,7 +307,6 @@ Board::Board()
     intersection_map.insert(R32);
     intersection_map.insert(R33);
     intersection_map.insert(R34);
-
     intersection_map.insert(R35);
     intersection_map.insert(R36);
     intersection_map.insert(R37);
@@ -329,7 +328,6 @@ Board::Board()
     intersection_map.insert(R53);
     intersection_map.insert(R54);
     intersection_map.insert(R55);
-    /*
     intersection_map.insert(R56);
     intersection_map.insert(R57);
     intersection_map.insert(R58);
@@ -384,17 +382,6 @@ Board::Board()
     intersection_map.insert(R107);
     intersection_map.insert(R108);
     intersection_map.insert(R109);
-    intersection_map.insert(R110);
-    intersection_map.insert(R111);
-    intersection_map.insert(R112);
-    intersection_map.insert(R113);
-    intersection_map.insert(R114);
-    intersection_map.insert(R115);
-    intersection_map.insert(R116);
-    intersection_map.insert(R117);
-    intersection_map.insert(R118);
-    intersection_map.insert(R119);
-    */
 
     // for testing purposes
     intersection_map.update_intersection_state(1, States::p1);
