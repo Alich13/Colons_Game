@@ -31,6 +31,35 @@ enum class States
 };
 
 // possible heritage
+//-------------------------- Data_map (Tuiles data structure)----------------------------------------------//
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
+  *&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
+//-----------------------------------------------------------------------------------------------------------*/
+/**
+ * @brief 
+ * 
+ */
+/*
+class Data_map
+{
+private:
+    //vector<tuile> map;
+   
+public:
+    // 
+    //---------------------constructor-----------------//
+    Data_map();
+    virtual ~Data_map();
+    int  get_size();
+
+    //virtual get_element_by_id();
+    //void insert(virtual element);
+    
+};
+*/
+
+
+
 
 //-------------------------- T_map (Tuiles data structure)----------------------------------------------//
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
@@ -50,7 +79,6 @@ public:
     tuile();
     tuile(int tuile_id, int x, int y, Resources ressource)
     {
-
         this->tuile_id = tuile_id;
         this->x = x;
         this->y = y;
@@ -63,7 +91,6 @@ public:
     int get_x() { return x; }
     int get_y() { return y; }
     Resources get_ressource() { return ressource; }
-
 
 private:
     int x, y; // cordonates
@@ -145,12 +172,12 @@ public:
     void set_pos1_state(States state) { pos1.set_state(state); }
     void set_pos2_state(States state) { pos2.set_state(state); }
     
-
 private:
     
     node pos1;
     node pos2;
     States state = States::empty;
+
 };
 
 
@@ -160,6 +187,7 @@ private:
     vector<route> map;
     vector<node> all_nodes;
 public:
+
     I_map() { ; }
     int size;
     void insert(route RX);

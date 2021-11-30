@@ -11,17 +11,26 @@
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& player   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
+/**
+ * @brief class player
+ * We can use This class to create player instances  which will
+ * have diffrent attributes as :
+ *   Total ressources
+ * 	 Id
+ * 	 Name
+ *   Total points
+ */
 class Player
 {
 public:
 	States id;
-	//------------------methodes---------------------------------------//
 	Player(States N_id, string N_nickname);
-	int count_ressources(Resources ressource_we_looking_for); /////!!!!
+	virtual ~Player(){};
+	int count_ressources(Resources ressource_we_looking_for);
 	int get_player_INT_id();
 	States get_player_STATE_id();
 	string get_name();
-	void append_to_ressources( Resources ressource);
+	void append_to_ressources(Resources ressource);
 	int count_X_ressources(Resources ressource);
 
 private:
@@ -45,6 +54,7 @@ class Board
 {
 public:
 	Board();
+	virtual ~Board(){};
 	// I_map board_map;
 	T_map tuile_map;
 	I_map intersection_map;
@@ -60,27 +70,19 @@ private:
  * This class represents the actual drawing (le dessin ) which will be included in boardBOX
  * all elements from Board will be printed here as well as all the interaction via eventbox
  * that allows us for example to place new houses or routes
+ * this class inherits from DrawingArea (Abstact Class )
  */
+
 class Dessin : public Gtk::DrawingArea
 {
 public:
-	Board board;
-	// set sub maps (tuiles map  et intersection map)
-	T_map tuile_map = board.tuile_map;
-	I_map route_map = board.intersection_map;
-
-
 	Dessin();
-	//~Dessin();
+	virtual ~Dessin(){};
 
 	// set up //
 	void set_add_route_pressed(bool pressed) { this->add_route_pressed = pressed; };
 	void set_add_house_pressed(bool pressed) { this->add_house_pressed = pressed; };
-	void set_rendred_cord(int cord_x, int cord_y)
-	{
-		this->cord_x = cord_x;
-		this->cord_y = cord_y;
-	};
+	void set_rendred_cord(int cord_x, int cord_y);
 
 	// get_attributes //
 	void affiche_rendred_cord();
@@ -97,19 +99,22 @@ public:
 
 	void drawPossibleRoutes(const Cairo::RefPtr<Cairo::Context> &cr);
 	void drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr);
-	
-	void drawHouse(const Cairo::RefPtr<Cairo::Context> &cr);
+
 	void setActivePlayer(Player *current_player);
 	void ReafficheDessin();
+
+	// set sub maps (tuiles map  et intersection map) from Board Class
+	Board board;
+	T_map tuile_map = board.tuile_map;
+	I_map route_map = board.intersection_map;
 
 protected:
 	bool on_button_press_event(GdkEventButton *event);			 // function handles mouse events
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &); // make the drawings
 
 private:
-	
 	Player *active_player; // a pointer to the active player
-	
+
 	int x1, x2, y1, y2; // cordonates of points
 	int cord_x = 0;
 	int cord_y = 0;		  // cord to be rendred in label
@@ -121,7 +126,7 @@ private:
 	bool add_house_pressed = false; // bool var telling if the button build route is pressed or not
 
 	std::vector<int> X, Y, vx1, vy1, vx2, vy2;
-	Glib::RefPtr<Gdk::Pixbuf> pic_board, pic2, vigniette, construction;
+	Glib::RefPtr<Gdk::Pixbuf> pic_board, house, vigniette, construction_arrow;
 };
 
 /*====================================================================*/
@@ -134,23 +139,15 @@ private:
 class Dice
 {
 public:
-	Dice() { ; };
-	int randomize_dice()
-	{
-		random_device rd;
-		unsigned long seed = rd();
-		mt19937 engine(seed);
-		discrete_distribution<int> distribution{0, 0, 2, 3, 3, 3, 3, 4, 3, 3, 3, 3, 2};
-		return distribution(engine);
-	}
-	bool get_dice_state() { return canPlayDice; };
-	void set_dice_state(bool new_state) { this->canPlayDice = new_state; };
+	Dice();
+	virtual ~Dice(){};
+	int randomize_dice();
+	bool get_dice_state();
+	void set_dice_state(bool new_state);
 
 private:
 	bool canPlayDice = true;
 };
-
-
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Game  window   &&&&&&&&&&&&&&&&&&&*/
@@ -168,37 +165,30 @@ class my_window : public Gtk::Window
 public:
 	my_window();
 	virtual ~my_window(){};
+
 	void button_add_house();
 	void button_add_path();
 	void button_add_route();
+
 	void next_turn();
 	void play_dice();
-	void diplay_dice_visual_effect(int dice_num);
+
 	void update_ressources(int dice_value);
 	void update_resources_table();
-	//-------------------
-	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game
-							// my_window.set_player_list()
-	Player* get_player_by_state(States state);
 
+	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game my_window.set_player_list()
+	Player *get_player_by_state(States state);
 
 protected:
 	Dessin dessin;
-	
 	Dice my_dice;
 
-	// for test
-	Player P1 = Player(States::p1, "ALi");
-	Player P2 = Player(States::p2, "Louai");
-	Player P3 = Player(States::p3, "jalil");
-	//
-
-	Gtk::VBox 
-		mainLayout, 
+	Gtk::VBox
+		mainLayout,
 		board_box,
-		player_info_box, 
+		player_info_box,
 		buttons_box;
-	Gtk::Label 
+	Gtk::Label
 		player_turn_label,
 		Dice_output_label,
 		score_label,
@@ -244,7 +234,7 @@ protected:
 	Gtk::SeparatorMenuItem hline;
 	Gtk::MenuItem menuEdit;
 	Gtk::ScrolledWindow m_ScrolledWindow;
-	
+
 	Glib::RefPtr<Gdk::Pixbuf>
 		dice_image,
 		ble_image,
@@ -254,7 +244,7 @@ protected:
 		bois_image,
 		logo_image,
 		card_image;
-		
+
 	Gtk::Image
 		Dice_Image,
 		Ble_Image,
@@ -264,44 +254,47 @@ protected:
 		Bois_Image,
 		Logo_Image,
 		Card_Image;
-		
 
 private:
 	int dice_value = 0;
 	void set_my_menu();
 	void set_side_box();
+
+	// for test
+	Player P1 = Player(States::p1, "ALi");
+	Player P2 = Player(States::p2, "Louai");
+	Player P3 = Player(States::p3, "jalil");
+	//
 	vector<Player> player_list = {P1, P2, P3};
 	vector<Player>::iterator current_player_itr = player_list.begin();
-	
 };
-
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& welcome window   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
 
-class AboutWindow : public Gtk::Window
+class Welcome_Window : public Gtk::Window
 {
 public:
-    AboutWindow();
-    virtual ~AboutWindow(){};
+	Welcome_Window();
+	virtual ~Welcome_Window(){};
 	void Open_New_Win_Clicked();
+
 protected:
-	my_window* main_window ;
-    Gtk::Label lbl_;
+	my_window *main_window;
+	Gtk::Label lbl_;
 	Gtk::Button button_start_new_win;
 	Gtk::VBox
 		mainLayout;
-	Gtk::Grid 
+	Gtk::Grid
 		grid;
 	Glib::RefPtr<Gdk::Pixbuf>
 		logo;
-		
+
 	Gtk::Image
 		Logo;
-	Gtk::ComboBoxText 
+	Gtk::ComboBoxText
 		c;
 };
-
 
 #endif // GTKMM_EXAMPLE_MYAREA_H

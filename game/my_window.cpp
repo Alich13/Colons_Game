@@ -56,19 +56,16 @@ my_window::my_window()
 
 }
 
-//--------------------------------------------------------------//
 
 void my_window::button_add_house()
 {
     // set all other bottons to false
     dessin.set_add_route_pressed(false);
-
     Gtk::MessageDialog d(*this, "Choose your house position ", true, Gtk::MESSAGE_INFO);
     d.run();
     dessin.set_add_house_pressed(true);
 }
 
-//--------------------------------------------------------------//
 
 void my_window::button_add_route()
 {
@@ -87,9 +84,14 @@ void my_window::button_add_route()
  */
 void my_window::next_turn()
 {
-    
+    //set all other buttons to false
+    dessin.set_add_route_pressed(false);
+    dessin.set_add_house_pressed(false);
+    dessin.ReafficheDessin();
+
+    //reset dice parameters
     my_dice.set_dice_state(true);
-    this->dice_value = 0;
+    this->dice_value = 0; //reset dice to initial value = zero corresponding to no tuile
     Dice_output_label.set_markup(" Throw Dice ? ? ?");
     Dice_Image.clear();
     /*-----------------------------------------------------*/
@@ -119,14 +121,43 @@ void my_window::next_turn()
 
 }
 
-void my_window::diplay_dice_visual_effect(int dice_num)
+/**
+ * @brief 
+ * simulate dice playing action 
+ * this function listen to play dice button 
+ */
+void my_window::play_dice()
 {
-    /*
+    if (my_dice.get_dice_state() == true)
+    {
+        //set all other buttons to false
+        dessin.set_add_route_pressed(false);
+        dessin.set_add_house_pressed(false);
+        dessin.ReafficheDessin();
 
-    add visual effect to the dice 
+        this->dice_value = my_dice.randomize_dice();
+        my_dice.set_dice_state(false);
+        Dice_output_label.set_markup("returned value = " + to_string(dice_value));
+        
+        update_ressources(dice_value);
+        
+        dice_image = Gdk::Pixbuf::create_from_file("data/vigniettes/" + to_string(dice_value) + ".png");
+        dice_image = dice_image->scale_simple((dice_image->get_height()) * 0.5, (dice_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
+        Dice_Image.set(dice_image);
+    }
+    else
+    {
+        Gtk::MessageDialog d(*this, "Can not play more than one time in a turn !!  ", true, Gtk::MESSAGE_ERROR);
+        d.run();
+    }
 
-    */
+    update_resources_table();
+    
 }
+
+
+
+//--------------------------- functions used to manage players turns-----------------------//  
 
 /**
  * @brief returns a pointer referencing the player with the given state 
@@ -147,14 +178,12 @@ Player* my_window::get_player_by_state(States state)
     }
 }
 
-
 /**
  * @brief 
  * updates players resources based on the dice value
  * 
  * @param dice_val 
  */
-
 void my_window::update_ressources(int dice_val) 
 {
     vector<tuile> activated_tuiles = dessin.tuile_map.get_tuiles_by_DiceNum(dice_value);
@@ -185,35 +214,8 @@ void my_window::update_ressources(int dice_val)
     }
 }
 
-/**
- * @brief 
- * simulate dice playing action 
- * this function listen to play dice button 
- */
-void my_window::play_dice()
-{
-    if (my_dice.get_dice_state() == true)
-    {
-     
-        this->dice_value = my_dice.randomize_dice();
-        my_dice.set_dice_state(false);
-        Dice_output_label.set_markup("returned value = " + to_string(dice_value));
-        
-        update_ressources(dice_value);
-        
-        dice_image = Gdk::Pixbuf::create_from_file("data/vigniettes/" + to_string(dice_value) + ".png");
-        dice_image = dice_image->scale_simple((dice_image->get_height()) * 0.5, (dice_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
-        Dice_Image.set(dice_image);
-    }
-    else
-    {
-        Gtk::MessageDialog d(*this, "Can not play more than one time in a turn !!  ", true, Gtk::MESSAGE_ERROR);
-        d.run();
-    }
 
-    update_resources_table();
-    
-}
+//---------------------------  functions used to set the window's widgets --------------------------//
 
 /**
  * @brief 
@@ -230,8 +232,6 @@ void my_window::update_resources_table()
     //--------------------------------------------------------------//
 
 }
-
-
 
 void my_window::set_my_menu()
 {

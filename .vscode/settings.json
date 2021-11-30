@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "chrono": "cpp",
+        "optional": "cpp",
+        "functional": "cpp",
+        "iostream": "cpp",
+        "mutex": "cpp",
+        "streambuf": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "memory_resource": "cpp"
+    }
+}

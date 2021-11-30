@@ -13,20 +13,19 @@ using namespace std;
 
 Dessin::Dessin()
 {
+
 	//  Load images
 	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
-	pic2 = Gdk::Pixbuf::create_from_file("data/scarabine.png");
 	pic_board = pic_board->scale_simple((pic_board->get_height()) * 0.20, (pic_board->get_width()) * 0.20, Gdk::INTERP_BILINEAR); // scale image
-	pic2 = pic2->scale_simple((pic2->get_height()) * 0.10, (pic2->get_width()) * 0.25, Gdk::INTERP_BILINEAR);					  // scale image
 	// Set masks for mouse events
 	add_events(Gdk::BUTTON_PRESS_MASK);
 	// setting attributes value
-
 	board_x = 100;		// top right x cordonate inside the box
 	board_y = 50;		// top right y cordonate inside the box
 	board_width = 1000; // same as the size of the box !!!!!!!!!!!
 	board_height = 900; // same as the size of the box !!!!!!!!!!!!!
 }
+
 
 //----------------------------------On draw----------------------------------//
 /**
@@ -54,10 +53,7 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	drawRoute(cr);
 	// draw nodes (houses) with active state
 	draw_intersection_map(cr);
-	// add elements scarabines //
-	drawHouse(cr);
-
-
+	
 	// draw possible house constructions
 	if (add_route_pressed)
 	{
@@ -68,8 +64,6 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	{
 			drawPossibleHouses(cr);
 	}
-
-
 
 	return true;
 }
@@ -108,7 +102,7 @@ bool Dessin::on_button_press_event(GdkEventButton *event)
 void Dessin::updateRoute(GdkEventButton *event)
 {
 	my_window f2;
-	// Check if the event is a left(1) button click.
+	
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
 		int selectedRoute_id = route_map.render_route(cord_x, cord_y);
@@ -171,18 +165,6 @@ void Dessin::drawBoard(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 }
 
-void Dessin::drawHouse(const Cairo::RefPtr<Cairo::Context> &cr)
-{
-	for (int i = 0; i < X.size(); i++)
-	{
-		cr->save();
-		Gdk::Cairo::set_source_pixbuf(cr, pic2, X[i] - 50, Y[i] - 50);
-		cr->rectangle(0, 0, board_width, board_height);
-		cr->fill();
-		cr->restore();
-	}
-}
-
 void Dessin::drawVingnette(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	string vingnette_path, thief_vignette_path;
@@ -233,7 +215,6 @@ void Dessin::drawPossibleRoutes(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 }
 
-
 void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 
 {
@@ -259,9 +240,9 @@ void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->save();
 
 		path_to_gray_arrow = "data/arrow.jpg";
-		construction = Gdk::Pixbuf::create_from_file(path_to_gray_arrow);
-		construction = construction->scale_simple((construction->get_height()) * 0.10, (construction->get_width()) * 0.10, Gdk::INTERP_BILINEAR);
-		Gdk::Cairo::set_source_pixbuf(cr,construction, X - 10, Y - 15);
+		construction_arrow = Gdk::Pixbuf::create_from_file(path_to_gray_arrow);
+		construction_arrow = construction_arrow->scale_simple((construction_arrow->get_height()) * 0.10, (construction_arrow->get_width()) * 0.10, Gdk::INTERP_BILINEAR);
+		Gdk::Cairo::set_source_pixbuf(cr,construction_arrow, X - 10, Y - 15);
 
 		cr->rectangle(0, 0, board_width, board_height);
 		cr->fill();
@@ -269,12 +250,6 @@ void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 	
 	}
 }
-
-
-
-
-
-
 
 void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 {
@@ -296,10 +271,9 @@ void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 			// cout <<  player_foalder <<endl;
 			// snprintf(construction_path, "data/players/%d/Maison.png", player_foalder );
 			construction_path = "data/players/"+player_foalder+"/Maison.png";
-			construction = Gdk::Pixbuf::create_from_file(construction_path);
-			construction = construction->scale_simple((construction->get_height()) * 0.4, (construction->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
-			Gdk::Cairo::set_source_pixbuf(cr,construction, X - 15, Y - 15);
-
+			house = Gdk::Pixbuf::create_from_file(construction_path);
+			house = house->scale_simple((house->get_height()) * 0.4, (house->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
+			Gdk::Cairo::set_source_pixbuf(cr,house, X - 15, Y - 15);
 			cr->rectangle(0, 0, board_width, board_height);
 			cr->fill();
 			cr->restore();
@@ -343,7 +317,13 @@ void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 }
 
-//---------------------------------- Reaffiche----------------------------------//
+//-------------------------------Other methodes -----------------------------------------//
+
+void Dessin::set_rendred_cord(int cord_x, int cord_y)
+	{
+		this->cord_x = cord_x;
+		this->cord_y = cord_y;
+	};
 
 void Dessin::ReafficheDessin()
 {
@@ -355,12 +335,21 @@ void Dessin::ReafficheDessin()
 		// win->invalidate(false);
 	}
 }
-
+/**
+ * @brief set the player whose role is active 
+ * 
+ * @param current_player 
+ */
 void Dessin::setActivePlayer(Player *current_player)
 {
 	this->active_player = current_player;
 }
 
+/**
+ * @brief 
+ * this function is used for testing puposes to visualize 
+ * the cordonates rendred by the mouse
+ */
 void Dessin::affiche_rendred_cord()
 {
 	cout << cord_x << " , " << cord_y << endl;

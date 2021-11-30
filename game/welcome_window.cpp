@@ -1,6 +1,6 @@
 #include "../header.h"
 
-AboutWindow::AboutWindow()
+Welcome_Window::Welcome_Window()
 	{
     this->set_title("welcome to colons de catanes game");
     this->set_position(Gtk::WIN_POS_CENTER);
@@ -25,7 +25,7 @@ AboutWindow::AboutWindow()
 
     lbl_.set_label("Colons de Catanes");
     button_start_new_win.add_label("Start Game");
-    button_start_new_win.signal_clicked().connect(sigc::mem_fun(*this, &AboutWindow::Open_New_Win_Clicked));
+    button_start_new_win.signal_clicked().connect(sigc::mem_fun(*this, &Welcome_Window::Open_New_Win_Clicked));
     grid.attach(lbl_,0,0,1,1);
     grid.attach(c,0,1,1,1);
     grid.attach(button_start_new_win,0,2,1,1);
@@ -37,13 +37,15 @@ AboutWindow::AboutWindow()
 
 
 
-void AboutWindow::Open_New_Win_Clicked()
+void Welcome_Window::Open_New_Win_Clicked()
 {
 
     main_window = new my_window();
+    
     /*
     
-        all settings to mainwindow
+        all settings to pass to  mainwindow
+        main_window.set_players
     
     */
 
