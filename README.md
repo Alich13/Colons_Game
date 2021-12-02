@@ -30,3 +30,5 @@ make clean ;make; ./out;
 
 
 ## Diagramme de class 
+
+## heritage 

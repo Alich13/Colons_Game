@@ -11,11 +11,11 @@ using namespace std;
 
 //---------------------------------- constructor----------------------------------//
 
-Dessin::Dessin()
+Dessin::Dessin(my_window &W) : my_win(W)
 {
-
+	// set a back reference to parent window
 	//  Load images
-	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org.png");
+	pic_board = Gdk::Pixbuf::create_from_file("data/Board_org_NB.png");
 	pic_board = pic_board->scale_simple((pic_board->get_height()) * 0.20, (pic_board->get_width()) * 0.20, Gdk::INTERP_BILINEAR); // scale image
 	// Set masks for mouse events
 	add_events(Gdk::BUTTON_PRESS_MASK);
@@ -25,7 +25,6 @@ Dessin::Dessin()
 	board_width = 1000; // same as the size of the box !!!!!!!!!!!
 	board_height = 900; // same as the size of the box !!!!!!!!!!!!!
 }
-
 
 //----------------------------------On draw----------------------------------//
 /**
@@ -53,7 +52,7 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	drawRoute(cr);
 	// draw nodes (houses) with active state
 	draw_intersection_map(cr);
-	
+
 	// draw possible house constructions
 	if (add_route_pressed)
 	{
@@ -62,7 +61,7 @@ bool Dessin::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	// draw possible route constructions
 	if (add_house_pressed)
 	{
-			drawPossibleHouses(cr);
+		drawPossibleHouses(cr);
 	}
 
 	return true;
@@ -101,8 +100,7 @@ bool Dessin::on_button_press_event(GdkEventButton *event)
 
 void Dessin::updateRoute(GdkEventButton *event)
 {
-	my_window f2;
-	
+
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
 		int selectedRoute_id = route_map.render_route(cord_x, cord_y);
@@ -112,11 +110,12 @@ void Dessin::updateRoute(GdkEventButton *event)
 			route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
 			set_add_route_pressed(false);
 			ReafficheDessin();
+			my_win.update_score();
 		}
 		else
 		{
 			// alerte widjet
-			Gtk::MessageDialog d(f2, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
+			Gtk::MessageDialog d(my_win, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
 			d.set_secondary_text("Can not Choose this position , please check the rules ");
 			// Gtk::MessageDialog()
 			d.run();
@@ -128,11 +127,10 @@ void Dessin::updateRoute(GdkEventButton *event)
 
 void Dessin::updateHouse(GdkEventButton *event)
 {
-	my_window f1;
 
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 1))
 	{
-		int selectedHouse_id = route_map.render_node(cord_x, cord_y, 10);
+		int selectedHouse_id = route_map.render_node(cord_x, cord_y, 40);
 		cout << "selected house " << selectedHouse_id << endl;
 		// cout << route_map.check_house_construction_possible(selectedHouse_id,States::p1) << endl;
 		cout << "selected house " << selectedHouse_id << endl;
@@ -141,10 +139,26 @@ void Dessin::updateHouse(GdkEventButton *event)
 			route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
 			set_add_house_pressed(false);
 			ReafficheDessin();
+			my_win.update_score();
+
+			// if in the first phase "inverted" we update ressources for each player
+			// when placing his settlement
+			if (my_win.get_init_inversed() && (active_player->get_score() == 2))
+			{
+				node *selectedHouse_ptr = route_map.get_node(selectedHouse_id);
+				vector<tuile> ressources_of_selected_node = selectedHouse_ptr->get_ressources();
+				for (unsigned i; i < ressources_of_selected_node.size(); i++)
+				{
+					Resources ressource = ressources_of_selected_node[i].get_ressource();
+					active_player->append_to_ressources(ressource);
+				}
+
+				my_win.update_resources_table();
+			}
 		}
 		else
 		{
-			Gtk::MessageDialog d(f1, "House construction not possible", true, Gtk::MESSAGE_ERROR);
+			Gtk::MessageDialog d(my_win, "House construction not possible", true, Gtk::MESSAGE_ERROR);
 			d.set_secondary_text("Can not Choose this position , please check the rules ");
 			set_add_house_pressed(false);
 			// Gtk::MessageDialog()
@@ -223,14 +237,14 @@ void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 	my_window f;
 	string path_to_gray_arrow;
 
-	if (all_possible_house.size() == 0 ) // no house construction is possible
+	if (all_possible_house.size() == 0) // no house construction is possible
 	{
 		Gtk::MessageDialog d(f, " No possible construction found ", true, Gtk::MESSAGE_ERROR);
-			d.set_secondary_text(" Please check the rules ");
-			set_add_house_pressed(false);
-			// Gtk::MessageDialog()
-			d.run();
-			ReafficheDessin();
+		d.set_secondary_text(" Please check the rules ");
+		set_add_house_pressed(false);
+		// Gtk::MessageDialog()
+		d.run();
+		ReafficheDessin();
 	}
 
 	for (int i = 0; i < all_possible_house.size(); i++)
@@ -242,12 +256,11 @@ void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 		path_to_gray_arrow = "data/arrow.jpg";
 		construction_arrow = Gdk::Pixbuf::create_from_file(path_to_gray_arrow);
 		construction_arrow = construction_arrow->scale_simple((construction_arrow->get_height()) * 0.10, (construction_arrow->get_width()) * 0.10, Gdk::INTERP_BILINEAR);
-		Gdk::Cairo::set_source_pixbuf(cr,construction_arrow, X - 10, Y - 15);
+		Gdk::Cairo::set_source_pixbuf(cr, construction_arrow, X - 10, Y - 15);
 
 		cr->rectangle(0, 0, board_width, board_height);
 		cr->fill();
 		cr->restore();
-	
 	}
 }
 
@@ -267,13 +280,13 @@ void Dessin::draw_intersection_map(const Cairo::RefPtr<Cairo::Context> &cr)
 			Y = all_nodes[i].get_y();
 			cr->save();
 
-			string player_foalder=to_string (static_cast<int> (all_nodes[i].get_state()) );
+			string player_foalder = to_string(static_cast<int>(all_nodes[i].get_state()));
 			// cout <<  player_foalder <<endl;
 			// snprintf(construction_path, "data/players/%d/Maison.png", player_foalder );
-			construction_path = "data/players/"+player_foalder+"/Maison.png";
+			construction_path = "data/players/" + player_foalder + "/Maison.png";
 			house = Gdk::Pixbuf::create_from_file(construction_path);
 			house = house->scale_simple((house->get_height()) * 0.4, (house->get_width()) * 0.4, Gdk::INTERP_BILINEAR);
-			Gdk::Cairo::set_source_pixbuf(cr,house, X - 15, Y - 15);
+			Gdk::Cairo::set_source_pixbuf(cr, house, X - 15, Y - 15);
 			cr->rectangle(0, 0, board_width, board_height);
 			cr->fill();
 			cr->restore();
@@ -320,10 +333,10 @@ void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 //-------------------------------Other methodes -----------------------------------------//
 
 void Dessin::set_rendred_cord(int cord_x, int cord_y)
-	{
-		this->cord_x = cord_x;
-		this->cord_y = cord_y;
-	};
+{
+	this->cord_x = cord_x;
+	this->cord_y = cord_y;
+};
 
 void Dessin::ReafficheDessin()
 {
@@ -336,9 +349,9 @@ void Dessin::ReafficheDessin()
 	}
 }
 /**
- * @brief set the player whose role is active 
- * 
- * @param current_player 
+ * @brief set the player whose role is active
+ *
+ * @param current_player
  */
 void Dessin::setActivePlayer(Player *current_player)
 {
@@ -346,8 +359,8 @@ void Dessin::setActivePlayer(Player *current_player)
 }
 
 /**
- * @brief 
- * this function is used for testing puposes to visualize 
+ * @brief
+ * this function is used for testing puposes to visualize
  * the cordonates rendred by the mouse
  */
 void Dessin::affiche_rendred_cord()

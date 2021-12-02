@@ -2,9 +2,20 @@
 
 Welcome_Window::Welcome_Window()
 	{
+    //-----------------------------load css-----------------------------
+    Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
+    cssProvider->load_from_path("style.css");
+    Glib::RefPtr<Gtk::StyleContext> styleContext = Gtk::StyleContext::create();
+    // get default screen
+    Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
+    // add provider for screen in all application
+    styleContext->add_provider_for_screen(screen, cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    Glib::RefPtr<Gtk::StyleContext> context = this->get_style_context();
+    context->add_class("welcome_window");
+
     this->set_title("welcome to colons de catanes game");
     this->set_position(Gtk::WIN_POS_CENTER);
-    this->set_default_size(500, 400); //+5 size of all the window for the border	
+    this->set_default_size(800, 400); //+5 size of all the window for the border	
     set_border_width(5);
     /*--------------logo------------------------*/
     logo = Gdk::Pixbuf::create_from_file("data/logo.png");

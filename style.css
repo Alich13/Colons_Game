@@ -7,8 +7,19 @@ button_route {
 	color: #C71EFF;
 }
 .my_window {
-    background-color: rgb(31, 56, 90);
-    color:            rgb(255, 255, 255);
+    /*background-color: rgb(31, 56, 90);*/
+	
+	background: no-repeat center/100% url("./data/background2.jpg");
+    color:            rgb(17, 16, 16);
+	font-size: 1.5em;
+    padding:          10px 15px 20px 10px; /* top right bottom left */
+  }
+
+.welcome_window {
+    /*background-color: rgb(31, 56, 90);*/
+	
+	background: no-repeat center/100% url("./data/background.jpg");
+    color:            rgb(17, 16, 16);
     padding:          10px 15px 20px 10px; /* top right bottom left */
   }
 

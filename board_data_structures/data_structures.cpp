@@ -242,9 +242,9 @@ bool I_map::check_node_has_adj_node(node my_node)
         if ((pos_1.id == my_node.id || pos_2.id == my_node.id))
         {
             node neighboor_to_check = my_route.get_neighboor_in_route(my_node);
-            cout << "neighboor" << neighboor_to_check.id << endl;
+            //cout << "neighboor" << neighboor_to_check.id << endl;
             adjacent_house = (adjacent_house || (neighboor_to_check.get_state() != States::empty));
-            cout << "adjacent_house" << adjacent_house << endl;
+            //cout << "adjacent_house" << adjacent_house << endl;
         }
     }
     return adjacent_house;
@@ -267,7 +267,8 @@ bool I_map::check_node_has_adj_node(node my_node)
 bool I_map::check_possible_route(int id, States player)
 {
     bool result = false;
-
+    bool condition_first =false;
+    vector<route> all_occupied_route =get_all_occupied_routes();
     route *route_to_check_ptn = get_route(id);
     // check if element exist in route vector
     // nullptr =  null pointeur referencing null object
@@ -297,19 +298,17 @@ bool I_map::check_possible_route(int id, States player)
             node pos_1 = my_route.get_pos1();
             node pos_2 = my_route.get_pos2();
 
-            if 
-            (
-                (pos_1.id == first_click.id && pos_2.id == second_click.id) || 
-                (pos_1.id == second_click.id && pos_2.id == first_click.id)
-            )
+            if (
+                (pos_1.id == first_click.id && pos_2.id == second_click.id) ||
+                (pos_1.id == second_click.id && pos_2.id == first_click.id))
             {
 
-                cout << " not occupied ?? " << (map[i].get_route_state() == States::empty) << endl;
+                //cout << " not occupied ?? " << (map[i].get_route_state() == States::empty) << endl;
 
                 if (
-                    (map[i].get_route_state() == States::empty) && // route must be empty
-                    (pos_1.get_state() == player || pos_1.get_state() == States::empty) && //route pos 1 must be empty or have the same state as the player 
-                    (pos_2.get_state() == player || pos_2.get_state() == States::empty)) //route pos 2 must be empty or have the same state as the player
+                    (map[i].get_route_state() == States::empty) &&                         // route must be empty
+                    (pos_1.get_state() == player || pos_1.get_state() == States::empty) && // route pos 1 must be empty or have the same state as the player
+                    (pos_2.get_state() == player || pos_2.get_state() == States::empty))   // route pos 2 must be empty or have the same state as the player
                 {
                     not_occupied = true;
                 }
@@ -340,14 +339,53 @@ bool I_map::check_possible_route(int id, States player)
             }
         }
 
-        cout << " player_id " << static_cast<int>(player) << endl;
-        cout << " ------------route constuction debug------------- " << endl;
-        cout << " are neighboor = " << neighboor << endl;
-        cout << " adjacent construction exist (route/house) = " << adjacent_route_or_house << endl;
-        cout << " not occupied " << not_occupied << endl;
-        cout << " results = " << (neighboor && adjacent_route_or_house && not_occupied) << endl;
+        // cout << " player_id " << static_cast<int>(player) << endl;
+        // cout << " ------------route constuction debug------------- " << endl;
+        // cout << " are neighboor = " << neighboor << endl;
+        // cout << " adjacent construction exist (route/house) = " << adjacent_route_or_house << endl;
+        // cout << " not occupied " << not_occupied << endl;
+        // cout << " results = " << (neighboor && adjacent_route_or_house && not_occupied) << endl;
 
         result = (neighboor && adjacent_route_or_house && not_occupied);
+
+        if (first_phase && result) 
+        // we 're doing this only when the construction is possible 
+        // here we add additional filters when playing in the first phase
+        {
+            for (unsigned int i = 0; i < map.size(); i++)
+        {
+             if (first_click.get_state()==player)   
+                {
+                    for  (unsigned int k = 0; k < all_occupied_route.size(); k++)
+                    {
+                        if ((all_occupied_route[k].get_pos1().id == first_click.id ) || (all_occupied_route[k].get_pos2().id == first_click.id))
+                        {
+                            return false ;
+                            break;
+                        }
+                    }
+                }
+             if (second_click.get_state()==player)
+                {
+                    for  (unsigned int k = 0; k < all_occupied_route.size(); k++)
+                    {
+                        if ((all_occupied_route[k].get_pos1().id == second_click.id ) || (all_occupied_route[k].get_pos2().id == second_click.id))
+                        {
+                            return false ;
+                            break;
+                        }
+                    }
+                }
+             if (second_click.get_state()==States::empty && first_click.get_state()==States::empty )
+                // we eliminate the road if it's not linked to a house   
+                {
+                        return false ;
+                        break;
+            }
+        }
+
+        }
+
         return result;
     }
 
@@ -444,10 +482,6 @@ vector<node> I_map::get_all_possible_houses(States player_id)
     return all_possible_nodes;
 }
 
-
-
-
-
 /**
  * @brief
  * checks if there's 2 adjacent routes to our to_build_constuction
@@ -511,6 +545,7 @@ bool I_map::check_house_construction_possible(int id, States player_id)
     bool has_neighboor;
     bool two_route_exist = false;
     bool not_occupied = false;
+    bool result;
     node *to_build_constuction_ptr = get_node(id);
 
     if (to_build_constuction_ptr != nullptr)
@@ -528,13 +563,24 @@ bool I_map::check_house_construction_possible(int id, States player_id)
 
         has_neighboor = check_node_has_adj_node(to_build_constuction);
 
-        cout << " ------------House constuction debug-------------  " << endl;
-        cout << " two route exists = " << two_route_exist << endl;
-        cout << " not_occupied = " << not_occupied << endl;
-        cout << " has_neighboor = " << has_neighboor << endl;
-        cout << " results = " << (two_route_exist && not_occupied) << endl;
+        
+        // cout << " ------------House constuction debug-------------  " << endl;
+        // cout << " two route exists = " << two_route_exist << endl;
+        // cout << " not_occupied = " << not_occupied << endl;
+        // cout << " has_neighboor = " << has_neighboor << endl;
+        // cout << " results = " << (two_route_exist && not_occupied) << endl;
 
-        return (not_occupied && two_route_exist && !has_neighboor);
+
+        if (first_phase)
+        {
+            result = (not_occupied && !has_neighboor);
+        }
+        else
+        {
+            result = (not_occupied && two_route_exist && !has_neighboor);
+        }
+
+        return result;
     }
 
     return false;
@@ -606,4 +652,63 @@ int I_map::render_route(int click_x, int click_y)
             return id_returned;
         }
     }
+}
+
+/**
+ * @brief Set initial phase on in Imap
+ *
+ */
+void I_map::set_init_phase_on()
+{
+    this->first_phase = true;
+}
+
+/**
+ * @brief Set initial phase off in Imap
+ *
+ */
+void I_map::set_init_phase_off()
+{
+    this->first_phase = false;
+}
+
+bool I_map::get_init_phase_state()
+{
+    return first_phase;
+}
+
+/**
+ * @brief 
+ * calculate/update  the score for a specific player  
+ * @param player the id player for which we want to calculate the score    
+ * @return int 
+ */
+int I_map::count_score(States player)
+{
+    vector<node> all_nodes =get_all_nodes();
+    int count = 0;
+    for (unsigned i=0 ; i < all_nodes.size() ; i++)
+    {
+        if (all_nodes[i].get_state()==player)
+        {
+            count+=1;
+        }
+    }
+    return count ;
+}
+
+
+int I_map::count_routes(States player)
+{
+    int count = 0;
+    for (unsigned i=0 ; i < map.size() ; i++)
+    {
+        if (map[i].get_route_state()==player)
+        {
+            count+=1;
+        }
+        
+    }
+    cout <<"route count is "<<count <<endl;
+    return count ;
 }

@@ -186,6 +186,7 @@ class I_map
 private:
     vector<route> map;
     vector<node> all_nodes;
+    bool first_phase ;
 public:
 
     I_map() { ; }
@@ -194,17 +195,22 @@ public:
     void update_intersection_state(int id, States new_state);
     void update_route_state(int id, States new_state);
     void print_map();
-    
+    void set_init_phase_on();
+    void set_init_phase_off();
+
     bool check_possible_route(int id, States player);
     bool check_2_routes_exist(node to_build_constuction , States player_id);
     bool check_house_construction_possible (int id , States player_id );
     bool check_node_has_adj_route(node click ,States player_id) ;
     bool check_node_has_adj_node(node my_node);
+    bool get_init_phase_state();
     
     route* get_route(int id);
     node* get_node(int id);
     int render_node (int click_x ,int click_y,int sensibility);
     int render_route (int click_x ,int click_y);
+    int count_score(States player); // count houses belonging to a specific player
+    int count_routes(States player); // count routes belonging to a specific player
 
     vector<node> get_all_nodes();
     vector<route> get_all_occupied_routes();

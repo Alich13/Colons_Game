@@ -50,3 +50,23 @@ int Player::count_X_ressources(Resources ressource)
     }
      return count ;
 }
+
+int Player::get_score()
+{
+    return total_points;
+}
+void Player::set_score(int N_score)
+{
+    this->total_points=N_score ;
+}
+
+
+int Player::get_number_of_routes()
+{
+    return number_of_routes;
+}
+
+void Player::set_route_number(int N_count)
+{
+    this->number_of_routes = N_count ;
+}

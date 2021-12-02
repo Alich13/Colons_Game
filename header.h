@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include "board_data_structures/data_structures.h" //import the costumized data structure we will use in Board class
 
+class my_window; // this is just a class declaration that will be referenced by Dessin class before its creation 
+
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& player   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
@@ -23,6 +25,7 @@
 class Player
 {
 public:
+
 	States id;
 	Player(States N_id, string N_nickname);
 	virtual ~Player(){};
@@ -32,10 +35,17 @@ public:
 	string get_name();
 	void append_to_ressources(Resources ressource);
 	int count_X_ressources(Resources ressource);
+	int get_number_of_routes();
+	void set_route_number(int N_count);
+	
+	int get_score();
+	void set_score(int N_score);
+
 
 private:
 	string Nickname;
 	int total_points = 0;
+	int number_of_routes =0 ;
 	vector<Resources> player_ressources = {};
 };
 
@@ -76,7 +86,7 @@ private:
 class Dessin : public Gtk::DrawingArea
 {
 public:
-	Dessin();
+	Dessin(my_window & W);
 	virtual ~Dessin(){};
 
 	// set up //
@@ -113,6 +123,7 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &); // make the drawings
 
 private:
+	my_window & my_win ;
 	Player *active_player; // a pointer to the active player
 
 	int x1, x2, y1, y2; // cordonates of points
@@ -150,6 +161,29 @@ private:
 };
 
 /*====================================================================*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&& rules window   &&&&&&&&&&&&&&&&&&&*/
+/*====================================================================*/
+/**
+ * @brief 
+ * 
+ */
+class rules_win : public Gtk::Window
+{
+public:
+rules_win();
+virtual ~rules_win(){};
+
+protected:
+
+Gtk::VBox mainBox ;
+Gtk::Grid Rules_Grid;
+Glib::RefPtr<Gdk::Pixbuf> card_image;
+Gtk::Image Card_Image;
+Gtk::Label lbl_;
+
+};
+
+/*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Game  window   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
 /**
@@ -166,16 +200,24 @@ public:
 	my_window();
 	virtual ~my_window(){};
 
+	void set_my_menu();
+	void set_side_box();
+
 	void button_add_house();
 	void button_add_path();
 	void button_add_route();
 
 	void next_turn();
 	void play_dice();
+	void see_rules();
 
 	void update_ressources(int dice_value);
 	void update_resources_table();
+	void update_score();
 
+	void manage_first_phase();
+	void manage_second_phase();
+	bool get_init_inversed();
 	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game my_window.set_player_list()
 	Player *get_player_by_state(States state);
 
@@ -183,11 +225,16 @@ protected:
 	Dessin dessin;
 	Dice my_dice;
 
+	// child windows
+	rules_win *my_rules_win;
+
+
 	Gtk::VBox
 		mainLayout,
 		board_box,
 		player_info_box,
 		buttons_box;
+
 	Gtk::Label
 		player_turn_label,
 		Dice_output_label,
@@ -219,13 +266,15 @@ protected:
 		buttonsGrid,
 		DiceGrid,
 		Action_grid,
+		Rules_Grid,
 		ressourcesGrid;
 	Gtk::Button
 		button_start_new_win,
 		button_house,
 		button_route,
 		button_next_turn,
-		button_play_dice;
+		button_play_dice,
+		button_rules ;
 
 	Gtk::MenuBar menuBar;
 	Gtk::MenuItem menuFiles;
@@ -242,8 +291,7 @@ protected:
 		argile_image,
 		mouton_image,
 		bois_image,
-		logo_image,
-		card_image;
+		logo_image;
 
 	Gtk::Image
 		Dice_Image,
@@ -252,14 +300,13 @@ protected:
 		Argile_Image,
 		Mouton_Image,
 		Bois_Image,
-		Logo_Image,
-		Card_Image;
+		Logo_Image;
+		
 
 private:
 	int dice_value = 0;
-	void set_my_menu();
-	void set_side_box();
-
+	bool first_turns = true ;
+	bool inversed = false ;
 	// for test
 	Player P1 = Player(States::p1, "ALi");
 	Player P2 = Player(States::p2, "Louai");
@@ -267,6 +314,7 @@ private:
 	//
 	vector<Player> player_list = {P1, P2, P3};
 	vector<Player>::iterator current_player_itr = player_list.begin();
+	vector<Player>::iterator last_elemnt = next(player_list.end(),-1);
 };
 
 /*====================================================================*/
@@ -295,6 +343,11 @@ protected:
 		Logo;
 	Gtk::ComboBoxText
 		c;
+
+
+
 };
+
+
 
 #endif // GTKMM_EXAMPLE_MYAREA_H

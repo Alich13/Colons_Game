@@ -12,7 +12,7 @@ CC=g++
 
 ######################
 # All the object files      
-OBJFILES = $(OBJDIR)/game/my_window.o $(OBJDIR)/game/player.o $(OBJDIR)/game/dessin.o $(OBJDIR)/board_data_structures/data_structures.o  $(OBJDIR)/game/board.o  $(OBJDIR)/game/Dice.o $(OBJDIR)/game/welcome_window.o $(OBJDIR)/main.o 
+OBJFILES = $(OBJDIR)/game/my_window.o $(OBJDIR)/game/player.o $(OBJDIR)/game/dessin.o $(OBJDIR)/board_data_structures/data_structures.o  $(OBJDIR)/game/board.o  $(OBJDIR)/game/Dice.o $(OBJDIR)/game/welcome_window.o $(OBJDIR)/game/rules_win.o $(OBJDIR)/main.o 
 
 ###############
 # All the flagss
