@@ -89,6 +89,8 @@ void my_window::button_add_house()
         d.run();
         dessin.set_add_house_pressed(true);
     }
+
+    dessin.ReafficheDessin();
 }
 
 void my_window::button_add_route()
@@ -138,7 +140,7 @@ void my_window::next_turn()
 
     dessin.set_add_route_pressed(false);
     dessin.set_add_house_pressed(false);
-    dessin.ReafficheDessin();
+    
 
     /*----------------------First Phase ------------------*/
     if (first_turns == true)
@@ -153,6 +155,8 @@ void my_window::next_turn()
 
         manage_second_phase();
     }
+
+    dessin.ReafficheDessin();
 }
 
 /**
@@ -186,6 +190,7 @@ void my_window::play_dice()
     }
 
     update_resources_table();
+    dessin.ReafficheDessin();
 }
 
 /**
