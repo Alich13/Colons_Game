@@ -234,15 +234,13 @@ void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	vector<node> all_possible_house = route_map.get_all_possible_houses(active_player->get_player_STATE_id());
 	int X, Y;
-	my_window f;
 	string path_to_gray_arrow;
 
 	if (all_possible_house.size() == 0) // no house construction is possible
 	{
-		Gtk::MessageDialog d(f, " No possible construction found ", true, Gtk::MESSAGE_ERROR);
+		Gtk::MessageDialog d(my_win, " No possible construction found ", true, Gtk::MESSAGE_ERROR);
 		d.set_secondary_text(" Please check the rules ");
 		set_add_house_pressed(false);
-		// Gtk::MessageDialog()
 		d.run();
 		ReafficheDessin();
 	}

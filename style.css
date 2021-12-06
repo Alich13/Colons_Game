@@ -9,18 +9,23 @@ button_route {
 .my_window {
     /*background-color: rgb(31, 56, 90);*/
 	
-	/* background: no-repeat center/100% url("./data/background2.jpg");
+	/*
+	background: no-repeat center/100% url("./data/background2.jpg");
     color:            rgb(17, 16, 16);
 	font-size: 1.5em;
-    padding:          10px 15px 20px 10px; */
-  }
+    padding:          10px 15px 20px 10px; 
+	*/
+}
 
 .welcome_window {
     /*background-color: rgb(31, 56, 90);*/
-/* 	
+	
+	/*
 	background: no-repeat center/100% url("./data/background.jpg");
-    color:            rgb(17, 16, 16);
-    padding:          10px 15px 20px 10px;  */
+    color:            rgb(248, 246, 246);
+	font-size: 1.75em;
+    padding:          10px 15px 20px 10px;  
+	*/
   }
 
 

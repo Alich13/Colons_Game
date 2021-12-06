@@ -327,22 +327,54 @@ public:
 	Welcome_Window();
 	virtual ~Welcome_Window(){};
 	void Open_New_Win_Clicked();
+	void display_players_options();
+	void detach_all();
+	void place_flag_image( int player_num ,Glib::RefPtr<Gdk::Pixbuf> px_image ,Gtk::Image*  Image , Gtk::Grid*  my_grid , int col , int row );
 
 protected:
 	my_window *main_window;
-	Gtk::Label lbl_;
-	Gtk::Button button_start_new_win;
+	Gtk::Label 
+		welcome_label,
+		l_Entry_1,
+        l_Entry_2,
+        l_Entry_3,
+        l_Entry_4,
+        l_Entry_5,
+        l_Entry_6,
+		lbl_;
+	Gtk::Button 
+		button_start_new_win,
+		button_submit_number;
 	Gtk::VBox
 		mainLayout;
 	Gtk::Grid
 		grid;
 	Glib::RefPtr<Gdk::Pixbuf>
-		logo;
-
+		logo,
+		px_red ,
+		px_blue,
+		px_green ,
+		px_orange ,
+		px_brown,
+		px_white;
+	Gtk::SpinButton 
+		spin;
 	Gtk::Image
-		Logo;
-	Gtk::ComboBoxText
-		c;
+		Logo,
+		I_red ,
+		I_blue,
+		I_green ,
+		I_orange ,
+		I_brown,
+		I_white;
+	
+	Gtk::Entry 
+        m_Entry_1,
+        m_Entry_2,
+        m_Entry_3,
+        m_Entry_4,
+        m_Entry_5,
+        m_Entry_6;
 
 
 
