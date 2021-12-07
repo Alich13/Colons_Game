@@ -32,8 +32,19 @@ my_window::my_window() : dessin(*this)
     // fullscreen();
     set_border_width(5);
 
+
+    //---------------------for -TESTS------------------//
+
+    player_list[0].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile,Resources::mouton,Resources::bois,Resources::ble,Resources::pierre,Resources::pierre,Resources::pierre,Resources::pierre});
+    player_list[1].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile,Resources::mouton,Resources::bois,Resources::ble,Resources::pierre,Resources::pierre,Resources::pierre,Resources::pierre});
+    player_list[2].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile,Resources::mouton,Resources::bois,Resources::ble,Resources::pierre,Resources::pierre,Resources::pierre,Resources::pierre});
+    player_list[3].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile});
+    
+
     /*-------------set init phase----------------*/
-    dessin.route_map.set_init_phase_on();
+    
+    //dessin.route_map.set_init_phase_on();
+    dessin.route_map.set_init_phase_off(); // for test
 
     /*--------------setup window----------------*/
     set_my_menu(); // method to set up the menu
@@ -44,15 +55,27 @@ my_window::my_window() : dessin(*this)
     board_Frame.add(dessin);
     board_box.set_size_request(1000, 900); // (width,hight) (1000,900)
     board_box.add(board_Frame);
-    /*---------board box---------------*/
+
+    // display dice button only after first phase :
+    if (first_turns == false)
+    {
+    my_dice.set_dice_state(true);
+    this->dice_value = 0; // reset dice to initial value = zero corresponding to no Tuile
+    Dice_output_label.set_markup(" Throw Dice ? ? ?");
+
+    button_play_dice.set_label("Play Dice");
+    DiceGrid.attach(button_play_dice, 0, 0, 1, 1);
+    button_play_dice.signal_clicked().connect(sigc::mem_fun(*this, &my_window::play_dice));
+    }
+
+    /*---------board box----------------*/
 
     /*---------mainGrid-------------------------*/
     mainGrid.set_row_spacing(10);
     mainGrid.set_column_spacing(10);
     mainGrid.attach(buttons_box, 0, 1, 1, 1);
     mainGrid.attach(board_box, 1, 1, 1, 1);
-    mainLayout.add(mainGrid);
-    add(mainLayout);     // ajoute la grid à la fenetre
+    this-> add(mainGrid);     // ajoute la grid à la fenetre
     show_all_children(); // afficher tous les grid inclus dans la fènete
     /*---------mainGrid-------------------------*/
 }
@@ -62,7 +85,8 @@ void my_window::button_add_house()
     // first phase
     if (first_turns == true)
     {
-        if (
+        if 
+        (
             ((current_player_itr->get_score() == 0) && (inversed == false)) ||
             ((current_player_itr->get_score() == 1) && (inversed == true)) ||
             ((current_player_itr->get_score() == 0) && (inversed == true)) // When iterator is on last element
@@ -157,7 +181,11 @@ void my_window::next_turn()
         manage_second_phase();
     }
 
+    // change player flag 
+    infoGrid.remove(I_image);
+    place_flag_image(current_player_itr->get_player_INT_id(),px_image,&I_image ,&infoGrid,1,0);
     dessin.ReafficheDessin();
+    this->show_all_children();
 }
 
 /**
@@ -226,6 +254,8 @@ Player *my_window::get_player_by_state(States state)
         }
     }
 }
+
+
 
 /**
  * @brief
@@ -362,9 +392,30 @@ void my_window::manage_second_phase()
     update_resources_table();
 }
 
+/**
+ * @brief  ruturn the value of inversed
+ * 
+ * @return true 
+ * @return false 
+ */
 bool my_window::get_init_inversed()
 {
     return inversed ;
+}
+
+
+/**
+ * @brief 
+ * Actions to do when the dice return 7
+ * 
+ */
+void my_window::open_thief_window()
+{
+   
+    thief_window = new thief_win(*this);
+    thief_window->set_player_list(player_list);
+    thief_window->show();
+
 }
 
 //---------------------------  functions used to set the window's widgets --------------------------//
@@ -401,6 +452,29 @@ void my_window::update_resources_table()
     brick_count_label.set_markup("x" + to_string(current_player_itr->count_X_ressources(Resources::argile)));
     //--------------------------------------------------------------//
 }
+
+/**
+ * @brief places the flags images 
+ * 
+ * @param player_num  number of the player 
+ * @param px_image    pixbuff image object
+ * @param Image       Gtk:: Image object
+ * @param my_grid     the gird in which we want to attach our images
+ * @param col         the colon in the given grid
+ * @param row           the row in the given grid
+ */
+void my_window::place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> px_image ,Gtk::Image*  Image , Gtk::Grid*  my_grid , int col , int row )
+{
+    cout << "player id "<< player_num<<endl;
+    my_grid->remove(I_image);
+    px_image = Gdk::Pixbuf::create_from_file("data/flags/" + to_string(player_num) +".png");
+    px_image = px_image->scale_simple((px_image->get_height()) * 0.5, (px_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
+    Image->set(px_image);
+    my_grid->attach(*Image, col,row , 1, 1);
+}
+
+
+
 
 void my_window::set_my_menu()
 {
@@ -477,6 +551,9 @@ void my_window::set_side_box()
     infoGrid.set_margin_top(20);
     infoGrid.attach(player_turn_label, 0, 0, 1, 1);
     infoGrid.attach(score_label, 0, 1, 1, 1);
+    
+    
+    place_flag_image(current_player_itr->get_player_INT_id(),px_image,&I_image ,&infoGrid,1,0);
 
     ressourcesGrid.set_margin_left(100);
     ressourcesGrid.set_column_spacing(20);
@@ -524,6 +601,11 @@ void my_window::set_side_box()
     button_next_turn.signal_clicked().connect(sigc::mem_fun(*this, &my_window::next_turn));
     button_rules.add_label("See construction rules");
     button_rules.signal_clicked().connect(sigc::mem_fun(*this, &my_window::see_rules));
+
+    //test
+    button_test_thief.add_label("test thief");
+    button_test_thief.signal_clicked().connect(sigc::mem_fun(*this, &my_window::open_thief_window));
+
     // | //
     // v //
 
@@ -535,6 +617,9 @@ void my_window::set_side_box()
     buttonsGrid.attach(button_rules, 1, 0, 1, 1);
     buttonsGrid.attach(button_route, 0, 1, 1, 1);
     buttonsGrid.attach(button_next_turn, 0, 2, 1, 1);
+
+    //test
+    buttonsGrid.attach(button_test_thief,0,3,1,1);
 
     
 

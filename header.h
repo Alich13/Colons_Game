@@ -8,7 +8,9 @@
 #include <unistd.h>
 #include "board_data_structures/data_structures.h" //import the costumized data structure we will use in Board class
 
-class my_window; // this is just a class declaration that will be referenced by Dessin class before its creation 
+// this is just  class declaration that will be referenced by Dessin class before its creation 
+class my_window; 
+class thief_win;
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& player   &&&&&&&&&&&&&&&&&&&*/
@@ -38,6 +40,9 @@ public:
 	int get_number_of_routes();
 	void set_route_number(int N_count);
 	
+	void set_resources(vector<Resources> N_ressources);
+	vector<Resources> get_resources();
+
 	int get_score();
 	void set_score(int N_score);
 
@@ -184,6 +189,108 @@ Gtk::Label lbl_;
 };
 
 /*====================================================================*/
+/*&&&&&&&&&&&&&&&&&&&&&&&&&&& thief window (voleur)  &&&&&&&&&&&&&&&&&&&*/
+/*====================================================================*/
+/**
+ * @brief 
+ * 
+ */
+class thief_win : public Gtk::Window
+{
+public:
+thief_win(my_window & W); // set or initiate a reference to the main window in the constructor
+virtual ~thief_win(){};
+void set_ressources_table();
+void set_player_list(vector<Player> &N_list);
+void submit_choices();
+void update_ressources_table();
+int  update_discard_num();
+
+vector<Resources> update_resources_list();
+vector<Player> filter_8(vector<Player> input_list);
+
+protected:
+
+	Gtk::VBox mainBox ;
+	Gtk::Grid main_Grid;
+	Glib::RefPtr<Gdk::Pixbuf> px_image;
+	Gtk::Image Image ;
+
+	Gtk::Button
+		button_submit ;
+
+	Gtk::VBox
+		player_info_box;
+	Gtk::Label
+	 	lbl_,
+		lbl_1,
+		lbl_2,
+		
+		player_turn_label,
+		score_label,
+
+		ble_title,
+		bois_title,
+		mouton_title,
+		brick_title,
+		pierre_title,
+
+		ble_count_label,
+		mouton_count_label,
+		bois_count_label,
+		pierre_count_label,
+		brick_count_label;
+
+	Gtk::Frame
+		board_Frame,
+		player_info_frame,
+		ressouces_frame;
+
+	Gtk::Grid
+		mainGrid,
+		infoGrid,
+		Rules_Grid,
+		ressourcesGrid;
+	
+	Glib::RefPtr<Gdk::Pixbuf>
+		dice_image,
+		ble_image,
+		pierre_image,
+		argile_image,
+		mouton_image,
+		bois_image,
+		logo_image;
+
+	Gtk::Image
+		Dice_Image,
+		Ble_Image,
+		Pierre_Image,
+		Argile_Image,
+		Mouton_Image,
+		Bois_Image,
+		Logo_Image;
+	Gtk::SpinButton
+		spin_ble,
+		spin_mouton,
+		spin_pierre,
+		spin_argile,
+		spin_bois;
+			 
+
+
+private :
+	
+	my_window & parent_win ;
+	
+	// iterator inside to iterate through list of player with more than 8 cards 
+	vector<Player>::iterator current_player_itr ;
+	vector<Player> list_player_with_8_ressources;
+
+};
+
+
+
+/*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& Game  window   &&&&&&&&&&&&&&&&&&&*/
 /*====================================================================*/
 /**
@@ -219,7 +326,10 @@ public:
 	void manage_second_phase();
 	bool get_init_inversed();
 	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game my_window.set_player_list()
+	
 	Player *get_player_by_state(States state);
+	void place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> px_image ,Gtk::Image*  Image , Gtk::Grid*  my_grid , int col , int row );
+	void open_thief_window();
 
 protected:
 	Dessin dessin;
@@ -227,7 +337,7 @@ protected:
 
 	// child windows
 	rules_win *my_rules_win;
-
+	thief_win *thief_window;
 
 	Gtk::VBox
 		mainLayout,
@@ -274,6 +384,7 @@ protected:
 		button_route,
 		button_next_turn,
 		button_play_dice,
+		button_test_thief,
 		button_rules ;
 
 	Gtk::MenuBar menuBar;
@@ -285,6 +396,7 @@ protected:
 	Gtk::ScrolledWindow m_ScrolledWindow;
 
 	Glib::RefPtr<Gdk::Pixbuf>
+		px_image,
 		dice_image,
 		ble_image,
 		pierre_image,
@@ -294,6 +406,7 @@ protected:
 		logo_image;
 
 	Gtk::Image
+		I_image,
 		Dice_Image,
 		Ble_Image,
 		Pierre_Image,
@@ -305,17 +418,24 @@ protected:
 
 private:
 	int dice_value = 0;
-	bool first_turns = true ;
+	bool first_turns = false ; // for testing (normally true) 
 	bool inversed = false ;
-	// for test
+	
+	//---------------- for test
+	
 	Player P1 = Player(States::p1, "ALi");
 	Player P2 = Player(States::p2, "Louai");
 	Player P3 = Player(States::p3, "jalil");
-	//
-	vector<Player> player_list = {P1, P2, P3};
+	Player P4 = Player(States::p4, "mariem");
+	//--------------------set ressources for test -----------------------------// 
+	
+
+	//------------------------------------------
+	vector<Player> player_list={P1, P2, P3,P4};
 	vector<Player>::iterator current_player_itr = player_list.begin();
 	vector<Player>::iterator last_elemnt = next(player_list.end(),-1);
 };
+
 
 /*====================================================================*/
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& welcome window   &&&&&&&&&&&&&&&&&&&*/

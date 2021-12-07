@@ -321,6 +321,19 @@ void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 			cr->set_source_rgb(0, 100, 0);
 
 			break;
+		case States::p4:
+			cr->set_source_rgb(100, 10, 0);
+
+			break;
+		case States::p5:
+			cr->set_source_rgb(60, 0, 0);
+
+			break;
+		case States::p6:
+			cr->set_source_rgb(100,100, 100);
+
+			break;
+
 		}
 		cr->move_to(pos1_x, pos1_y);
 		cr->line_to(pos2_x, pos2_y);

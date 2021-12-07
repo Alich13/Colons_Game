@@ -70,3 +70,13 @@ void Player::set_route_number(int N_count)
 {
     this->number_of_routes = N_count ;
 }
+
+vector<Resources> Player::get_resources()
+{
+  return player_ressources;
+}
+
+void Player::set_resources(vector<Resources> N_ressources)
+{ 
+  this->player_ressources=N_ressources;
+}

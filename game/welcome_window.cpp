@@ -23,7 +23,7 @@ Welcome_Window::Welcome_Window()
     Logo.set(logo);
     /*------------------------------------------*/
     grid.set_column_spacing(20);
-    grid.set_row_spacing(20);
+    grid.set_row_spacing(50);
     grid.set_margin_left(100);
 
     /*-------------Spin----------------------------*/
@@ -259,5 +259,5 @@ void Welcome_Window::place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> 
     px_image = Gdk::Pixbuf::create_from_file("data/flags/" + to_string(player_num) +".png");
     px_image = px_image->scale_simple((px_image->get_height()) * 0.5, (px_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
     Image->set(px_image);
-    my_grid->attach(*Image, col,row , 1, 1);
+    my_grid->attach(*Image, col,row , 2, 2);
 }
