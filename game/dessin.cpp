@@ -197,8 +197,7 @@ void Dessin::updateHouse(GdkEventButton *event)
 			if ( my_win.get_first_turn()==true )
 			{
 				route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
-				set_add_house_pressed(false);
-				my_win.consume_ressources("house");  // 1 for house 
+				set_add_house_pressed(false); 
 				my_win.update_score();
 
 			}
