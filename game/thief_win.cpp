@@ -119,8 +119,7 @@ void thief_win::submit_choices()
             discard_num=update_discard_num();
             update_ressources_table(); // display new values
             this->show_all_children();
-            
-            
+             
             
         }
         else

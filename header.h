@@ -38,14 +38,14 @@ public:
 	void append_to_ressources(Resources ressource);
 	int count_X_ressources(Resources ressource);
 	int get_number_of_routes();
-	void set_route_number(int N_count);
 	
+	void set_route_number(int N_count);
 	void set_resources(vector<Resources> N_ressources);
 	vector<Resources> get_resources();
-
+	
 	int get_score();
 	void set_score(int N_score);
-
+	
 
 private:
 	string Nickname;
@@ -304,7 +304,7 @@ private :
 class my_window : public Gtk::Window
 {
 public:
-	my_window();
+	my_window(vector<Player> N_player_list);
 	virtual ~my_window(){};
 
 	void set_my_menu();
@@ -325,11 +325,13 @@ public:
 	void manage_first_phase();
 	void manage_second_phase();
 	bool get_init_inversed();
-	void set_player_list(); // this methode will be called from main to set the number of player at the begining of the game my_window.set_player_list()
+	bool get_first_turn();
+	void set_player_list(vector<Player> N_list); // this methode will be called from main to set the number of player at the begining of the game my_window.set_player_list()
 	
 	Player *get_player_by_state(States state);
 	void place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> px_image ,Gtk::Image*  Image , Gtk::Grid*  my_grid , int col , int row );
 	void open_thief_window();
+	void consume_ressources(string s);  // B = 0 consume ressources to build a route  if   B = 1 consume ressources to build a house
 
 protected:
 	Dessin dessin;
@@ -418,22 +420,15 @@ protected:
 
 private:
 	int dice_value = 0;
-	bool first_turns = false ; // for testing (normally true) 
+	bool first_turns = true ; // for testing (normally true) 
 	bool inversed = false ;
 	
-	//---------------- for test
-	
-	Player P1 = Player(States::p1, "ALi");
-	Player P2 = Player(States::p2, "Louai");
-	Player P3 = Player(States::p3, "jalil");
-	Player P4 = Player(States::p4, "mariem");
-	//--------------------set ressources for test -----------------------------// 
 	
 
 	//------------------------------------------
-	vector<Player> player_list={P1, P2, P3,P4};
-	vector<Player>::iterator current_player_itr = player_list.begin();
-	vector<Player>::iterator last_elemnt = next(player_list.end(),-1);
+	vector<Player> player_list;
+	vector<Player>::iterator current_player_itr ;
+	vector<Player>::iterator last_elemnt ;
 };
 
 

@@ -199,19 +199,78 @@ void Welcome_Window::display_players_options()
 
 void Welcome_Window::Open_New_Win_Clicked()
 {
+    int num_players = spin.get_value();
+    
+    
+    
+    if (num_players == 2)
+    {
+        Player P1 = Player(States::p1, m_Entry_1.get_text());
+	    Player P2 = Player(States::p2, m_Entry_2.get_text());
+        vector<Player> player_list={P1, P2};
+        main_window = new my_window(player_list);
 
-    main_window = new my_window();
-    
-    /*
-    
-        all settings to pass to  mainwindow
-        main_window.set_players
-    
-    */
+    }
 
+
+    if (num_players == 3)
+    {
+        Player P1 = Player(States::p1, m_Entry_1.get_text());
+	    Player P2 = Player(States::p2, m_Entry_2.get_text());
+    	Player P3 = Player(States::p3, m_Entry_3.get_text());
+	    
+
+        vector<Player> player_list={P1, P2 ,P3};
+        main_window = new my_window(player_list);
+    }
+
+
+    if (num_players == 4)
+    {
+        Player P1 = Player(States::p1, m_Entry_1.get_text());
+	    Player P2 = Player(States::p2, m_Entry_2.get_text());
+        Player P3 = Player(States::p3, m_Entry_3.get_text());
+	    Player P4 = Player(States::p4, m_Entry_4.get_text());
+
+        vector<Player> player_list={P1, P2 ,P3,P4};
+        main_window = new my_window(player_list);
+    }
+
+
+    if (num_players == 5)
+    {
+        Player P1 = Player(States::p1, m_Entry_1.get_text());
+	    Player P2 = Player(States::p2, m_Entry_2.get_text());
+        Player P3 = Player(States::p3, m_Entry_3.get_text());
+	    Player P4 = Player(States::p4, m_Entry_4.get_text());
+        Player P5 = Player(States::p5, m_Entry_5.get_text());
+
+        vector<Player> player_list={P1, P2 ,P3,P4,P5};
+        main_window = new my_window(player_list);
+	
+    }
+
+
+
+    if (num_players == 6)
+    {
+        Player P1 = Player(States::p1, m_Entry_1.get_text());
+	    Player P2 = Player(States::p2, m_Entry_2.get_text());
+        Player P3 = Player(States::p3, m_Entry_3.get_text());
+	    Player P4 = Player(States::p4, m_Entry_4.get_text());
+        Player P5 = Player(States::p5, m_Entry_5.get_text());
+        Player P6 = Player(States::p6, m_Entry_6.get_text());
+    
+        vector<Player> player_list={P1, P2 ,P3,P4,P5 ,P6};
+        main_window = new my_window(player_list);
+    }
+
+    
     main_window->show();
     button_submit_number.hide();
     button_start_new_win.hide();
+
+    
     
 }
 
@@ -259,5 +318,5 @@ void Welcome_Window::place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> 
     px_image = Gdk::Pixbuf::create_from_file("data/flags/" + to_string(player_num) +".png");
     px_image = px_image->scale_simple((px_image->get_height()) * 0.5, (px_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
     Image->set(px_image);
-    my_grid->attach(*Image, col,row , 2, 2);
+    my_grid->attach(*Image, col,row , 1, 1);
 }

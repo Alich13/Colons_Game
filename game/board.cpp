@@ -383,9 +383,5 @@ Board::Board()
     intersection_map.insert(R108);
     intersection_map.insert(R109);
 
-    // for testing purposes
-    intersection_map.update_intersection_state(1, States::p1);
-    intersection_map.update_intersection_state(4, States::p2);
-    intersection_map.update_intersection_state(14, States::p3);
-    intersection_map.update_intersection_state(16, States::p4);
+    
 }

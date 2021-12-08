@@ -107,10 +107,45 @@ void Dessin::updateRoute(GdkEventButton *event)
 		cout << "selected route " << selectedRoute_id << endl;
 		if (route_map.check_possible_route(selectedRoute_id, active_player->get_player_STATE_id())) //  if route construction is possible
 		{
-			route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
-			set_add_route_pressed(false);
-			ReafficheDessin();
-			my_win.update_score();
+			
+			
+			if (
+				my_win.get_first_turn()==false &&
+				active_player->count_X_ressources(Resources::argile) >= 1 &&
+				active_player->count_X_ressources(Resources::bois) >= 1 
+				)
+			{
+
+				cout << "entred route ressources cond" <<endl;
+				route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
+				set_add_route_pressed(false);
+				my_win.consume_ressources("route");// 0 for route 
+				my_win.update_score();
+		
+			}
+			else if (my_win.get_first_turn()==false)
+			{
+				// alerte widjet
+				Gtk::MessageDialog d(my_win, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
+				d.set_secondary_text("not enough resources");
+				// Gtk::MessageDialog()
+				d.run();
+				set_add_route_pressed(false);
+
+			}
+			
+
+			/**
+			 * @brief no need for ressource in the first turns 
+			 * 
+			 */
+			if (my_win.get_first_turn()==true )
+			{
+				route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
+				set_add_route_pressed(false); 
+				my_win.update_score();
+			}
+			
 		}
 		else
 		{
@@ -120,9 +155,11 @@ void Dessin::updateRoute(GdkEventButton *event)
 			// Gtk::MessageDialog()
 			d.run();
 			set_add_route_pressed(false);
-			ReafficheDessin();
+			
 		}
 	}
+
+	ReafficheDessin();
 }
 
 void Dessin::updateHouse(GdkEventButton *event)
@@ -136,13 +173,55 @@ void Dessin::updateHouse(GdkEventButton *event)
 		cout << "selected house " << selectedHouse_id << endl;
 		if (route_map.check_house_construction_possible(selectedHouse_id, active_player->get_player_STATE_id()))
 		{
+			/*#######################################################################*/
+			// ################### condition on ressouces here #######################//
+			//#######################################################################// 
+			if (
+				my_win.get_first_turn()==false &&
+				active_player->count_X_ressources(Resources::argile) >= 1 &&
+				active_player->count_X_ressources(Resources::bois) >= 1 &&
+				active_player->count_X_ressources(Resources::ble) >= 1 &&
+				active_player->count_X_ressources(Resources::mouton) >= 1
+			)
+			{
+			
 			route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
 			set_add_house_pressed(false);
-			ReafficheDessin();
+			my_win.consume_ressources("house");  // 1 for house 
 			my_win.update_score();
+			
+			}
+
+
+			// if in first phase
+			if ( my_win.get_first_turn()==true )
+			{
+				route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
+				set_add_house_pressed(false);
+				my_win.consume_ressources("house");  // 1 for house 
+				my_win.update_score();
+
+			}
+			// if  in second and not enough ressources 
+			else if ( my_win.get_first_turn()==false )
+			{
+				Gtk::MessageDialog d(my_win, "House construction not possible", true, Gtk::MESSAGE_ERROR);
+				d.set_secondary_text("Note enough resources ");
+				set_add_house_pressed(false);
+				// Gtk::MessageDialog()
+				d.run();
+
+			}
+
+
 
 			// if in the first phase "inverted" we update ressources for each player
 			// when placing his settlement
+
+			/**
+			 * @brief no need for ressource in the first turns 
+			 * 
+			 */
 			if (my_win.get_init_inversed() && (active_player->get_score() == 2))
 			{
 				node *selectedHouse_ptr = route_map.get_node(selectedHouse_id);
@@ -163,9 +242,12 @@ void Dessin::updateHouse(GdkEventButton *event)
 			set_add_house_pressed(false);
 			// Gtk::MessageDialog()
 			d.run();
-			ReafficheDessin();
+			
 		}
 	}
+
+
+	ReafficheDessin();
 }
 
 //-----------------------------draw Functions-----------------------------------------//

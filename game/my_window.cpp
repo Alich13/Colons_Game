@@ -12,7 +12,8 @@ using namespace std;
  * @brief Construct a new my window::my window object
  *
  */
-my_window::my_window() : dessin(*this)
+my_window::my_window(vector<Player> N_player_list) : dessin(*this), player_list(N_player_list)
+
 {
     //-----------------------------load css-----------------------------
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
@@ -32,19 +33,15 @@ my_window::my_window() : dessin(*this)
     // fullscreen();
     set_border_width(5);
 
-
     //---------------------for -TESTS------------------//
+    player_list[0].set_resources({Resources::ble, Resources::ble, Resources::mouton, Resources::argile, Resources::argile, Resources::argile, Resources::mouton, Resources::bois, Resources::ble, Resources::pierre, Resources::pierre, Resources::pierre, Resources::pierre});
+    player_list[1].set_resources({Resources::ble, Resources::ble, Resources::mouton, Resources::argile, Resources::argile, Resources::argile, Resources::mouton, Resources::bois, Resources::ble, Resources::pierre, Resources::pierre, Resources::pierre, Resources::pierre});
 
-    player_list[0].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile,Resources::mouton,Resources::bois,Resources::ble,Resources::pierre,Resources::pierre,Resources::pierre,Resources::pierre});
-    player_list[1].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile,Resources::mouton,Resources::bois,Resources::ble,Resources::pierre,Resources::pierre,Resources::pierre,Resources::pierre});
-    player_list[2].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile,Resources::mouton,Resources::bois,Resources::ble,Resources::pierre,Resources::pierre,Resources::pierre,Resources::pierre});
-    player_list[3].set_resources({Resources::ble,Resources::ble,Resources::mouton,Resources::argile});
-    
-
+    /*---------------set up player list-----------------*/
+    this->current_player_itr = player_list.begin();
+    this->last_elemnt = next(player_list.end(), -1);
     /*-------------set init phase----------------*/
-    
-    //dessin.route_map.set_init_phase_on();
-    dessin.route_map.set_init_phase_off(); // for test
+    dessin.route_map.set_init_phase_on();
 
     /*--------------setup window----------------*/
     set_my_menu(); // method to set up the menu
@@ -59,13 +56,13 @@ my_window::my_window() : dessin(*this)
     // display dice button only after first phase :
     if (first_turns == false)
     {
-    my_dice.set_dice_state(true);
-    this->dice_value = 0; // reset dice to initial value = zero corresponding to no Tuile
-    Dice_output_label.set_markup(" Throw Dice ? ? ?");
+        my_dice.set_dice_state(true);
+        this->dice_value = 0; // reset dice to initial value = zero corresponding to no Tuile
+        Dice_output_label.set_markup(" Throw Dice ? ? ?");
 
-    button_play_dice.set_label("Play Dice");
-    DiceGrid.attach(button_play_dice, 0, 0, 1, 1);
-    button_play_dice.signal_clicked().connect(sigc::mem_fun(*this, &my_window::play_dice));
+        button_play_dice.set_label("Play Dice");
+        DiceGrid.attach(button_play_dice, 0, 0, 1, 1);
+        button_play_dice.signal_clicked().connect(sigc::mem_fun(*this, &my_window::play_dice));
     }
 
     /*---------board box----------------*/
@@ -75,7 +72,7 @@ my_window::my_window() : dessin(*this)
     mainGrid.set_column_spacing(10);
     mainGrid.attach(buttons_box, 0, 1, 1, 1);
     mainGrid.attach(board_box, 1, 1, 1, 1);
-    this-> add(mainGrid);     // ajoute la grid à la fenetre
+    this->add(mainGrid); // ajoute la grid à la fenetre
     show_all_children(); // afficher tous les grid inclus dans la fènete
     /*---------mainGrid-------------------------*/
 }
@@ -85,8 +82,7 @@ void my_window::button_add_house()
     // first phase
     if (first_turns == true)
     {
-        if 
-        (
+        if (
             ((current_player_itr->get_score() == 0) && (inversed == false)) ||
             ((current_player_itr->get_score() == 1) && (inversed == true)) ||
             ((current_player_itr->get_score() == 0) && (inversed == true)) // When iterator is on last element
@@ -121,12 +117,11 @@ void my_window::button_add_route()
 {
     if (first_turns == true)
     {
-        cout << "route number" <<current_player_itr->get_number_of_routes() << endl ;
+        cout << "route number" << current_player_itr->get_number_of_routes() << endl;
         if (
             ((current_player_itr->get_number_of_routes() == 0) && (inversed == false)) ||
             ((current_player_itr->get_number_of_routes() == 1) && (inversed == true)) ||
-            ((current_player_itr->get_number_of_routes() == 0) && (inversed == true))
-        )
+            ((current_player_itr->get_number_of_routes() == 0) && (inversed == true)))
         {
             // alerte widjet
             // set all other bottons to false
@@ -165,7 +160,6 @@ void my_window::next_turn()
 
     dessin.set_add_route_pressed(false);
     dessin.set_add_house_pressed(false);
-    
 
     /*----------------------First Phase ------------------*/
     if (first_turns == true)
@@ -181,9 +175,9 @@ void my_window::next_turn()
         manage_second_phase();
     }
 
-    // change player flag 
+    // change player flag
     infoGrid.remove(I_image);
-    place_flag_image(current_player_itr->get_player_INT_id(),px_image,&I_image ,&infoGrid,1,0);
+    place_flag_image(current_player_itr->get_player_INT_id(), px_image, &I_image, &infoGrid, 1, 0);
     dessin.ReafficheDessin();
     this->show_all_children();
 }
@@ -223,17 +217,14 @@ void my_window::play_dice()
 }
 
 /**
- * @brief opens a child window showing the rules for each construction  
- * 
+ * @brief opens a child window showing the rules for each construction
+ *
  */
 void my_window::see_rules()
 {
-    my_rules_win = new rules_win(); //init pointer
+    my_rules_win = new rules_win(); // init pointer
     my_rules_win->show();
-    
 }
-
-
 
 //--------------------------- functions used to manage players turns-----------------------//
 
@@ -254,8 +245,6 @@ Player *my_window::get_player_by_state(States state)
         }
     }
 }
-
-
 
 /**
  * @brief
@@ -341,7 +330,7 @@ void my_window::manage_first_phase()
             // // plays another time and inverse the sens
             {
                 inversed = true;
-                Gtk::MessageDialog d(*this, " put the image and name of the player Please add 2 houses and 4 routes ", true, Gtk::MESSAGE_ERROR);
+                Gtk::MessageDialog d(*this, " The player"+ current_player_itr->get_name() + "; Please add 2 houses and 4 routes ", true, Gtk::MESSAGE_INFO);
                 d.run();
             }
         }
@@ -393,30 +382,119 @@ void my_window::manage_second_phase()
 }
 
 /**
- * @brief  ruturn the value of inversed
- * 
- * @return true 
- * @return false 
+ * @brief  return the value of inversed
+ *
+ * @return true
+ * @return false
  */
 bool my_window::get_init_inversed()
 {
-    return inversed ;
+    return inversed;
 }
 
+/**
+ * @brief return the value of ifirst_turns
+ *
+ * @return true   the game is in the first phase
+ * @return false
+ */
+bool my_window::get_first_turn()
+{
+    return first_turns;
+}
 
 /**
- * @brief 
+ * @brief
  * Actions to do when the dice return 7
- * 
+ *
  */
 void my_window::open_thief_window()
 {
-   
+
     thief_window = new thief_win(*this);
     thief_window->set_player_list(player_list);
     thief_window->show();
-
 }
+
+/**
+ * @brief  consumes the resources needed to construct a house or a route
+ *
+ * @param B  B = 0 consume ressources to build a route  if   B = 1 consume ressources to build a house
+ */
+void my_window::consume_ressources(string s)
+{
+
+    vector<Resources> my_list = {};
+
+    // building a route
+    if (s == "route")
+    {
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::bois) - 1); i++)
+        {
+            my_list.push_back(Resources::bois);
+        };
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::argile) - 1); i++)
+        {
+            my_list.push_back(Resources::argile);
+        };
+
+        //-------------------------------------same----------------------------------------------//
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::mouton)); i++)
+        {
+            my_list.push_back(Resources::mouton);
+        };
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::ble)); i++)
+        {
+            my_list.push_back(Resources::ble);
+        };
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::pierre)); i++)
+        {
+            my_list.push_back(Resources::pierre);
+        };
+    }
+
+    // building a house
+    if (s == "house")
+    {
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::bois) - 1); i++)
+        {
+            my_list.push_back(Resources::bois);
+        };
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::mouton) - 1); i++)
+        {
+            my_list.push_back(Resources::mouton);
+        };
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::argile) - 1); i++)
+        {
+            my_list.push_back(Resources::argile);
+        };
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::ble) - 1); i++)
+        {
+            my_list.push_back(Resources::ble);
+        };
+
+        //-------------------------------------same----------------------------------------------//
+        for (unsigned i = 0; i < (current_player_itr->count_X_ressources(Resources::pierre)); i++)
+        {
+            my_list.push_back(Resources::pierre);
+        };
+    }
+
+    current_player_itr->set_resources(my_list);
+    update_resources_table();
+}
+// /**
+//  * @brief set the player list
+//  *
+//  * @param N_list
+//  */
+// void my_window::set_player_list(vector<Player> N_list)
+// {
+
+//     this->player_list=N_list;
+//     this->current_player_itr= player_list.begin();
+// 	this->last_elemnt =next(player_list.end(),-1);
+// }
 
 //---------------------------  functions used to set the window's widgets --------------------------//
 
@@ -434,10 +512,6 @@ void my_window::update_score()
     this->show_all();
 }
 
-
-
-
-
 /**
  * @brief
  * updates ressources table in the sidebox
@@ -454,27 +528,24 @@ void my_window::update_resources_table()
 }
 
 /**
- * @brief places the flags images 
- * 
- * @param player_num  number of the player 
+ * @brief places the flags images
+ *
+ * @param player_num  number of the player
  * @param px_image    pixbuff image object
  * @param Image       Gtk:: Image object
  * @param my_grid     the gird in which we want to attach our images
  * @param col         the colon in the given grid
  * @param row           the row in the given grid
  */
-void my_window::place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> px_image ,Gtk::Image*  Image , Gtk::Grid*  my_grid , int col , int row )
+void my_window::place_flag_image(int player_num, Glib::RefPtr<Gdk::Pixbuf> px_image, Gtk::Image *Image, Gtk::Grid *my_grid, int col, int row)
 {
-    cout << "player id "<< player_num<<endl;
+    cout << "player id " << player_num << endl;
     my_grid->remove(I_image);
-    px_image = Gdk::Pixbuf::create_from_file("data/flags/" + to_string(player_num) +".png");
+    px_image = Gdk::Pixbuf::create_from_file("data/flags/" + to_string(player_num) + ".png");
     px_image = px_image->scale_simple((px_image->get_height()) * 0.5, (px_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
     Image->set(px_image);
-    my_grid->attach(*Image, col,row , 1, 1);
+    my_grid->attach(*Image, col, row, 1, 1);
 }
-
-
-
 
 void my_window::set_my_menu()
 {
@@ -542,8 +613,6 @@ void my_window::set_side_box()
     brick_count_label.set_markup("x" + to_string(current_player_itr->count_X_ressources(Resources::argile)));
     Argile_Image.set(argile_image);
 
-    
-
     //---------------Attach element -------------------------//
     infoGrid.set_row_spacing(30);
     infoGrid.set_column_spacing(20);
@@ -551,9 +620,8 @@ void my_window::set_side_box()
     infoGrid.set_margin_top(20);
     infoGrid.attach(player_turn_label, 0, 0, 1, 1);
     infoGrid.attach(score_label, 0, 1, 1, 1);
-    
-    
-    place_flag_image(current_player_itr->get_player_INT_id(),px_image,&I_image ,&infoGrid,1,0);
+
+    place_flag_image(current_player_itr->get_player_INT_id(), px_image, &I_image, &infoGrid, 1, 0);
 
     ressourcesGrid.set_margin_left(100);
     ressourcesGrid.set_column_spacing(20);
@@ -602,7 +670,7 @@ void my_window::set_side_box()
     button_rules.add_label("See construction rules");
     button_rules.signal_clicked().connect(sigc::mem_fun(*this, &my_window::see_rules));
 
-    //test
+    // test
     button_test_thief.add_label("test thief");
     button_test_thief.signal_clicked().connect(sigc::mem_fun(*this, &my_window::open_thief_window));
 
@@ -618,10 +686,8 @@ void my_window::set_side_box()
     buttonsGrid.attach(button_route, 0, 1, 1, 1);
     buttonsGrid.attach(button_next_turn, 0, 2, 1, 1);
 
-    //test
-    buttonsGrid.attach(button_test_thief,0,3,1,1);
-
-    
+    // test
+    buttonsGrid.attach(button_test_thief, 0, 3, 1, 1);
 
     // | //
     // v //
