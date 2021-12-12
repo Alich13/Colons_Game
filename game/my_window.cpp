@@ -33,10 +33,6 @@ my_window::my_window(vector<Player> N_player_list) : dessin(*this), player_list(
     // fullscreen();
     set_border_width(5);
 
-    //---------------------for -TESTS------------------//
-    player_list[0].set_resources({Resources::ble, Resources::ble, Resources::mouton, Resources::argile, Resources::argile, Resources::argile, Resources::mouton, Resources::bois, Resources::ble, Resources::pierre, Resources::pierre, Resources::pierre, Resources::pierre});
-    player_list[1].set_resources({Resources::ble, Resources::ble, Resources::mouton, Resources::argile, Resources::argile, Resources::argile, Resources::mouton, Resources::bois, Resources::ble, Resources::pierre, Resources::pierre, Resources::pierre, Resources::pierre});
-
     /*---------------set up player list-----------------*/
     this->current_player_itr = player_list.begin();
     this->last_elemnt = next(player_list.end(), -1);
@@ -194,17 +190,23 @@ void my_window::play_dice()
         // set all other buttons to false
         dessin.set_add_route_pressed(false);
         dessin.set_add_house_pressed(false);
-        dessin.ReafficheDessin();
 
         this->dice_value = my_dice.randomize_dice();
         my_dice.set_dice_state(false);
         Dice_output_label.set_markup("returned value = " + to_string(dice_value));
 
-        update_ressources(dice_value);
-
         dice_image = Gdk::Pixbuf::create_from_file("data/vigniettes/" + to_string(dice_value) + ".png");
         dice_image = dice_image->scale_simple((dice_image->get_height()) * 0.5, (dice_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
         Dice_Image.set(dice_image);
+        
+        if (dice_value==7)
+        {
+            open_thief_window();
+        }
+
+        update_ressources(dice_value);
+
+        
     }
     else
     {
@@ -483,18 +485,20 @@ void my_window::consume_ressources(string s)
     current_player_itr->set_resources(my_list);
     update_resources_table();
 }
-// /**
-//  * @brief set the player list
-//  *
-//  * @param N_list
-//  */
-// void my_window::set_player_list(vector<Player> N_list)
-// {
 
-//     this->player_list=N_list;
-//     this->current_player_itr= player_list.begin();
-// 	this->last_elemnt =next(player_list.end(),-1);
-// }
+void my_window::open_help()
+{
+    if (first_turns)
+    {
+    Gtk::MessageDialog d(*this, "Chaque joueur doit placer une maison et une route sauf le dernier joueur , il peut placer 2 ", true, Gtk::MESSAGE_INFO);
+    d.run();
+    }
+    else
+    {
+    Gtk::MessageDialog d(*this, "Appuiez sur 'Next player' si vous avez terminé votre tour ", true, Gtk::MESSAGE_INFO);
+    d.run();
+    }
+}
 
 //---------------------------  functions used to set the window's widgets --------------------------//
 
@@ -670,9 +674,9 @@ void my_window::set_side_box()
     button_rules.add_label("See construction rules");
     button_rules.signal_clicked().connect(sigc::mem_fun(*this, &my_window::see_rules));
 
-    // test
-    button_test_thief.add_label("test thief");
-    button_test_thief.signal_clicked().connect(sigc::mem_fun(*this, &my_window::open_thief_window));
+    //  Instructions
+    button_test_thief.add_label("Help");
+    button_test_thief.signal_clicked().connect(sigc::mem_fun(*this, &my_window::open_help));
 
     // | //
     // v //
@@ -686,7 +690,7 @@ void my_window::set_side_box()
     buttonsGrid.attach(button_route, 0, 1, 1, 1);
     buttonsGrid.attach(button_next_turn, 0, 2, 1, 1);
 
-    // test
+    // // test
     buttonsGrid.attach(button_test_thief, 0, 3, 1, 1);
 
     // | //

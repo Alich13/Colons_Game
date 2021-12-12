@@ -1,3 +1,14 @@
+/**
+ * @file data_structures.h
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-12-12
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef GTKMM_MYAREA_H
 #define GTKMM_MYAREA_H
 #include <string>
@@ -30,7 +41,6 @@ enum class States
     p6
 };
 
-// possible heritage
 //-------------------------- Data_map (Tuiles data structure)----------------------------------------------//
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
   *&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
@@ -39,24 +49,24 @@ enum class States
  * @brief 
  * 
  */
-/*
-class Data_map
-{
-private:
-    //vector<tuile> map;
-   
-public:
-    // 
-    //---------------------constructor-----------------//
-    Data_map();
-    virtual ~Data_map();
-    int  get_size();
 
-    //virtual get_element_by_id();
-    //void insert(virtual element);
-    
+class mapElement
+{
+
+public:
+    mapElement(){};
+    mapElement(int id, int x, int y) : id(id) , x(x) ,y(y) {};
+    virtual ~mapElement(){};
+    int get_x() { return x; }
+    int get_y() { return y; }
+    int get_id() { return id; }
+    int id; // element id  public
+
+protected:
+    int x, y; // cordonates
+     
 };
-*/
+
 
 
 
@@ -70,30 +80,19 @@ THis his class is a data structure enabling tuiles objects storing  and accessin
 */
 //-------------------------------------------------------------------------------------------------------------//
 
-class tuile
+class tuile : public mapElement
 {
 
 public:
-    int tuile_id; // tuile_id public
-
+    
     tuile();
-    tuile(int tuile_id, int x, int y, Resources ressource)
-    {
-        this->tuile_id = tuile_id;
-        this->x = x;
-        this->y = y;
-        this->ressource = ressource;
-        // this->num_de = num_de; // a random number between 2 and 12 is affected to de
-    }
+    tuile(int id, int x, int y, Resources ressource) : mapElement(id,x,y) ,ressource(ressource) {}
     void set_de(int num_de) { this->num_de = num_de; }
     int get_de() { return num_de; }
-    int get_id() { return tuile_id; }
-    int get_x() { return x; }
-    int get_y() { return y; }
     Resources get_ressource() { return ressource; }
 
 private:
-    int x, y; // cordonates
+    
     Resources ressource;
     int num_de;
 };
@@ -132,27 +131,17 @@ public:
 THis his class is a data structure enabling tuiles objects storing  and accessing
 */
 
-class node
+class node :  public mapElement
 {
 
 public:
-    int id; // tuile_id public
-    node(int id, int x, int y, vector<tuile> adj_ressource)
-    {
-        this->id = id;
-        this->x = x;
-        this->y = y;
-        this->adj_ressource = adj_ressource;
-    };
+    
+    node(int id, int x, int y, vector<tuile> adj_ressource) : mapElement(id,x,y) , adj_ressource(adj_ressource) {}
     void set_state(States state) { this->state = state; }
-    int  get_x(){return x;}
-    int  get_y(){return y;} 
     States get_state() { return state; };
     vector<tuile> get_ressources(){return adj_ressource;}; 
 
-
 private:
-    int x, y;
     States state = States::empty;     // state of the intersection (empty or  player id)
     std::vector<tuile> adj_ressource; // list of maximum 3 tuiles
 };

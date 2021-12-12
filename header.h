@@ -331,6 +331,7 @@ public:
 	Player *get_player_by_state(States state);
 	void place_flag_image(int player_num ,Glib::RefPtr<Gdk::Pixbuf> px_image ,Gtk::Image*  Image , Gtk::Grid*  my_grid , int col , int row );
 	void open_thief_window();
+	void open_help();
 	void consume_ressources(string s);  // B = 0 consume ressources to build a route  if   B = 1 consume ressources to build a house
 
 protected:

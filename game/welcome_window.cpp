@@ -1,7 +1,9 @@
 #include "../header.h"
 
 Welcome_Window::Welcome_Window()
-	{
+	{  
+
+
     //-----------------------------load css-----------------------------
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_path("style.css");
@@ -267,8 +269,12 @@ void Welcome_Window::Open_New_Win_Clicked()
 
     
     main_window->show();
+    Gtk::MessageDialog d(*main_window, "Welcome to cantan game ", true, Gtk::MESSAGE_INFO);
+    d.run();
+    
     button_submit_number.hide();
     button_start_new_win.hide();
+
 
     
     
