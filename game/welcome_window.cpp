@@ -1,4 +1,4 @@
-#include "../header.h"
+#include "header.h"
 
 Welcome_Window::Welcome_Window()
 	{  
@@ -269,14 +269,16 @@ void Welcome_Window::Open_New_Win_Clicked()
 
     
     main_window->show();
-    Gtk::MessageDialog d(*main_window, "Welcome to cantan game ", true, Gtk::MESSAGE_INFO);
+    
+    string secondaryMessage = "Appuier sur le boutton 'Aide' pour avoir des instructions  au cours du jeu  ";
+    
+    Gtk::MessageDialog d(*main_window, "<b> Bienvenue au jeu Catane </b> ",true, Gtk::MESSAGE_INFO);
+    d.set_title("Welcome window");
+    d.set_secondary_text(secondaryMessage);
     d.run();
     
     button_submit_number.hide();
     button_start_new_win.hide();
-
-
-    
     
 }
 
@@ -288,7 +290,6 @@ void Welcome_Window::detach_all()
     grid.remove(m_Entry_4);
     grid.remove(m_Entry_5);
     grid.remove(m_Entry_6);
-
     grid.remove(l_Entry_1);
     grid.remove(l_Entry_2);
     grid.remove(l_Entry_3);

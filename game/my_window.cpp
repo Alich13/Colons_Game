@@ -1,4 +1,4 @@
-#include "../header.h"
+#include "header.h"
 #include <cairomm/context.h>
 #include <iostream>
 #define SCALE 1.25
@@ -26,7 +26,6 @@ my_window::my_window(vector<Player> N_player_list) : dessin(*this), player_list(
     Glib::RefPtr<Gtk::StyleContext> context = this->get_style_context();
     context->add_class("my_window");
 
-    /*----------setup window-------------------------------*/
     set_title("Colons Game !");
     set_position(Gtk::WIN_POS_CENTER);
     set_default_size(1405, 905); //+5 size of all the window for the border
@@ -75,6 +74,7 @@ my_window::my_window(vector<Player> N_player_list) : dessin(*this), player_list(
 
 void my_window::button_add_house()
 {
+
     // first phase
     if (first_turns == true)
     {
@@ -86,13 +86,13 @@ void my_window::button_add_house()
         {
             // set all other bottons to false
             dessin.set_add_route_pressed(false);
-            Gtk::MessageDialog d(*this, "Choose your house position ", true, Gtk::MESSAGE_INFO);
+            Gtk::MessageDialog d(*this, "Choisissez la position de la maison ", true, Gtk::MESSAGE_INFO);
             d.run();
             dessin.set_add_house_pressed(true);
         }
         else
         {
-            Gtk::MessageDialog d(*this, "Can't place more than one house ", true, Gtk::MESSAGE_ERROR);
+            Gtk::MessageDialog d(*this, "impossible de construire plus  qu'une maison ", true, Gtk::MESSAGE_ERROR);
             d.run();
         }
     }
@@ -101,7 +101,7 @@ void my_window::button_add_house()
     {
         // set all other bottons to false
         dessin.set_add_route_pressed(false);
-        Gtk::MessageDialog d(*this, "Choose your house position ", true, Gtk::MESSAGE_INFO);
+        Gtk::MessageDialog d(*this, "Choisissez la position de la maison ", true, Gtk::MESSAGE_INFO);
         d.run();
         dessin.set_add_house_pressed(true);
     }
@@ -122,13 +122,13 @@ void my_window::button_add_route()
             // alerte widjet
             // set all other bottons to false
             dessin.set_add_house_pressed(false);
-            Gtk::MessageDialog d(*this, "Choose a route to build ", true, Gtk::MESSAGE_INFO);
+            Gtk::MessageDialog d(*this, "Choisissez la position de votre route ", true, Gtk::MESSAGE_INFO);
             d.run();
             dessin.set_add_route_pressed(true);
         }
         else
         {
-            Gtk::MessageDialog d(*this, "Can't place more than one Route ", true, Gtk::MESSAGE_ERROR);
+            Gtk::MessageDialog d(*this, "Impossible de placer plus qu'une route ", true, Gtk::MESSAGE_ERROR);
             d.run();
         }
     }
@@ -138,8 +138,7 @@ void my_window::button_add_route()
         // alerte widjet
         // set all other bottons to false
         dessin.set_add_house_pressed(false);
-
-        Gtk::MessageDialog d(*this, "Choose a route to build ", true, Gtk::MESSAGE_INFO);
+        Gtk::MessageDialog d(*this, "Choisissez la position de votre route", true, Gtk::MESSAGE_INFO);
         d.run();
         dessin.set_add_route_pressed(true);
     }
@@ -198,19 +197,17 @@ void my_window::play_dice()
         dice_image = Gdk::Pixbuf::create_from_file("data/vigniettes/" + to_string(dice_value) + ".png");
         dice_image = dice_image->scale_simple((dice_image->get_height()) * 0.5, (dice_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
         Dice_Image.set(dice_image);
-        
-        if (dice_value==7)
+
+        if (dice_value == 7)
         {
             open_thief_window();
         }
 
         update_ressources(dice_value);
-
-        
     }
     else
     {
-        Gtk::MessageDialog d(*this, "Can not play more than one time in a turn !!  ", true, Gtk::MESSAGE_ERROR);
+        Gtk::MessageDialog d(*this, "Vous n'avez pas le droit de jouer plusieurs fois le Dé en un tour  ", true, Gtk::MESSAGE_ERROR);
         d.run();
     }
 
@@ -289,7 +286,7 @@ void my_window::update_ressources(int dice_val)
 }
 
 /**
- * @brief this methode manage the first the first part of the game
+ * @brief this methode manage the first part of the game
  * initial phase where player have diffrent previledges and rules change
  *
  */
@@ -312,9 +309,9 @@ void my_window::manage_first_phase()
             // set the play dice button when first phase is over
             my_dice.set_dice_state(true);
             this->dice_value = 0; // reset dice to initial value = zero corresponding to no Tuile
-            Dice_output_label.set_markup(" Throw Dice ? ? ?");
+            Dice_output_label.set_markup(" Lancer le De !! ");
 
-            button_play_dice.set_label("Play Dice");
+            button_play_dice.set_label("Jouer le Dé");
             DiceGrid.attach(button_play_dice, 0, 0, 1, 1);
             button_play_dice.signal_clicked().connect(sigc::mem_fun(*this, &my_window::play_dice));
             this->show_all_children();
@@ -332,7 +329,7 @@ void my_window::manage_first_phase()
             // // plays another time and inverse the sens
             {
                 inversed = true;
-                Gtk::MessageDialog d(*this, " The player"+ current_player_itr->get_name() + "; Please add 2 houses and 4 routes ", true, Gtk::MESSAGE_INFO);
+                Gtk::MessageDialog d(*this, " Pour le joueur " + current_player_itr->get_name() + "; Vous devez placer 2 maisons et 4 routes ", true, Gtk::MESSAGE_INFO);
                 d.run();
             }
         }
@@ -348,14 +345,18 @@ void my_window::manage_first_phase()
     }
     else
     {
-        Gtk::MessageDialog d(*this, "You must place 1 house and 1 Route ", true, Gtk::MESSAGE_ERROR);
+        Gtk::MessageDialog d(*this, "Vous devez placer une maison et une route  ", true, Gtk::MESSAGE_ERROR);
         d.run();
     }
 
     update_score();
     update_resources_table();
 }
-
+/**
+ * @brief
+ * manges the game in second phase after placing two houses and two routes
+ *
+ */
 void my_window::manage_second_phase()
 {
     // reset dice parameters
@@ -414,8 +415,16 @@ void my_window::open_thief_window()
 {
 
     thief_window = new thief_win(*this);
-    thief_window->set_player_list(player_list);
-    thief_window->show();
+    if (thief_window->filter_8(player_list).size() == 0)
+    {
+        Gtk::MessageDialog d(*this, "Aucun joueur avec plus de 8 cards ", true, Gtk::MESSAGE_INFO);
+        d.run();
+    }
+    else
+    {
+        thief_window->set_player_list(player_list);
+        thief_window->show();
+    }
 }
 
 /**
@@ -490,13 +499,39 @@ void my_window::open_help()
 {
     if (first_turns)
     {
-    Gtk::MessageDialog d(*this, "Chaque joueur doit placer une maison et une route sauf le dernier joueur , il peut placer 2 ", true, Gtk::MESSAGE_INFO);
-    d.run();
+        Gtk::MessageDialog d(*this, "Chaque joueur doit placer une maison et une route sauf le dernier joueur , il peut placer 2 maison et 4 routes  ", true, Gtk::MESSAGE_INFO);
+        d.run();
     }
     else
     {
-    Gtk::MessageDialog d(*this, "Appuiez sur 'Next player' si vous avez terminé votre tour ", true, Gtk::MESSAGE_INFO);
-    d.run();
+        Gtk::MessageDialog d(*this, "Appuiez sur le boutton 'tour suivant ' si vous avez terminé votre tour ", true, Gtk::MESSAGE_INFO);
+        d.run();
+    }
+}
+
+void my_window::test_winer()
+{
+    for (int i = 0; i < player_list.size(); i++)
+    {
+        if (player_list[i].get_score() == 3)
+        {
+            Gtk::MessageDialog d(*this, " Félicitations  " + player_list[i].get_name() + "! Vous avez gangez  !!", true, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+            d.set_secondary_text("Voulez-vous quiter le jeu ?");
+            int Answer = d.run();
+            switch (Answer)
+            {
+            case (Gtk::RESPONSE_OK):
+                d.close();
+                this->close;
+                break;
+            case (Gtk::RESPONSE_CANCEL):
+                break;
+
+            default:
+                std::cout << "Unexpected button clicked." << std::endl;
+                break;
+            }
+        }
     }
 }
 
@@ -541,16 +576,31 @@ void my_window::update_resources_table()
  * @param col         the colon in the given grid
  * @param row           the row in the given grid
  */
+
+/**
+ * @brief  place a color flag in front of each player
+ * @param player_num
+ * @param px_image  pixbull object 'image'
+ * @param Image  gtk::image
+ * @param my_grid the grid where we will place the image
+ * @param col  positions
+ * @param row  positions
+ */
+
 void my_window::place_flag_image(int player_num, Glib::RefPtr<Gdk::Pixbuf> px_image, Gtk::Image *Image, Gtk::Grid *my_grid, int col, int row)
 {
-    cout << "player id " << player_num << endl;
+
     my_grid->remove(I_image);
     px_image = Gdk::Pixbuf::create_from_file("data/flags/" + to_string(player_num) + ".png");
     px_image = px_image->scale_simple((px_image->get_height()) * 0.5, (px_image->get_width()) * 0.5, Gdk::INTERP_BILINEAR);
     Image->set(px_image);
     my_grid->attach(*Image, col, row, 1, 1);
 }
-
+/**
+ * @brief
+ *
+ *
+ */
 void my_window::set_my_menu()
 {
     mainLayout.pack_start(menuBar, Gtk::PACK_SHRINK);
@@ -573,6 +623,11 @@ void my_window::set_my_menu()
     quit.signal_activate().connect(sigc::ptr_fun(&Gtk::Main::quit));
 }
 
+/**
+ * @brief
+ * set the side box element (buttons)
+ *
+ */
 void my_window::set_side_box()
 {
     /*--------------logo------------------------*/
@@ -584,7 +639,7 @@ void my_window::set_side_box()
     /*---------- info frame---------------*/
     update_score();
     dessin.setActivePlayer(&*current_player_itr);
-    player_turn_label.set_markup("<b> Player : " + current_player_itr->get_name() + "</b>");
+    player_turn_label.set_markup("<b> Joueur : " + current_player_itr->get_name() + "</b>");
     score_label.set_markup("<b> Score =" + to_string(current_player_itr->get_score()) + "</b>");
 
     ble_title.set_markup("Blé");
@@ -665,17 +720,17 @@ void my_window::set_side_box()
 
     /*---------buttons box--------------*/
 
-    button_house.add_label("Build a House");
+    button_house.add_label("Construire une maison");
     button_house.signal_clicked().connect(sigc::mem_fun(*this, &my_window::button_add_house));
-    button_route.add_label("Build Route");
+    button_route.add_label("Construire une route");
     button_route.signal_clicked().connect(sigc::mem_fun(*this, &my_window::button_add_route));
-    button_next_turn.add_label("Next Turn");
+    button_next_turn.add_label("Tour suivant ");
     button_next_turn.signal_clicked().connect(sigc::mem_fun(*this, &my_window::next_turn));
-    button_rules.add_label("See construction rules");
+    button_rules.add_label("Les Règles ");
     button_rules.signal_clicked().connect(sigc::mem_fun(*this, &my_window::see_rules));
 
     //  Instructions
-    button_test_thief.add_label("Help");
+    button_test_thief.add_label("Aide");
     button_test_thief.signal_clicked().connect(sigc::mem_fun(*this, &my_window::open_help));
 
     // | //

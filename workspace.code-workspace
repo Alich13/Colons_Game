@@ -1,12 +1,16 @@
 {
 	"folders": [
 		{
+			"path": "../test_cpp"
+		},
+		{
 			"path": "."
 		}
 	],
 	"settings": {
 		"files.associations": {
-			"iostream": "cpp"
+			"iostream": "cpp",
+			"unordered_map": "cpp"
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#include "header.h"
+#include "game/header.h"
 #include <iostream>
 #include <gtkmm.h>
 #include <gtkmm/window.h>
@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
   
   Welcome_Window W;
   app->run(W);
-
+ 
   return 0 ;
 }
 

@@ -1,4 +1,4 @@
-#include "../header.h"
+#include "header.h"
 #include <cairomm/context.h>
 #include <iostream>
 #include <string> // for string class

@@ -1,4 +1,4 @@
-#include "../header.h"
+#include "header.h"
 #include <cairomm/context.h>
 #include <iostream>
 #include <string> // for string class
@@ -97,7 +97,11 @@ bool Dessin::on_button_press_event(GdkEventButton *event)
 }
 
 //---------------------------------------events-------------------------------------------------------//
-
+/**
+ * @brief
+ * this function manages the mouse clicks when interacting with the window
+ * @param event
+ */
 void Dessin::updateRoute(GdkEventButton *event)
 {
 
@@ -107,55 +111,47 @@ void Dessin::updateRoute(GdkEventButton *event)
 		cout << "selected route " << selectedRoute_id << endl;
 		if (route_map.check_possible_route(selectedRoute_id, active_player->get_player_STATE_id())) //  if route construction is possible
 		{
-			
-			
+
 			if (
-				my_win.get_first_turn()==false &&
+				my_win.get_first_turn() == false &&
 				active_player->count_X_ressources(Resources::argile) >= 1 &&
-				active_player->count_X_ressources(Resources::bois) >= 1 
-				)
+				active_player->count_X_ressources(Resources::bois) >= 1)
 			{
 
-				cout << "entred route ressources cond" <<endl;
+				cout << "entred route ressources cond" << endl;
 				route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
 				set_add_route_pressed(false);
-				my_win.consume_ressources("route");// 0 for route 
+				my_win.consume_ressources("route"); // 0 for route
 				my_win.update_score();
-		
 			}
-			else if (my_win.get_first_turn()==false)
+			else if (my_win.get_first_turn() == false)
 			{
 				// alerte widjet
-				Gtk::MessageDialog d(my_win, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
-				d.set_secondary_text("not enough resources");
-				// Gtk::MessageDialog()
+				Gtk::MessageDialog d(my_win, "Impossible de construire une route ici ", true, Gtk::MESSAGE_ERROR);
+				d.set_secondary_text("Pas suffisament de recources  ");
 				d.run();
 				set_add_route_pressed(false);
-
 			}
-			
 
 			/**
-			 * @brief no need for ressource in the first turns 
-			 * 
+			 * @brief no need for ressource in the first turns
+			 *
 			 */
-			if (my_win.get_first_turn()==true )
+			if (my_win.get_first_turn() == true)
 			{
 				route_map.update_route_state(selectedRoute_id, active_player->get_player_STATE_id());
-				set_add_route_pressed(false); 
+				set_add_route_pressed(false);
 				my_win.update_score();
 			}
-			
 		}
 		else
 		{
 			// alerte widjet
-			Gtk::MessageDialog d(my_win, "Route construction not possible", true, Gtk::MESSAGE_ERROR);
+			Gtk::MessageDialog d(my_win, "Impossible de construire une route ici", true, Gtk::MESSAGE_ERROR);
 			d.set_secondary_text("Can not Choose this position , please check the rules ");
 			// Gtk::MessageDialog()
 			d.run();
 			set_add_route_pressed(false);
-			
 		}
 	}
 
@@ -173,53 +169,49 @@ void Dessin::updateHouse(GdkEventButton *event)
 		cout << "selected house " << selectedHouse_id << endl;
 		if (route_map.check_house_construction_possible(selectedHouse_id, active_player->get_player_STATE_id()))
 		{
+
 			/*#######################################################################*/
 			// ################### condition on ressouces here #######################//
-			//#######################################################################// 
-			if (
-				my_win.get_first_turn()==false &&
-				active_player->count_X_ressources(Resources::argile) >= 1 &&
-				active_player->count_X_ressources(Resources::bois) >= 1 &&
-				active_player->count_X_ressources(Resources::ble) >= 1 &&
-				active_player->count_X_ressources(Resources::mouton) >= 1
-			)
+			//#######################################################################//
+			if (my_win.get_first_turn() == false)
 			{
-			
-			route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
-			set_add_house_pressed(false);
-			my_win.consume_ressources("house");  // 1 for house 
-			my_win.update_score();
-			
-			}
 
+				if (
+					active_player->count_X_ressources(Resources::argile) >= 1 &&
+					active_player->count_X_ressources(Resources::bois) >= 1 &&
+					active_player->count_X_ressources(Resources::ble) >= 1 &&
+					active_player->count_X_ressources(Resources::mouton) >= 1)
+				{
+
+					route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
+					set_add_house_pressed(false);
+					my_win.consume_ressources("house"); // 1 for house
+					my_win.update_score();
+				}
+				// if  in second and not enough ressources
+				else
+				{
+					Gtk::MessageDialog d(my_win, "Impossible de construire une route ici", true, Gtk::MESSAGE_ERROR);
+					d.set_secondary_text("Can not Choose this position , please check the rules  ");
+					set_add_house_pressed(false);
+					// Gtk::MessageDialog()
+					d.run();
+				}
+			}
 
 			// if in first phase
-			if ( my_win.get_first_turn()==true )
+			if (my_win.get_first_turn() == true)
 			{
 				route_map.update_intersection_state(selectedHouse_id, active_player->get_player_STATE_id());
-				set_add_house_pressed(false); 
-				my_win.update_score();
-
-			}
-			// if  in second and not enough ressources 
-			else if ( my_win.get_first_turn()==false )
-			{
-				Gtk::MessageDialog d(my_win, "House construction not possible", true, Gtk::MESSAGE_ERROR);
-				d.set_secondary_text("Note enough resources ");
 				set_add_house_pressed(false);
-				// Gtk::MessageDialog()
-				d.run();
-
+				my_win.update_score();
 			}
-
-
-
 			// if in the first phase "inverted" we update ressources for each player
 			// when placing his settlement
 
 			/**
-			 * @brief no need for ressource in the first turns 
-			 * 
+			 * @brief no need for ressource in the first turns
+			 *
 			 */
 			if (my_win.get_init_inversed() && (active_player->get_score() == 2))
 			{
@@ -241,12 +233,11 @@ void Dessin::updateHouse(GdkEventButton *event)
 			set_add_house_pressed(false);
 			// Gtk::MessageDialog()
 			d.run();
-			
 		}
 	}
 
-
 	ReafficheDessin();
+	my_win.test_winer();
 }
 
 //-----------------------------draw Functions-----------------------------------------//
@@ -319,7 +310,7 @@ void Dessin::drawPossibleHouses(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	if (all_possible_house.size() == 0) // no house construction is possible
 	{
-		Gtk::MessageDialog d(my_win, " No possible construction found ", true, Gtk::MESSAGE_ERROR);
+		Gtk::MessageDialog d(my_win, " Pas de constructions possibles ", true, Gtk::MESSAGE_ERROR);
 		d.set_secondary_text(" Please check the rules ");
 		set_add_house_pressed(false);
 		d.run();
@@ -411,10 +402,9 @@ void Dessin::drawRoute(const Cairo::RefPtr<Cairo::Context> &cr)
 
 			break;
 		case States::p6:
-			cr->set_source_rgb(100,100, 100);
+			cr->set_source_rgb(100, 100, 100);
 
 			break;
-
 		}
 		cr->move_to(pos1_x, pos1_y);
 		cr->line_to(pos2_x, pos2_y);

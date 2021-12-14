@@ -1,4 +1,4 @@
-#include "../header.h"
+#include "header.h"
 
 /**
  * @brief Construct a new rules win::rules win object
@@ -9,6 +9,7 @@ thief_win::thief_win(my_window &W) : parent_win(W)
 {
     // modify and remove element from parent_class
     set_title("Thief unlocked");
+    
     set_position(Gtk::WIN_POS_CENTER);
     this->remove();
     this->set_default_size(600, 400);
@@ -66,23 +67,14 @@ vector<Player> thief_win::filter_8(vector<Player> input_list)
 void thief_win::set_player_list(vector<Player> &N_list)
 {
 
-    /*store here filterd list*/
-    this->list_player_with_8_ressources = filter_8(N_list);
-
-    if (list_player_with_8_ressources.size()==0)
-    {
-        Gtk::MessageDialog d(*this, "No Player has More than  8 Resources", true, Gtk::MESSAGE_INFO);
-        d.run();
-    }
-    else
-    {
+        /*store here filterd list*/
+        this->list_player_with_8_ressources = filter_8(N_list);
         // set resource table and choices
         current_player_itr = list_player_with_8_ressources.begin();
         update_discard_num();
-        set_ressources_table();
-        
+        set_ressources_table();            
         this->show_all_children();
-    }
+
     
 }
 
