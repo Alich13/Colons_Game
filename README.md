@@ -18,9 +18,9 @@ Durée moyenne du jeu : 75 minutes. Jeu à partir de : 10 ans.
 Pour plus d'informations plus voir <a href="https://catanuniverse.com/fr" >appuyiez ici </a>. 
 
  
-## GamePLay (Video Youtube)
+## GamePLay (Capture Video du jeu )
 
-<a href="https://www.youtube.com/watch?v=qLEn7MC6Qcs"> Une video sur youtube montre les caractéristiques du jeu ici</a> . 
+<a href="https://www.youtube.com/watch?v=qLEn7MC6Qcs"> Une capture video du jeu que j'ai developpé est disponible ici ici</a> . 
 
 ## Requirements 
 <br> 
