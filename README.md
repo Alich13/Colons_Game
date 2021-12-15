@@ -137,8 +137,6 @@ Les mêmes règles ont été pris en compte dans notre jeu sauf quelques excepti
 
 <h3 style="color:red"> Remarques (Important) </h3>  
 
- 
- 
 
 - Puisque ce jeu ne permet pas de faire les échanges entre joueur et avec banque, essayer SVP de placer vos premières colonies dans des intersection de façon à avoir accès à tous les ressources sinon le joueur ne pourra pas construire des maisons ou routes supplémentaires puisqu'il sera limiter par une ressource. (Pour tester le jeu) 
 
@@ -150,6 +148,8 @@ Les mêmes règles ont été pris en compte dans notre jeu sauf quelques excepti
 ### 2/ Choix du nombre de joueur 
 
 La première fenêtre permet de choisir le nombre de joueur ainsi que leur noms. 
+<br>
+![image description](./data/acceuil.png)
 
 ### 3/ Voleur
 
@@ -162,9 +162,9 @@ Le voleur est activé quand le dé retourne un 7.
 ### 4/ Fenêtre de victoire  
 
 Quand le premier joueur attient le score 5 (5 maisons). Une fenêtre dialogue s'affiche annonçant le joueur qui a gagné et demandant aux joueurs s'ils veulent continuer le jeu ou quitter.  
-<br>
 
-![image description](./data/acceuil.png)
+![image description](./data/winning.png) 
+
  
  
 
