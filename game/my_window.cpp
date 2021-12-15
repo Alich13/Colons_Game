@@ -513,7 +513,7 @@ void my_window::test_winer()
 {
     for (int i = 0; i < player_list.size(); i++)
     {
-        if (player_list[i].get_score() == 3)
+        if (player_list[i].get_score() == 5)
         {
             Gtk::MessageDialog d(*this, " Félicitations  " + player_list[i].get_name() + "! Vous avez gangez  !!", true, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
             d.set_secondary_text("Voulez-vous quiter le jeu ?");

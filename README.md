@@ -1,79 +1,177 @@
-# Colons_Game
-![image description](./data/logo.png)
 
 
-## Description
+# Colons Game 
+
+![image description](./data/logo.png) 
 
 
-## requirement 
+## Description 
+<br>
+Les Colons de Catane, Les Colons de Katäne, Catane ou Catan, est un jeu de société de Klaus Teuber, 
 
-- C++ 11 
-- une distribution d'un Systeme Linux est préferé (Ubuntu , Debian ) .
+Un jeu de stratégie, avec une mécanique fluide et bien pensée. 
+
+Le Nombre de joueurs pour ce jeu de société : de 3 à 6.  
+
+Durée moyenne du jeu : 75 minutes. Jeu à partir de : 10 ans.  
+
+Pour plus d'informations plus voir <a href="https://catanuniverse.com/fr" >appuyiez ici </a>. 
+
+ 
+ 
+
+## Requirements 
+<br> 
+
+- C++ 11  
+
+- Une distribution d'un Système Linux est préférée (Ubuntu, Debian). 
+
+ 
+ 
 
 ## Compiler et lancer le jeu 
-le fichier makefile contient tous les instructions essentiels pour compiler et lancer le jeu . 
+<br>
 
-    make clean ; make ; ./out ;
+Le fichier makefile contient toutes les instructions essentielles pour compiler et lancer le jeu.  
 
-Vous pouvez egalemet lancer directement 
+    make clean && make && ./out ; 
 
-    ./out
+ 
+ 
 
+Vous pouvez egalemet lancer directement  
+ 
 
-## Organisation du projet 
+    ./out 
 
-<code>board_data_structures</code> ce dossier contient les classes utilisées dans le backend et qui stockent les données du tableaux de board comme les positions des tuiles , noeuds et routes ainsi que les contraintes du regles de jeu .
+ 
+ 
+ 
 
-<code>game</code> ce dossier comporte tous les classes qui controle la parti graphique du programme ainsi que d'autre classes intermedieres entre le back-end et le front-end comme board.cpp 
+## Organisation du projet  
+<br>
 
-    ├── board_data_structures  
-    │   ├── data_structures.cpp         
-    │   ├── data_structures.h            
-    │   └── workspace.code-workspace
-    |
-    ├── data
-    ├── game
-    │   ├── board.cpp
-    │   ├── dessin.cpp
-    │   ├── Dice.cpp
-    │   ├── my_window.cpp
-    │   ├── player.cpp
-    │   ├── rules_win.cpp
-    │   ├── thief_win.cpp
-    │   ├── welcome_window.cpp
-    │   └── workspace.code-workspace
-    ├── header.h
-    ├── Icon.png
-    ├── LICENSE
-    ├── main.cpp
-    ├── makefile
-    ├── README.md
-    ├── style.css
+ 
+ 
+
+<code>board_data_structures</code> ce dossier contient les classes utilisées dans le backend et qui stockent les données du tableau de bord comme les positions des tuiles, nœuds et routes ainsi que les contraintes des règles de jeu. 
+
+<br>
+
+<code>game</code> ce dossier comporte toutes les classes qui contrôlent la partie graphique du programme ainsi que d'autre classes intermédiaires entre le backend et le frontend comme board.cpp  
 
 
+<b>Les prototypes des classes sont disponibles dans les deux fichiers <code>data_structures.h</code> et <code>header.h</code> </b> 
+
+<br>
+
+    ├── board_data_structures // les classes du tableau de bord (la map) 
+    │ ├── data_structures.cpp  
+    │ ├── data_structures.h  
+    | 
+    ├── data // les données : toutes les images utilisées 
+    | 
+    ├── game // les classes (partie graphique + gestion du jeu) 
+    │ ├── board.cpp 
+    │ ├── dessin.cpp 
+    │ ├── Dice.cpp 
+    │ ├── my_window.cpp // le gestion des tours ici 
+    │ ├── player.cpp 
+    │ ├── rules_win.cpp // fenetre rules 
+    │ ├── thief_win.cpp // fenetre du voleur  
+    │ ├── welcome_window.cpp // fenetre d'acceuil 
+    | 
+    ├── header.h 
+    ├── Icon.png 
+    ├── LICENSE 
+    ├── main.cpp 
+    ├── makefile 
+    ├── README.md 
+    ├── style.css 
+
+ 
+ 
+ 
+ 
+
+## Diagram de classes  
+<br>
+ 
+
+Ce diagramme UMl donne une idée sur l'architecture générale du projet. Des informations plus en détails sur les méthodes et les attributs sont disponible dans les fichiers <code> header.h</code> et <code> data_structure.h</code> .  
+
+ 
+ 
+ 
+
+![image description](Catanes_UML.png) 
+
+ 
+ 
+
+## Héritage  
+<br>
+
+### classe abstraite  
+
+Une classe abstraite <code>Map_element</code> a été utilisée, les deux classes <code>tuile</code> et <code>node</code> héritent de cette classe. 
+
+### classes de Gtkmm3  
+
+Les classes my_window , rules_win ,welcome_window heritent de la classe de GTk::WINDOW de gtkmm .  
 
 
-## Run app  
+## Jeu  
+<br>
+Les mêmes règles ont été pris en compte dans notre jeu sauf quelques exceptions :  
 
-make clean ;make; ./out;
+- Le score finale requis pour gagner a été fixer à 5 (au lieu de 10) pour faciliter le test du jeu.  
+
+- Les échanges entre les joueurs ainsi que la banques ne sont pas permis. 
+
+- Le Voleur peut être activé déclenchant la perte de la moitié des cartes pour les joueurs possédant plus de 8 cartes. Mais ce dernier ne peut pas bouger (il reste figé dans les tuiles désertes du départ)  
+
+ 
+ 
+
+<h3 style="color:red"> Remarques (Important) </h3>  
+
+ 
+ 
+
+- Puisque ce jeu ne permet pas de faire les échanges entre joueur et avec banque, essayer SVP de placer vos premières colonies dans des intersection de façon à avoir accès à tous les ressources sinon le joueur ne pourra pas construire des maisons ou routes supplémentaires puisqu'il sera limiter par une ressource. (Pour tester le jeu) 
+
+ 
+## Démo 
+
+### 1/ Vidéo (DEMONSTRATION)  
+
+### 2/ Choix du nombre de joueur 
+
+La première fenêtre permet de choisir le nombre de joueur ainsi que leur noms. 
+
+### 3/ Voleur
 
 
-## Diagram de class 
+Le voleur est activé quand le dé retourne un 7. 
+<br>
 
-Ce diagramme UMl donne une idée  sur l'architecture generale du projet . des informations plus en detail sur les methodes et les attributs sont disponible dans les fichier <code> header.h</code> et <code> data_structure.h</code> . 
+![image description](./data/voleur.png) 
 
+### 4/ Fenêtre de victoire  
 
-![image description](Catanes_UML.png)
+Quand le premier joueur attient le score 5 (5 maisons). Une fenêtre dialogue s'affiche annonçant le joueur qui a gagné et demandant aux joueurs s'ils veulent continuer le jeu ou quitter.  
+<br>
 
+![image description](./data/acceuil.png)
+ 
+ 
 
+ 
 
-## Jeu
+ 
 
-Le score finale pour gangner a ete fixer à 5 (au lieu de 10 ) .  
+ 
 
-### Régles du jeu
-
-puisque ce jeu ne permet pas de faire les echanges entre joueur et banque  si le jouer ne place pas correctement ces colonie lors de la phase d'initiation ça peut arriver qu'il puisse pas avoir une ressource particluiere et donc ce jouer=uer reste bloqué 
-Donc essayer de bien placer vos colonie pour tester le jeux SVP. 
-
-### Comment jouer  
+ 
