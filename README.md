@@ -11,14 +11,16 @@ Les Colons de Catane, Les Colons de Katäne, Catane ou Catan, est un jeu de soci
 
 Un jeu de stratégie, avec une mécanique fluide et bien pensée. 
 
-Le Nombre de joueurs pour ce jeu de société : de 3 à 6.  
+Le Nombre de joueurs pour ce jeu de société : de 2 à 6.  
 
 Durée moyenne du jeu : 75 minutes. Jeu à partir de : 10 ans.  
 
 Pour plus d'informations plus voir <a href="https://catanuniverse.com/fr" >appuyiez ici </a>. 
 
  
- 
+## GamePLay (Video Youtube)
+
+<a href="https://www.youtube.com/watch?v=qLEn7MC6Qcs"> Une video sur youtube montre les caractéristiques du jeu ici</a> . 
 
 ## Requirements 
 <br> 
@@ -81,14 +83,14 @@ Vous pouvez egalemet lancer directement
     │ ├── rules_win.cpp // fenetre rules 
     │ ├── thief_win.cpp // fenetre du voleur  
     │ ├── welcome_window.cpp // fenetre d'acceuil 
-    | 
-    ├── header.h 
+    | ├── header.h // les prototypes de la partie graphique+gestion du jeu 
+    |  
     ├── Icon.png 
     ├── LICENSE 
     ├── main.cpp 
     ├── makefile 
     ├── README.md 
-    ├── style.css 
+    ├── style.css  // du css pour le style
 
  
  
@@ -99,7 +101,7 @@ Vous pouvez egalemet lancer directement
 <br>
  
 
-Ce diagramme UMl donne une idée sur l'architecture générale du projet. Des informations plus en détails sur les méthodes et les attributs sont disponible dans les fichiers <code> header.h</code> et <code> data_structure.h</code> .  
+Ce diagramme UML donne une idée sur l'architecture générale du projet. Des informations plus en détails sur les méthodes et les attributs sont disponibles dans les fichiers <code> header.h</code> et <code> data_structure.h</code> .  
 
  
  
@@ -113,13 +115,13 @@ Ce diagramme UMl donne une idée sur l'architecture générale du projet. Des in
 ## Héritage  
 <br>
 
-### classe abstraite  
+### Classe abstraite  
 
 Une classe abstraite <code>Map_element</code> a été utilisée, les deux classes <code>tuile</code> et <code>node</code> héritent de cette classe. 
 
-### classes de Gtkmm3  
+### Classes de Gtkmm3  
 
-Les classes my_window , rules_win ,welcome_window heritent de la classe de GTk::WINDOW de gtkmm .  
+Les classes my_window , rules_win ,welcome_window heritent de la classe de <code>GTk::WINDOW</code> de gtkmm3 .  
 
 
 ## Jeu  
@@ -128,17 +130,17 @@ Les mêmes règles ont été pris en compte dans notre jeu sauf quelques excepti
 
 - Le score finale requis pour gagner a été fixer à 5 (au lieu de 10) pour faciliter le test du jeu.  
 
-- Les échanges entre les joueurs ainsi que la banques ne sont pas permis. 
+- Les échanges entre les joueurs ainsi que la banque ne sont pas permis. 
 
 - Le Voleur peut être activé déclenchant la perte de la moitié des cartes pour les joueurs possédant plus de 8 cartes. Mais ce dernier ne peut pas bouger (il reste figé dans les tuiles désertes du départ)  
 
  
  
 
-<h3 style="color:red"> Remarques (Important) </h3>  
+<h2 style="color:red"> Remarque (Important) </h2>  
 
 
-- Puisque ce jeu ne permet pas de faire les échanges entre joueur et avec banque, essayer SVP de placer vos premières colonies dans des intersection de façon à avoir accès à tous les ressources sinon le joueur ne pourra pas construire des maisons ou routes supplémentaires puisqu'il sera limiter par une ressource. (Pour tester le jeu) 
+- Puisque ce jeu ne permet pas de faire les échanges entre joueur et avec banque, essayer SVP de placer vos premières colonies dans des intersections de façon à avoir accès à tous les ressources sinon le joueur ne pourra pas construire des maisons ou routes supplémentaires puisqu'il sera limiter par une ressource. (Pour tester le jeu) 
 
  
 ## Démo 
@@ -161,7 +163,7 @@ Le voleur est activé quand le dé retourne un 7.
 
 ### 4/ Fenêtre de victoire  
 
-Quand le premier joueur attient le score 5 (5 maisons). Une fenêtre dialogue s'affiche annonçant le joueur qui a gagné et demandant aux joueurs s'ils veulent continuer le jeu ou quitter.  
+Quand un  joueur attient le score 5 (5 maisons ). Une fenêtre dialogue s'affiche annonçant le joueur qui a gagné et demandant aux joueurs s'ils veulent continuer le jeu ou quitter.  
 
 ![image description](./data/winning.png) 
 
